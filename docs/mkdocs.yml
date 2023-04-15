@@ -1,0 +1,15 @@
+site_name: ten's documentation
+site_url: https://example.com/
+nav:
+    - Home: index.md
+    - "Flow: Input, output, and flow control": flow.md
+    - "Transform: Convert data": transform.md
+    - "HTTP: requests on steroids": http.md
+    - "Shell: run commands": shell.md
+    - "Filesystem: manage folders and files": fs.md
+    - "Tutorials and examples": tutorial.md
+theme: readthedocs
+markdown_extensions:
+  - admonition
+  - tables
+use_directory_urls: false

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://example.com/shell.html" />
+      <link rel="shortcut icon" href="img/favicon.ico" />
+    <title>Shell: run commands - ten's documentation</title>
+    <link rel="stylesheet" href="css/theme.css" />
+    <link rel="stylesheet" href="css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Shell: run commands";
+        var mkdocs_page_input_path = "shell.md";
+        var mkdocs_page_url = "/shell.html";
+      </script>
+    
+    <script src="js/jquery-3.6.0.min.js" defer></script>
+    <!--[if lt IE 9]>
+      <script src="js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
+      <script>hljs.initHighlightingOnLoad();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="index.html" class="icon icon-home"> ten's documentation
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="./search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="index.html">Home</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="flow.html">Flow: Input, output, and flow control</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="transform.html">Transform: Convert data</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="http.html">HTTP: requests on steroids</a>
+                </li>
+              </ul>
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="shell.html">Shell: run commands</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#running-a-shell-command">Running a shell command</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#running-a-program-to-completion">Running a program to completion</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#running-a-program-in-the-background">Running a program in the background</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#running-a-program-to-completion-and-get-its-output">Running a program to completion and get its output</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#misc">Misc</a>
+    </li>
+    </ul>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="fs.html">Filesystem: manage folders and files</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorials and examples</a>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">ten's documentation</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html" class="icon icon-home" alt="Docs"></a> &raquo;</li>
+      <li>Shell: run commands</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="shell-commands">Shell commands</h1>
+<ul>
+<li><a href="#shell-commands">Shell commands</a><ul>
+<li><a href="#running-a-shell-command">Running a shell command</a></li>
+<li><a href="#running-a-program-to-completion">Running a program to completion</a></li>
+<li><a href="#running-a-program-in-the-background">Running a program in the background</a></li>
+<li><a href="#running-a-program-to-completion-and-get-its-output">Running a program to completion and get its output</a></li>
+<li><a href="#misc">Misc</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="running-a-shell-command">Running a shell command</h2>
+<p>There are two ways to specify the command you want to run: either with a string
+or a list of arguments. The two following lines are equivalent:</p>
+<pre><code class="language-python">shell.call('cat /etc/passwd')
+shell.call(('cat', '/etc/passwd'))
+</code></pre>
+<p>If you want to use bash-specific constructs such as file redirections or other,
+you should use the string argument:</p>
+<pre><code class="language-python">shell.call('cat /etc/passwd &gt; /tmp/other') # works
+shell.call(('cat', '/etc/passwd', '&gt;', '/tmp/other')) # does not
+</code></pre>
+<h2 id="running-a-program-to-completion">Running a program to completion</h2>
+<p>Use <code>shell.call()</code>, as described in the previous section.</p>
+<p>Use <code>shell.stdout</code> or <code>shell.stderr</code> files to get the output:</p>
+<pre><code class="language-python">p = shell.call(&quot;cat /etc/passwd&quot;)
+contents = p.stdout.read()
+</code></pre>
+<h2 id="running-a-program-in-the-background">Running a program in the background</h2>
+<p>If you want to start a command and keep interacting with it, or simply let it
+run in the background, use <code>shell.run_background()</code>:</p>
+<pre><code class="language-python"># Start a program
+p = shell.background('/bin/slow-program arg0 arg1')
+
+# Do some other stuff ...
+...
+
+# Wait for the program to end
+p.wait()
+</code></pre>
+<h2 id="running-a-program-to-completion-and-get-its-output">Running a program to completion and get its output</h2>
+<p>Run a program and gets its output as a string:</p>
+<pre><code class="language-python">stdout, stderr = shell.get_output('cat /etc/passwd')
+</code></pre>
+<p>or as bytes:</p>
+<pre><code class="language-python">stdout, stderr = shell.get_output('cat /etc/passwd', text=False)
+</code></pre>
+<h2 id="misc">Misc</h2>
+<p>Both <code>call()</code> and <code>background()</code> return a <a href="https://docs.python.org/3/library/subprocess.html#subprocess.Popen"><code>Popen</code> instance</a>.</p>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="http.html" class="btn btn-neutral float-left" title="HTTP: requests on steroids"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="fs.html" class="btn btn-neutral float-right" title="Filesystem: manage folders and files">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="http.html" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="fs.html" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script>var base_url = '.';</script>
+    <script src="js/theme_extra.js" defer></script>
+    <script src="js/theme.js" defer></script>
+      <script src="search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
+
+</body>
+</html>

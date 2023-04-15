@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://example.com/flow.html" />
+      <link rel="shortcut icon" href="img/favicon.ico" />
+    <title>Flow: Input, output, and flow control - ten's documentation</title>
+    <link rel="stylesheet" href="css/theme.css" />
+    <link rel="stylesheet" href="css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Flow: Input, output, and flow control";
+        var mkdocs_page_input_path = "flow.md";
+        var mkdocs_page_url = "/flow.html";
+      </script>
+    
+    <script src="js/jquery-3.6.0.min.js" defer></script>
+    <!--[if lt IE 9]>
+      <script src="js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
+      <script>hljs.initHighlightingOnLoad();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="index.html" class="icon icon-home"> ten's documentation
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="./search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="index.html">Home</a>
+                </li>
+              </ul>
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="flow.html">Flow: Input, output, and flow control</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#input">Input</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#program-arguments">Program arguments</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#argument-types">Argument types</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#optional-arguments">Optional arguments</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#entry-class">Entry class</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#documentation">Documentation</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#output">Output</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#basics">Basics</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#changing-the-display-style">Changing the display style</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#flow-control">Flow control</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#pausing">Pausing</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#exiting-early">Exiting early</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#assumptions">Assumptions</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#inform-status-of-your-functions">inform: Status of your functions</a>
+    </li>
+        </ul>
+    </li>
+    </ul>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="transform.html">Transform: Convert data</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="http.html">HTTP: requests on steroids</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="shell.html">Shell: run commands</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="fs.html">Filesystem: manage folders and files</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorials and examples</a>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">ten's documentation</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html" class="icon icon-home" alt="Docs"></a> &raquo;</li>
+      <li>Flow: Input, output, and flow control</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="input-output-and-flow-control">Input, output, and flow control</h1>
+<p>Basics for input, output and flow control. Refer to <a href="../tenlib/flow/index.html"><code>tenlib.flow</code>'s documentation</a> for details.</p>
+<ul>
+<li><a href="#input-output-and-flow-control">Input, output, and flow control</a><ul>
+<li><a href="#input">Input</a><ul>
+<li><a href="#program-arguments">Program arguments</a></li>
+<li><a href="#argument-types">Argument types</a></li>
+<li><a href="#optional-arguments">Optional arguments</a></li>
+<li><a href="#entry-class">Entry class</a></li>
+<li><a href="#documentation">Documentation</a></li>
+</ul>
+</li>
+<li><a href="#output">Output</a><ul>
+<li><a href="#basics">Basics</a></li>
+<li><a href="#changing-the-display-style">Changing the display style</a></li>
+</ul>
+</li>
+<li><a href="#flow-control">Flow control</a><ul>
+<li><a href="#pausing">Pausing</a></li>
+<li><a href="#exiting-early">Exiting early</a></li>
+<li><a href="#assumptions">Assumptions</a></li>
+<li><a href="#inform-status-of-your-functions">inform: Status of your functions</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="input">Input</h2>
+<p>Receiving arguments using <code>sys.argv</code> or <code>argparse</code> can get tedious, especially
+when you just want to run a quick program.</p>
+<h3 id="program-arguments">Program arguments</h3>
+<p>To avoid this, the arguments to the main function are mapped to command-line
+arguments automatically.</p>
+<pre><code class="language-python">from ten import *
+
+@entry
+def main(a, b):
+    print('a:', a)
+    print('b:', b)
+
+main()
+</code></pre>
+<p>You'd call the program like so:</p>
+<pre><code>$ ./program.py testA testB
+a: testA
+b: testB
+</code></pre>
+<h3 id="argument-types">Argument types</h3>
+<p>Another annoying thing when fetching arguments is typing: what if I want an
+argument to be an integer ? Well, type-hinting is supported.</p>
+<pre><code class="language-python">@entry
+def main(a: int, b: int):
+    c = a + b
+    print(c)
+</code></pre>
+<p>You can even use lists:</p>
+<pre><code class="language-python"># Note: list[int] requires py3.10 -- For earlier versions, use typing.List[int]
+
+@entry
+def main(all_numbers: list[int]):
+    c = sum(all_numbers)
+    print(c)
+</code></pre>
+<pre><code>$ ./program.py 1 2 3 4
+10
+</code></pre>
+<h3 id="optional-arguments">Optional arguments</h3>
+<p>If your input argument has a default value, its expected type will be the same
+as the default value, and it will become an optional argument.</p>
+<pre><code class="language-python">@entry
+def main(some_arg, some_number=3, some_string='test'):
+    print('some_arg:', repr(some_arg))
+    print('some_number:', repr(some_number))
+    print('some_string', repr(some_string))
+</code></pre>
+<p>The two last arguments will be optional, as can be seen using the <code>--help</code>
+command.</p>
+<pre><code>$ ./program.py -h
+usage: program.py [-h] [-s SOME_INT] [-S SOME_STR] some_arg
+
+positional arguments:
+  some_arg
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -s SOME_INT, --some-int SOME_INT
+  -S SOME_STR, --some-str SOME_STR
+</code></pre>
+<p>Example call:</p>
+<pre><code>$ ./program.py some_value -s 123
+some_arg: 'some_value'
+some_number: 123
+some_string: 'test'
+</code></pre>
+<h3 id="entry-class">Entry class</h3>
+<p>For more complex scripts, you might want to use an object instead of a single function. To do so, apply the <code>@entry</code> decorator to the class instead. It'll get instanciated with the program arguments, and its <code>run()</code> method will be called.</p>
+<pre><code class="language-python">from ten import *
+
+
+@entry
+class Exploit:
+    def __init__(self, url: str, workers: int):
+        self.url = url
+        self.workers = workers
+
+    def run(self):
+        ...
+
+
+Exploit()
+</code></pre>
+<p>Generally, the <code>__init__</code> function only sets values from the arguments. Therefore, <code>@entry</code> synergizes well with <code>@dataclass</code>:</p>
+<pre><code class="language-python">from ten import *
+from dataclasses import dataclass
+
+@entry
+@dataclass
+class Exploit:
+    url: str
+    workers: int
+
+    def run(self):
+        session = ScopedSession(url, workers)
+        ...
+
+Exploit()
+</code></pre>
+<h3 id="documentation">Documentation</h3>
+<p>Entrypoint arguments can be documented using the <code>@arg</code> decorator.</p>
+<pre><code class="language-python">@entry
+@arg(&quot;url&quot;, &quot;Target URL&quot;)
+@arg(&quot;proxy&quot;, &quot;Proxy URL&quot;)
+@arg(&quot;max_connections&quot;, &quot;Maximum number of connections&quot;)
+def main(url, proxy=None, max_connections=10):
+    &quot;&quot;&quot;CLI documentation for the program.
+    &quot;&quot;&quot;
+</code></pre>
+<p>The <code>--help</code> command will display the documentation:</p>
+<pre><code class="language-shell">/tmp/l1 --help
+Usage: l1 [-h] [-p PROXY] [-m MAX_CONNECTIONS] url
+
+CLI documentation for the program.
+
+Positional Arguments:
+  url                   Target URL
+
+Options:
+  -h, --help            show this help message and exit
+  -p, --proxy PROXY     Proxy URL
+  -m, --max-connections MAX_CONNECTIONS
+                        Maximum number of connections
+</code></pre>
+<h2 id="output">Output</h2>
+<p>Spamming <code>print</code>s works, but it can get hard to read. Use the <code>msg_*</code> functions to display easy to read, identifiable messages.</p>
+<h3 id="basics">Basics</h3>
+<pre><code class="language-python">msg_info('This is an informational message')
+msg_success('This message indicates a success')
+...
+msg_failure('This message indicates a failure.')
+</code></pre>
+<p>This displays the line with a prefix:</p>
+<p><img alt="" src="images/1.png" /></p>
+<p>Ten's output is handled by <a href="https://rich.readthedocs.io/"><code>rich</code> library</a>, so you can use its built-in style edition features.</p>
+<pre><code class="language-python">msg_info(f'Found this value: [blue]{value}[/]')
+msg_failure(f'This value is not valid: [red b]{value}[/]'')
+</code></pre>
+<p><img alt="" src="images/2.png" /></p>
+<h3 id="changing-the-display-style">Changing the display style</h3>
+<p>A few other output styles were implemented. Use <code>set_message_formatter()</code> to
+set the style you prefer:</p>
+<pre><code class="language-python">set_message_formatter(&quot;Oldschool&quot;)
+# OR ...
+set_message_formatter(&quot;Slick&quot;) # personal favourite
+</code></pre>
+<p>those two would yield:</p>
+<p><img alt="" src="images/3.png" /></p>
+<p><img alt="" src="images/4.png" /></p>
+<h2 id="flow-control">Flow control</h2>
+<h3 id="pausing">Pausing</h3>
+<p>You can pause execution at any time using <code>pause()</code>.</p>
+<h3 id="exiting-early">Exiting early</h3>
+<p>Oftentimes in exploits, you want to display a message, then exit, because
+something didn't go as planned.</p>
+<p>You can do it in one line using:</p>
+<pre><code class="language-python">leave('Exploit done, exiting.')
+</code></pre>
+<p>If the reason for the early exit is a failure or an error, you can use the
+eponym functions:</p>
+<pre><code class="language-python"># We want ints only ! a stack trace will be displayed.
+if not instance(value, int):
+    error('Value should be of type int: {!r}', value)
+
+# Cannot exploit with value &lt; 0. Exits, but no stack trace displayed
+if value &lt; 0:
+    failure('Value is inferior to zero, unexploitable.')
+</code></pre>
+<h3 id="assumptions">Assumptions</h3>
+<p>The same as the <code>assert</code> builtin, but the message gets displayed using <code>msg_failure()</code>, and no stack trace is displayed.</p>
+<pre><code class="language-python">assume(value &gt;= 0, f'Value is inferior to zero: {value}')
+</code></pre>
+<h3 id="inform-status-of-your-functions">inform: Status of your functions</h3>
+<p>Say you have a slow function in your code. You'd generally end up with something
+like this:</p>
+<pre><code class="language-python">def slow_func():
+    print('Starting slow_func, might be slow...')
+
+    # Actually getting stuff done
+    ...
+
+    if result:
+        print('Result OK !')
+    else:
+        print('Result not OK !')
+
+    return result
+</code></pre>
+<p>With <code>inform</code>, you can let <strong>ten</strong> handle the output. <code>go</code> gets displayed along with a spinner while the function is running. Then, a different message gets displayed in function of the result.</p>
+<pre><code class="language-python">@inform(
+    go=&quot;Starting slow_func, might be slow...&quot;,
+    ok=&quot;Result OK !&quot;,
+    ko=&quot;Result not OK !&quot;,
+)
+def slow_func():
+    # Actually getting stuff done
+    ...
+</code></pre>
+<p>Use the <code>{result}</code> format to incorporate the result in the success/failure message:</p>
+<pre><code class="language-python">@inform(
+    &quot;Counting links in page...&quot;,
+    &quot;Found {result} links in page&quot;,
+    &quot;No links were found.&quot;,
+)
+def count_links(url):
+    r = session.get(url)
+    links = r.select(&quot;a&quot;)
+    return len(links)
+</code></pre>
+<p>For single-function programs, you can combine it with <code>@entry</code>:</p>
+<pre><code class="language-python">@entry
+@inform(&quot;Downloading sources...&quot;, &quot;Downloaded {result} source files.&quot;)
+def main(url):
+    ...
+
+
+main()
+</code></pre>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="index.html" class="btn btn-neutral float-left" title="Home"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="transform.html" class="btn btn-neutral float-right" title="Transform: Convert data">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="index.html" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="transform.html" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script>var base_url = '.';</script>
+    <script src="js/theme_extra.js" defer></script>
+    <script src="js/theme.js" defer></script>
+      <script src="search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
+
+</body>
+</html>

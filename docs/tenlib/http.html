@@ -1,0 +1,3924 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>tenlib.http API documentation</title>
+<meta name="description" content="Everything related to HTTP." />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>tenlib.http</code></h1>
+</header>
+<section id="section-intro">
+<p>Everything related to HTTP.</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">&#34;&#34;&#34;Everything related to HTTP.
+&#34;&#34;&#34;
+
+from __future__ import annotations
+
+from concurrent.futures import Future, ThreadPoolExecutor, as_completed, TimeoutError
+import re
+import typing
+from typing import Callable, Generator, Any
+import urllib.parse
+from dataclasses import dataclass
+from rich.progress import Progress
+from bs4 import BeautifulSoup
+
+import requests
+import requests.adapters
+import requests.models
+from functools import cached_property
+import requests_toolbelt.utils.dump
+import urllib3
+
+from tenlib import fs, struct
+from tenlib.config import config
+from tenlib.exception import TenError
+from tenlib.flow import progress
+
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
+__all__ = [
+    &#34;Session&#34;,
+    &#34;ScopedSession&#34;,
+    &#34;Response&#34;,
+    &#34;ResponseRegex&#34;,
+    &#34;Form&#34;,
+    &#34;Multi&#34;,
+    &#34;RequestPool&#34;,
+    &#34;MultiRequest&#34;,
+    &#34;HTTPOutOfScopeError&#34;,
+    &#34;UnexpectedHTTPStatusCodeError&#34;,
+    &#34;FormNotFoundError&#34;,
+]
+
+DEFAULT_ENCODING = &#34;utf-8&#34;
+
+# Types
+
+BytesOrStr = typing.Union[str, bytes]
+ErrorHandling = typing.Literal[&#34;skip&#34;, &#34;raise&#34;, &#34;return&#34;]
+
+# Classes
+
+
+class HTTPOutOfScopeError(TenError):
+    &#34;&#34;&#34;URL is out of scope.&#34;&#34;&#34;
+
+    def __init__(self, url, base):
+        super().__init__(f&#34;{url} is not within {base}&#34;)
+
+
+class UnexpectedHTTPStatusCodeError(TenError):
+    &#34;&#34;&#34;HTTP status code unexpected.&#34;&#34;&#34;
+
+    def __init__(self, response, status_codes):
+        super().__init__(
+            f&#34;Status code {response.status_code} is not one of {status_codes}&#34;
+        )
+
+
+class FormNotFoundError(TenError):
+    &#34;&#34;&#34;No form could be found using the given selector.&#34;&#34;&#34;
+
+    def __init__(self, selector):
+        super().__init__(f&#34;Could not find form using selector: {selector!r}&#34;)
+
+
+class Session(requests.Session):
+    &#34;&#34;&#34;Pentest-compatible HTTP Session.
+
+    As an extension of requests&#39; `Session`, this class provides the default API
+    and a few extra features:
+
+    - No SSL verification by default. SSL warnings are disabled.
+        Controlled by `Session.verify`.
+    - HTTP redirects are not followed by default.
+        Controlled by `Session.allow_redirects`.
+    - URL parameters are not reparsed by default (&#34;as-is&#34;).
+        Controlled by `Session.raw_url`.
+    - Proxies can be set using a string or the usual dictionary.
+    - `Session.burp` can be called in order to setup burp as a proxy, and
+        removed using `Session.unburp`
+
+    In addition, it is able to send requests concurrently using `Session.multi`
+    or `Session.pool`.
+
+    Examples:
+
+        &gt;&gt;&gt; s = Session()
+        &gt;&gt;&gt; s.get(&#39;https://target.com/index/../admin/dashboard&lt;test&gt;&#39;).url
+        &#39;https://target.com/index/../admin/dashboard&lt;test&gt;&#39;
+        &gt;&gt;&gt; s.proxies = &#39;socks5://localhost:12345&#39;
+
+    &#34;&#34;&#34;
+
+    raw_url: bool = True
+    &#34;&#34;&#34;Whether to reparse and url-encode characters in the URL.
+    &#34;&#34;&#34;
+    timeout: typing.Union[int, tuple[int, int]] = None
+    &#34;&#34;&#34;A global timeout for request and responses. Defaults to no timeout.
+    &#34;&#34;&#34;
+    verify: bool = False
+    &#34;&#34;&#34;Verify the SSL certificate of the server. Defaults to False.&#34;&#34;&#34;
+    allow_redirects: bool = False
+    &#34;&#34;&#34;Automatically follow HTTP redirects. Defaults to False.&#34;&#34;&#34;
+    max_connections: int
+    &#34;&#34;&#34;Maximum number of concurrent connections. Defaults to 10.&#34;&#34;&#34;
+
+    def __init__(self, max_connections: int = 10):
+        &#34;&#34;&#34;
+        Args:
+            max_connections (int): Maximum number of concurrent HTTP connections.
+                Defaults to 10.
+        &#34;&#34;&#34;
+        super().__init__()
+
+        self._burp_saved_state = {}
+
+        # Regular requote_uri function: allows to hook/restore it depending on
+        # raw_url&#39;s value
+        self._regular_requote_uri = requests.models.requote_uri
+        self._raw_requote_uri = lambda url: url
+        self.hooks = {&#34;response&#34;: self._response_hook}
+        self.max_connections = max_connections
+        self._build_adapters()
+
+    def _build_adapters(self):
+        adapter = requests.adapters.HTTPAdapter(pool_maxsize=self.max_connections)
+        self.mount(&#34;http://&#34;, adapter)
+        self.mount(&#34;https://&#34;, adapter)
+
+    # The three HTTP method calls set a default value for allow_redirects
+    # Override this behaviour
+
+    def get(self, url: str, **kwargs) -&gt; Response:
+        &#34;&#34;&#34;Sends a GET request. Returns a `Response` object.&#34;&#34;&#34;
+        kwargs.setdefault(&#34;allow_redirects&#34;, self.allow_redirects)
+        return super().get(url, **kwargs)
+
+    def post(self, url: str, data=None, json=None, **kwargs):
+        &#34;&#34;&#34;Sends a POST request. Returns a `Response` object.
+
+        Args:
+            url: URL for the new `Request` object.
+            data: (optional) Dictionary, list of tuples, bytes, or file-like
+                object to send in the body of the `Request`.
+            json: (optional) json to send in the body of the `Request`.
+            **kwargs: Optional arguments that `request` takes.
+
+        Returns:
+            Response
+        &#34;&#34;&#34;
+        return super().post(url, data, json, **kwargs)
+
+    def options(self, url: str, **kwargs) -&gt; Response:
+        &#34;&#34;&#34;Sends an OPTIONS request. Returns a `Response` object.&#34;&#34;&#34;
+        kwargs.setdefault(&#34;allow_redirects&#34;, self.allow_redirects)
+        return super().options(url, **kwargs)
+
+    def head(self, url: str, **kwargs) -&gt; Response:
+        &#34;&#34;&#34;Sends a HEAD request. Returns a `Response` object.&#34;&#34;&#34;
+        kwargs.setdefault(&#34;allow_redirects&#34;, self.allow_redirects)
+        return super().head(url, **kwargs)
+
+    def put(self, url: str, data=None, **kwargs) -&gt; Response:
+        &#34;&#34;&#34;Sends a PUT request. Returns a `Response` object.
+
+        Args:
+            url: URL for the new `Request` object.
+            data: (optional) Dictionary, list of tuples, bytes, or file-like
+                object to send in the body of the `Request`.
+            **kwargs: Optional arguments that `request` takes.
+
+        Returns:
+            Response
+        &#34;&#34;&#34;
+        return super().put(url, data, **kwargs)
+
+    def patch(self, url: str, data=None, **kwargs) -&gt; Response:
+        &#34;&#34;&#34;Sends a PATCH request. Returns a `Response` object.
+
+        Args:
+            url: URL for the new `Request` object.
+            data: (optional) Dictionary, list of tuples, bytes, or file-like
+                object to send in the body of the `Request`.
+            **kwargs: Optional arguments that `request` takes.
+
+        Returns:
+            Response
+        &#34;&#34;&#34;
+        return super().patch(url, data, **kwargs)
+
+    def delete(self, url, **kwargs) -&gt; Response:
+        &#34;&#34;&#34;Sends an OPTIONS request. Returns a `Response` object.&#34;&#34;&#34;
+        return super().delete(url, **kwargs)
+
+    def pool(
+        self, workers: int = None, on_error: ErrorHandling = &#34;raise&#34;, description: str=None
+    ) -&gt; RequestPool:
+        &#34;&#34;&#34;Creates a request pool.
+
+        Example:
+
+            with session.pool() as pool:
+                for i in range(10):
+                    pool.get(f&#39;https://target.com/?news_id={i}&#39;, tag=i)
+
+                for response in pool.as_completed():
+                    if response.contains(&#34;&lt;title&gt;Suspicious&lt;/title&gt;&#34;):
+                        break
+
+            msg_success(&#34;Found suspicious news with id={response.tag}&#34;)
+
+        Args:
+            workers (int): Number of workers in the pool. Defaults to
+                `self.max_connections`.
+            on_error (ErrorHandling): How to handle errors: `raise`, `return`,
+                or `skip`. Defaults to `raise`.
+
+        Returns:
+            RequestPool: request pool.
+        &#34;&#34;&#34;
+        if workers is None:
+            workers = self.max_connections
+        return RequestPool(self, workers, on_error, description)
+
+    def multi(
+        self, workers: int = None, on_error: ErrorHandling = &#34;raise&#34;, description: str=None
+    ) -&gt; MultiRequest:
+        &#34;&#34;&#34;Sets up a multi-request object, allowing to run multiple requests
+        concurrently.
+
+        &gt;&gt;&gt; s = Session()
+        &gt;&gt;&gt; responses = s.multi().get(&#34;https://target.com/news.php&#34;, params={&#34;id&#34;: Multi(range(10))})
+
+        Args:
+            workers (int): Number of workers in the pool. Defaults to
+                `self.max_connections`.
+            on_error (ErrorHandling): How to handle errors: `raise`, `return`,
+                or `skip`. Defaults to `raise`.
+
+        Returns:
+            MultiRequest: An object that allows to send multiple requests
+                concurrently.
+        &#34;&#34;&#34;
+        if workers is None:
+            workers = self.max_connections
+        return MultiRequest(self, workers, on_error, description)
+
+    def first(
+        self, filter: Callable, workers: int = None, on_error: ErrorHandling = &#34;raise&#34;, description: str=None
+    ) -&gt; MultiRequestFirst:
+        &#34;&#34;&#34;Returns the first response that matches the filter.
+        Responses are run concurrently.
+
+        Args:
+            filter (Callable): Filter function.
+
+        Returns:
+            Response: first response that matches the filter.
+        &#34;&#34;&#34;
+        if workers is None:
+            workers = self.max_connections
+        return MultiRequestFirst(self, workers, on_error, description, filter)
+
+    def prepare_request(self, request):
+        &#34;&#34;&#34;If raw_url is True, the `url` is sent as-is. Additional params are
+        urlencoded.
+        &#34;&#34;&#34;
+        prepared = super().prepare_request(request)
+
+        if not self.raw_url:
+            return prepared
+
+        prepared.url = request.url
+
+        if request.params:
+            enc_params = prepared._encode_params(request.params)
+            separator = &#34;?&#34; if &#34;?&#34; not in request.url else &#34;&amp;&#34;
+            prepared.url += separator + enc_params
+
+        return prepared
+
+    def __upgrade_kwargs(self, kwargs: dict):
+        kwargs.setdefault(&#34;allow_redirects&#34;, self.allow_redirects)
+        if self.timeout is not None:
+            kwargs.setdefault(&#34;timeout&#34;, self.timeout)
+
+    def request(self, method: str, url: str, **kwargs) -&gt; Response:
+        &#34;&#34;&#34;Constructs a `Request`, prepares it and sends it. Returns a
+        `Response` object.
+        &#34;&#34;&#34;
+        self.__upgrade_kwargs(kwargs)
+        return super().request(method, url, **kwargs)
+
+    def _response_hook(self, response: Response, **kwargs) -&gt; Response:
+        &#34;&#34;&#34;Change response encoding and replace the object by a `Response`.&#34;&#34;&#34;
+        if not response.encoding:
+            response.encoding = DEFAULT_ENCODING
+        return Response._from_response(self, response)
+
+    # Burp
+
+    def burp(self) -&gt; None:
+        &#34;&#34;&#34;Sets Burp as the proxy for every request, and sets `verify` to
+        `False`. To reset, use `Session.unburp`.
+        &#34;&#34;&#34;
+        if self._burp_saved_state:
+            return
+        self._burp_saved_state = {&#34;proxies&#34;: self.proxies, &#34;verify&#34;: self.verify}
+        self.proxies = config.burp_proxy
+        self.verify = False
+
+    def unburp(self) -&gt; None:
+        &#34;&#34;&#34;Resets the original proxies and the `verify` value.&#34;&#34;&#34;
+        if not self._burp_saved_state:
+            return
+        self.proxies = self._burp_saved_state[&#34;proxies&#34;]
+        self.verify = self._burp_saved_state[&#34;verify&#34;]
+        self._burp_saved_state = {}
+
+    # Proxies
+
+    @property
+    def proxies(self) -&gt; dict:
+        &#34;&#34;&#34;Set proxies. If set to a `str`, the proxy is used for every protocol.
+        If set to `None`, no proxy is used.
+
+        Args:
+
+            proxy (str, dict, None): Proxy to use
+
+        Examples:
+
+            &gt;&gt;&gt; session.proxies = &#39;localhost:8080&#39;
+            {&#39;all&#39;: &#39;localhost:8080&#39;}
+            &gt;&gt;&gt; session.proxies = {&#39;https&#39;: &#39;socks://proxy.net:12345&#39;}
+            {&#39;https&#39;: &#39;socks://proxy.net:12345&#39;}
+        &#34;&#34;&#34;
+        return self._proxies
+
+    @proxies.setter
+    def proxies(self, proxy) -&gt; None:
+        if proxy is None:
+            self._proxies = None
+        elif isinstance(proxy, dict):
+            self._proxies = proxy
+        elif isinstance(proxy, str):
+            self._proxies = {&#34;all&#34;: proxy}
+        else:
+            raise TypeError(f&#34;Invalid proxy type: {type(proxy).__name__}&#34;)
+
+
+class ScopedSession(Session):
+    &#34;&#34;&#34;HTTP Session scoped to a target URL.
+
+    When issuing HTTP requests, the base URL is prepended to the given path.
+
+    Examples:
+
+        &gt;&gt;&gt; s = ScopedSession(&#39;https://target.com/admin&#39;)
+        &gt;&gt;&gt; await s.get(&#39;/user/login&#39;).url
+        &#39;https://www.target.com/admin/user/login&#39;
+        &gt;&gt;&gt; await s.get(&#39;/login/../dashboard&#39;).url
+        &#39;https://www.target.com/admin/login/../dashboard&#39;
+        &gt;&gt;&gt; await s.get(&#39;https://target.com/admin/something&#39;).url
+        &#39;https://target.com/admin/something&#39;
+        &gt;&gt;&gt; await s.get(&#39;https://target.com/user&#39;)
+            HTTPOutOfScopeError: https://target.com/user is not within
+            https://target.com/admin
+        &gt;&gt;&gt; await s.get(&#39;/../user&#39;).url
+        &#39;https://target.com/admin/../user&#39;
+    &#34;&#34;&#34;
+
+    def __init__(self, base_url: str, max_connections: int = 10):
+        &#34;&#34;&#34;
+        Args:
+            base_url (str): Base URL of the target
+            max_connections (int): Maximum number of concurrent HTTP connections.
+                Defaults to 10.
+        &#34;&#34;&#34;
+        if base_url.endswith(&#34;/&#34;):
+            base_url = base_url[:-1]
+        self.base_url = base_url
+        self._parsed_base_url = urllib.parse.urlparse(self.base_url)
+
+        super().__init__(max_connections)
+
+    def prepare_request(self, request):
+        &#34;&#34;&#34;Scopes given URL to the target if needed, and makes sure it is within
+        scope. Then, prepares the request before removing the hook on the URL
+        encoding function.
+        &#34;&#34;&#34;
+        request.url = self.get_absolute_url(request.url)
+        if not self.is_in_scope(request.url):
+            raise HTTPOutOfScopeError(request.url, self.base_url)
+        return super().prepare_request(request)
+
+    # Processing
+
+    def is_in_scope(self, url: str) -&gt; bool:
+        &#34;&#34;&#34;Verifies that given URL is within the target&#39;s scope.&#34;&#34;&#34;
+        bu = self._parsed_base_url
+        tu = urllib.parse.urlparse(url)
+        return (
+            bu.hostname == tu.hostname
+            and bu.port == tu.port
+            and bu.scheme == tu.scheme
+            and tu.path.startswith(bu.path)
+        )
+
+    def get_absolute_url(self, url: str, base: str=None) -&gt; str:
+        &#34;&#34;&#34;Merges base URL with the given one.
+        If the given URL starts with a slash, it is appended to the base URL. If
+        it starts with `http://` or `https://`, it is considered a full URL.
+        Else, an error is raised.
+
+        Using `urllib.parse.urljoin` does not do the job properly, as for
+        instance you want specially crafted paths such as
+        `/admin/login.php/../dashboard`.
+
+        Args:
+            url (str): URL to scope with base URL
+            base (str): Base URL
+
+        Returns:
+            str: Scoped URL
+        &#34;&#34;&#34;
+        if base is None:
+            base = self.base_url
+
+        if url.startswith(&#34;/&#34;):
+            return base + url
+        if url.startswith(&#34;https://&#34;) or url.startswith(&#34;http://&#34;):
+            return url
+
+        raise ValueError(f&#34;Unable to comprehend URL: {url}&#34;)
+
+
+class ResponseRegex:
+    &#34;&#34;&#34;Helper class allowing to perform regex function calls onto the response.
+    If the pattern is a `str`, it will be matched against `Response.text`. If
+    it is `bytes`, it will be matched against `Response.content`.
+
+    For instance
+
+        response.re.search(&#39;test[0-9]+&#39;)
+
+    is equivalent to
+
+        re.search(&#39;test[0-9]+&#39;, response.text)
+
+    and
+
+        response.re.sub(b&#39;someth[iI]ng&#39;, b&#39;else&#39;)
+
+    is equivalent to
+
+        re.sub(b&#39;someth[iI]ng&#39;, b&#39;else&#39;, response.content)
+    &#34;&#34;&#34;
+
+    A = re.A
+    I = re.I
+    S = re.S
+    L = re.L
+    M = re.M
+    X = re.X
+
+    def __init__(self, response: Response):
+        self.response = response
+
+    def search(self, pattern: BytesOrStr, flags: int = 0):
+        &#34;&#34;&#34;Calls `re.search` onto the HTTP response.&#34;&#34;&#34;
+        return re.search(pattern, self._target(pattern), flags)
+
+    def match(self, pattern: BytesOrStr, flags: int = 0):
+        &#34;&#34;&#34;Calls `re.match` onto the HTTP response.&#34;&#34;&#34;
+        return re.match(pattern, self._target(pattern), flags)
+
+    def findall(self, pattern: BytesOrStr, flags: int = 0):
+        &#34;&#34;&#34;Calls `re.findall` onto the HTTP response.&#34;&#34;&#34;
+        return re.findall(pattern, self._target(pattern), flags)
+
+    def sub(
+        self, pattern: BytesOrStr, replacement: BytesOrStr, *args, **kwargs
+    ) -&gt; BytesOrStr:
+        &#34;&#34;&#34;Calls `re.sub` onto the HTTP response.&#34;&#34;&#34;
+        return re.sub(pattern, replacement, self._target(pattern), *args, **kwargs)
+
+    def _target(self, pattern: BytesOrStr) -&gt; BytesOrStr:
+        &#34;&#34;&#34;Returns either the byte representation or the text representation
+        of the response depending on the type of `pattern`.
+        &#34;&#34;&#34;
+        if isinstance(pattern, bytes):
+            return self.response.content
+        return self.response.text
+
+
+class Response(requests.Response, struct.Storable):
+    &#34;&#34;&#34;Enhanced HTTP response.
+
+    The response object can be filtered more easily using `Response.code` and
+    `Response.contains`. It also contains a few helpers:
+
+    * `Response.form`: Parse, fill and submit forms
+    * `Response.re`: Perform regex operations on the response
+    * `Response.soup`: Returns a `BeautifulSoup` object
+    * `Response.xml`: Returns a dict representation of the response&#39;s XML
+
+    Additionally, the response object is storable (see
+    `tenlib.struct.storable.Storable`)
+
+    Examples:
+
+        Finding a pattern in a response:
+
+            &gt;&gt;&gt; response.re.search(&#39;&lt;data csrf-token=&#34;(.*?)&#34;&#39;).group(1)
+            &#39;MyCsrfToken&#39;
+
+        Finding every `&lt;p&gt;` tag:
+
+            &gt;&gt;&gt; response.soup.find(&#39;p&#39;)
+            [&lt;Element &#39;p&#39; &gt;, &lt;Element &#39;p&#39; class=(&#39;errorButton&#39;,)&gt;]
+    &#34;&#34;&#34;
+
+    session: Session
+    &#34;&#34;&#34;The session that was used to make the request.&#34;&#34;&#34;
+    tag: Any
+    &#34;&#34;&#34;A tag that can be used to identify the response.&#34;&#34;&#34;
+
+    def __init__(self, session: Session):
+        self.session = session
+        super().__init__()
+
+    @classmethod
+    def _from_response(cls, session: Session, response: requests.Response):
+        new_response = cls(session)
+        new_response.__dict__.update(response.__dict__)
+        return new_response
+
+    def code(self, *codes: int) -&gt; bool:
+        &#34;&#34;&#34;Returns `True` if the `status_code` is in `codes`.
+
+        Args:
+            *code (int): Possible status codes.
+
+        Examples:
+            &gt;&gt;&gt; response.status_code
+            500
+            &gt;&gt;&gt; response.code(200, 500, 403)
+            True
+            &gt;&gt;&gt; response.code(200, 302)
+            False
+        &#34;&#34;&#34;
+        return self.status_code in codes
+
+    def contains(self, needle: BytesOrStr) -&gt; bool:
+        &#34;&#34;&#34;Returns `True` if the response contents contains `needle`.&#34;&#34;&#34;
+        if isinstance(needle, str):
+            return needle in self.text
+        return needle in self.content
+
+    def follow_redirect(self) -&gt; Response:
+        &#34;&#34;&#34;Follows the redirection. Raises `ValueError` if no Location header is
+        found.
+        &#34;&#34;&#34;
+
+        for redirection in self.session.resolve_redirects(self, self.request):
+            return redirection
+
+    @cached_property
+    def re(self) -&gt; ResponseRegex:
+        &#34;&#34;&#34;A `ResponseRegex` object built from this response.&#34;&#34;&#34;
+        return ResponseRegex(self)
+
+    @cached_property
+    def soup(self) -&gt; BeautifulSoup:
+        &#34;&#34;&#34;A `BeautifulSoup` object built from this response.&#34;&#34;&#34;
+        return BeautifulSoup(self.content, &#34;lxml&#34;)
+
+    def form(self, selector: str = None, **attributes) -&gt; Form:
+        &#34;&#34;&#34;Finds a `&lt;form&gt;` tag with given CSS selector and extracts its action,
+        method and input/textarea fields to build a `Form` object.
+
+        Args:
+            selector: CSS selector of the `&lt;form&gt;` tag you want to extract.
+            **attributes: Attributes of the `&lt;form&gt;` tag you want to extract.
+
+        Raises:
+            FormNotFoundError: The form was not found in the page.
+
+        Examples:
+            &gt;&gt;&gt; response.form(&#39;#login-form&#39;)
+            ...
+            &gt;&gt;&gt; response.form(action=&#39;/login&#39;)
+            ...
+        &#34;&#34;&#34;
+        selector = selector or &#34;&#34;
+        selector = &#34;form&#34; + selector
+        selector += &#34;&#34;.join(f&#39;[{k}=&#34;{v}&#34;]&#39; for k, v in attributes.items())
+        form = self.soup.select_one(selector)
+        if not form:
+            raise FormNotFoundError(selector)
+
+        action = form.attrs.get(&#34;action&#34;, &#34;&#34;)
+        action = urllib.parse.urljoin(self.url, action)
+        method = form.attrs.get(&#34;method&#34;, &#34;GET&#34;)
+        data = {}
+
+        # TODO If inputs are malformed (for instance, no &#34;name&#34; attribute) it&#39;ll
+        # crash
+        inputs = form.select(&#34;input&#34;)
+        data.update(
+            {
+                input.attrs[&#34;name&#34;]: input.attrs.get(&#34;value&#34;, &#34;&#34;)
+                for input in inputs
+                if &#34;name&#34; in input.attrs
+            }
+        )
+        inputs = form.select(&#34;textarea&#34;)
+        data.update(
+            {
+                input.attrs[&#34;name&#34;]: input.contents[0]
+                for input in inputs
+                if &#34;name&#34; in input.attrs
+            }
+        )
+
+        return Form(self.session, action, method, data, self.url)
+
+    def expect(self, *codes: int) -&gt; None:
+        &#34;&#34;&#34;If the HTTP status code of the response is not within `codes`, raises
+        an `UnexpectedHTTPStatusCodeError`.
+
+        Args:
+            *codes (int): Possible status codes.
+
+        Raises:
+            UnexpectedHTTPStatusCodeError: if the response&#39;s status code is not
+                in `codes`.
+
+        Examples:
+            &gt;&gt;&gt; response.status_code
+            500
+            &gt;&gt;&gt; response.expect(200, 500, 403)
+            &gt;&gt;&gt; response.expect(200, 302)
+            UnexpectedHTTPStatusCodeError: Status code 500 is not one of (200, 302)
+        &#34;&#34;&#34;
+        if not self.code(*codes):
+            raise UnexpectedHTTPStatusCodeError(self, codes)
+
+    def select(self, selector: str) -&gt; list[BeautifulSoup]:
+        &#34;&#34;&#34;Returns a list of all elements matching the CSS selector.&#34;&#34;&#34;
+        return self.soup.select(selector)
+
+    def select_one(self, selector: str) -&gt; BeautifulSoup:
+        &#34;&#34;&#34;Returns the first element matching the CSS selector.&#34;&#34;&#34;
+        return self.soup.select_one(selector)
+
+    def xml(self) -&gt; struct.XMLDict:
+        &#34;&#34;&#34;Builds a dict representation of the XML response.&#34;&#34;&#34;
+        return struct.XMLDict.build(self.text)
+
+    def store_as_txt(self, path):
+        &#34;&#34;&#34;Saves both the HTTP request and the HTTP response in a file.&#34;&#34;&#34;
+        dump = requests_toolbelt.utils.dump
+        data = dump.dump_all(self, request_prefix=&#34;&#34;, response_prefix=&#34;&#34;)
+        fs.write(path, data)
+
+
+class Form:
+    &#34;&#34;&#34;Represents an HTTP form, with its action (target URL), method, and data.
+
+    Attributes:
+        session (Session): HTTP session
+        action (str): Form&#39;s action URL
+        method (str): Form&#39;s HTTP method
+
+    Examples:
+        Grab `&lt;form id=&#34;form_login&#34; action=&#34;/user/login&#34; method=&#34;POST&#34;&gt;`, check
+        the CSRF token, change credentials and submit it:
+
+            &gt;&gt;&gt; f = response.form(id=&#34;form_login&#34;)
+            &gt;&gt;&gt; f
+            Form(
+                action=&#39;https://www.target.com/user/login&#39;,
+                method=&#39;POST&#39;,
+                data={
+                    &#39;login&#39;: &#39;&#39;,
+                    &#39;password&#39;: &#39;&#39;,
+                    &#39;_csrf_token&#39;: &#39;3e8c31f3880701247c910479e9ac99f8ba2c6819&#39;
+                }
+            )
+            &gt;&gt;&gt; f[&#34;_csrf_token&#34;]
+            &#39;3e8c31f3880701247c910479e9ac99f8ba2c6819&#39;
+            &gt;&gt;&gt; f[&#34;login&#34;] = &#39;test@test.fr&#39;
+            &gt;&gt;&gt; f[&#34;password&#34;] = &#39;haricot&#39;
+            &gt;&gt;&gt; response = f.submit()
+
+        Grab `&lt;form name=&#34;edition&#34;&gt;`, change the username and submit it to
+        `/user/edit`:
+
+            &gt;&gt;&gt; new_response = await response.form(name=&#34;edition&#34;).update(
+            ...     username=&#39;my_new_username&#39;
+            ... ).submit(&#39;/user/edit&#39;)
+    &#34;&#34;&#34;
+
+    session: Session = None
+    &#34;&#34;&#34;HTTP Session&#34;&#34;&#34;
+    action: str = None
+    &#34;&#34;&#34;Form action (URL to send it to)&#34;&#34;&#34;
+    method: str = None
+    &#34;&#34;&#34;HTTP method to sent the form with.&#34;&#34;&#34;
+    data: dict
+    &#34;&#34;&#34;Form data.&#34;&#34;&#34;
+
+    def __init__(self, session: Session, action: str, method: str, data: dict, referer: str=None):
+        self.session = session
+        self.action = action
+        self.method = method
+        self.data = data
+        self.referer = referer
+        
+        
+    @property
+    def referrer(self):
+        # Referer is actually a misspelling of Referrer
+        return self.referer
+    
+    @referrer.setter
+    def referrer(self, value):
+        # Referer is actually a misspelling of Referrer
+        self.referer = value
+
+    def submit(self, action: str = None, method: str = None, **kwargs) -&gt; Response:
+        &#34;&#34;&#34;Submits the form.
+
+        Args:
+            action (str): URL to send the form data to.
+                If not set, the form&#39;s action will be used
+            method (str): HTTP method to use.
+                If not set, the form&#39;s method will be used
+            kwargs: Arguments to send to the `Session.request` call.
+
+        Returns:
+            Response: HTTP response
+        &#34;&#34;&#34;
+        if action is None:
+            action = self.action
+        if method is None:
+            method = self.method
+
+        args_key = &#34;params&#34; if method == &#34;GET&#34; else &#34;data&#34;
+        kwargs[args_key] = self.data
+        if self.referer:
+            kwargs.setdefault(&#34;headers&#34;, {}).setdefault(&#34;Referer&#34;, self.referer)
+
+        return self.session.request(method, action, **kwargs)
+
+    def __repr__(self):
+        return (
+            f&#34;{type(self).__name__}(&#34;
+            f&#34;action={self.action!r}, &#34;
+            f&#34;method={self.method!r}, &#34;
+            f&#34;data={self.data})&#34;
+        )
+
+    def update(self, data: dict = None, **kwargs) -&gt; Form:
+        &#34;&#34;&#34;Updates the form&#39;s data.&#34;&#34;&#34;
+        self.data.update(data, **kwargs)
+        return self
+
+    def __getitem__(self, key):
+        return self.data[key]
+
+    def __setitem__(self, key, value):
+        self.data[key] = value
+
+
+class RequestPool:
+    &#34;&#34;&#34;A request pool is a pool of requests that can be executed in parallel.
+
+    The pool is thread-safe, and can (should) be used as a context manager.
+
+    After requests have been submitted, the pool can provide the responses back
+    in order of submission or of completion.
+    Exiting the context manager will cause the pool to cancel all pending
+    requests.
+
+    Examples:
+
+        Submit 10 GET requests to `/user/{i}`, run them concurrently, and get
+        responses in order of submission:
+
+            with session.pool() as pool:
+                for i in range(10):
+                    pool.get(f&#34;/user/{i}&#34;)
+                responses = pool.in_order()
+
+            for i, response in enumerate(responses):
+                msg_info(f&#34;User #{i} has {response.json()[&#39;posts&#39;]} posts&#34;)
+
+        *Note: for this usage, `Session.multi` is more convenient.*
+
+        Try out 10 different URLs, and get the first response that returns a
+        200 status code:
+
+            with session.pool() as pool:
+                for id in news_ids:
+                    pool.get(f&#34;/news.php?id={id}&#34;, tag=id)
+
+                for response in pool.as_completed():
+                    if response.code(200):
+                        break
+                else:
+                    failure(&#34;No response returned a 200 status code&#34;)
+
+            msg_success(f&#34;Got response for news with ID={response.tag}&#34;)
+            msg_info(response.text)
+    &#34;&#34;&#34;
+
+    def __init__(self, session: Session, workers: int, on_error: ErrorHandling, description: str=None):
+        self._session: Session = session
+        self._executor: ThreadPoolExecutor = ThreadPoolExecutor(max_workers=workers)
+        self._queue: list[Future[Response]] = []
+        self._on_error = on_error
+        self._description = description
+        self._progress: Progress = None
+
+    def __enter__(self) -&gt; RequestPool:
+        self._executor.__enter__()
+        if self._description is not None:
+            self._progress = progress(transient=True)
+            self._progress.add_task(description=self._description, total=len(self._queue))
+            self._progress.start()
+        return self
+
+    def __exit__(self, exc_type, exc_value, exc_traceback):
+        &#34;&#34;&#34;Shut downs the pool. Cancels all pending requests.&#34;&#34;&#34;
+        if self._progress:
+            self._progress.stop()
+            self._progress = None
+        self._executor.shutdown(wait=False, cancel_futures=True)
+
+    def _submit_request(self, method, *args, tag, **kwargs) -&gt; Future[Response]:
+        future = self._executor.submit(getattr(self._session, method), *args, **kwargs)
+        future.tag = tag
+        self._queue.append(future)
+        if self._progress:
+            self._progress.update(0, total=len(self._queue))
+            future.add_done_callback(lambda _: self._progress and self._progress.advance(0))
+        return future
+
+    def get(self, url: str, *args, tag=None, **kwargs) -&gt; Future[Response]:
+        &#34;&#34;&#34;Queues a GET request.&#34;&#34;&#34;
+        return self._submit_request(&#34;get&#34;, url, *args, tag=tag, **kwargs)
+
+    def post(
+        self, url: str, data=None, json=None, *args, tag=None, **kwargs
+    ) -&gt; Future[Response]:
+        &#34;&#34;&#34;Queues a POST request.&#34;&#34;&#34;
+        return self._submit_request(&#34;post&#34;, url, data, json, *args, tag=tag, **kwargs)
+
+    def _tag_results(
+        self, generator: Generator[Future[Response]]
+    ) -&gt; Generator[Response | BaseException, None, None]:
+        &#34;&#34;&#34;Returns the results of a generator of futures, with the tag.
+        If an exception was raised, it will be re-raised, or returned, in
+        function of the `on_error` parameter.
+        &#34;&#34;&#34;
+        on_error = self._on_error
+        for future in generator:
+            exception = future.exception()
+            if not exception:
+                response = future.result()
+                response.tag = future.tag
+                yield response
+            else:
+                if on_error == &#34;raise&#34;:
+                    raise exception
+                if on_error == &#34;skip&#34;:
+                    continue
+                exception.tag = future.tag
+                yield exception
+
+    def _as_completed_futures(self) -&gt; Generator[Future[Response], None, None]:
+        &#34;&#34;&#34;Yields futures as they complete, even if they were added to the pool
+        after the call.
+        &#34;&#34;&#34;
+        done = set()
+        current_len = len(self._queue)
+        while True:
+            old_len = current_len
+            todo = set(self._queue) - done
+            try:
+                for item in as_completed(todo, 0.3):
+                    done.add(item)
+                    yield item
+                    current_len = len(self._queue)
+                    if current_len &gt; old_len:
+                        break
+                current_len = len(self._queue)
+            except TimeoutError:
+                continue
+            if current_len == old_len:
+                break
+
+    def in_order(self) -&gt; list[Response | BaseException]:
+        &#34;&#34;&#34;Returns the HTTP responses, in order of submission.&#34;&#34;&#34;
+        return list(self._tag_results(self._queue))
+
+    def as_completed(self) -&gt; Generator[Response | BaseException]:
+        &#34;&#34;&#34;Yields HTTP responses as they arrive.
+
+        for response in pool.as_completed():
+            msg_info(f&#34;Received {response.tag}: {response.status_code}&#34;)
+        &#34;&#34;&#34;
+        for response in self._tag_results(self._as_completed_futures()):
+            yield response
+
+
+@dataclass
+class Multi:
+    &#34;&#34;&#34;Indicates an element that holds several values.
+    This must be used with `MultiRequest`.
+    &#34;&#34;&#34;
+
+    items: list
+
+
+class MultiRequest:
+    &#34;&#34;&#34;Runs several requests concurrently and return the responses as
+    a list.
+
+    Examples:
+
+        Runs `/get?p1=1`, `/get?p1=2`, `/get?p1=3`, and returns the responses:
+
+            &gt;&gt;&gt; s = Session()
+            &gt;&gt;&gt; responses = s.multi().get(&#34;https://httpbin.org/get&#34;, params={&#34;p1&#34;: Multi([1, 2, 3])})
+
+        Bruteforces a login form and returns the responses:
+
+
+            &gt;&gt;&gt; s = Session()
+            &gt;&gt;&gt; usernames = [&#34;admin&#34;, &#34;tomcat&#34;]
+            &gt;&gt;&gt; passwords = [&#34;admin&#34;, &#34;tomcat&#34;, &#34;admin123456&#34;, &#34;tomcat123456&#34;]
+            &gt;&gt;&gt; responses = s.multi().post(
+            ...    &#34;http://target.com/manager/html&#34;,
+            ...    data={&#34;username&#34;: Multi(usernames), &#34;password&#34;: Multi(passwords)}
+            ... )
+
+    The tags of the responses are a dict containing, for each multi, the &#34;path&#34;
+    to it and its value. For example:
+
+        &gt;&gt;&gt; responses[3].tag
+        {(&#34;data&#34;, &#34;username&#34;): &#34;admin&#34;, (&#34;data&#34;, &#34;password&#34;): &#34;admin123456&#34;}
+    &#34;&#34;&#34;
+
+    def __init__(self, session: Session, workers: int, on_error: ErrorHandling, description: str) -&gt; None:
+        self._session: Session = session
+        self._workers = workers
+        self._on_error = on_error
+        self._description = description
+
+    def get(self, url: str, **kwargs) -&gt; list[Response]:
+        &#34;&#34;&#34;Sends GET requests. Returns a list of `Response`s.&#34;&#34;&#34;
+        return self._run_requests(&#34;get&#34;, url=url, **kwargs)
+
+    def post(self, url: str, data=None, json=None, **kwargs) -&gt; list[Response]:
+        &#34;&#34;&#34;Sends POST requests. Returns a list of `Response`s.
+
+        Args:
+            url: URL for the new `Request` object.
+            data: (optional) Dictionary, list of tuples, bytes, or file-like
+                object to send in the body of the `Request`.
+            json: (optional) json to send in the body of the `Request`.
+            **kwargs: Optional arguments that `request` takes.
+
+        Returns:
+            list[Response]: List of responses
+        &#34;&#34;&#34;
+        return self._run_requests(&#34;post&#34;, url=url, data=data, json=json, **kwargs)
+
+    def _run_requests(self, method: str, **kwargs) -&gt; list[Response]:
+        pool = self._session.pool(self._workers, self._on_error, self._description)
+        paths_items: dict[Any, Multi] = {}
+
+        # Find Multi instances in both args and kwargs
+        self._find_multis_in_value(paths_items, (), kwargs)
+
+        # Small optimisation: if there are more than one Multi, we can convert
+        # the last ones to a list in order not to iterate over them multiple
+        # times.
+        paths_items = {
+            path: list(multi.items)
+            if i &gt;= 1 and not hasattr(multi, &#34;__len__&#34;)
+            else multi.items
+            for i, (path, multi) in enumerate(paths_items.items())
+        }
+
+        # Repeat the request for each item in the Multis
+
+        arguments = self.__arguments_copy(kwargs)
+        method = getattr(pool, method)
+
+        with pool:
+            self._iter_set_path(method, arguments, list(paths_items.items()), {})
+            return self._get_results(pool)
+
+    def _get_results(self, pool: RequestPool):
+        return pool.in_order()
+
+    def _find_multis_in_value(self, paths: dict, path: tuple, value: Any) -&gt; None:
+        if isinstance(value, Multi):
+            paths[path] = value
+        elif isinstance(value, (list, tuple)):
+            for i, item in enumerate(value):
+                self._find_multis_in_value(paths, path + (i,), item)
+        elif isinstance(value, dict):
+            for key, item in value.items():
+                self._find_multis_in_value(paths, path + (key,), item)
+
+    def __arguments_copy(self, arguments) -&gt; Any:
+        if isinstance(arguments, dict):
+            return {k: self.__arguments_copy(v) for k, v in arguments.items()}
+        if isinstance(arguments, (list, tuple)):
+            return [self.__arguments_copy(v) for v in arguments]
+        if isinstance(arguments, Multi):
+            return &#34;X&#34;
+        return arguments
+
+    def _replace_at_path(self, arguments, path, value) -&gt; None:
+        deep = arguments
+        *path, last = path
+        for stop in path:
+            deep = deep[stop]
+        deep[last] = value
+
+    def _iter_set_path(
+        self,
+        method: Callable,
+        arguments: dict,
+        paths_items: list[tuple[tuple, Multi]],
+        set_items: tuple,
+    ) -&gt; None:
+        &#34;&#34;&#34;Fills the arguments with the items from the Multi instances.
+
+        Args:
+            method (Callable): Session method to call
+            arguments (dict): Base arguments
+            paths_items (list[tuple[tuple, Multi]]): For each multi, a path to
+                find it in the arguments and the items of the multi
+            set_items (dict): Items from multi instances that have already
+                been set
+        &#34;&#34;&#34;
+        try:
+            (path, items), *paths_items = paths_items
+        except ValueError:
+            # No more path: arguments have been filled, run the method
+            pass
+        else:
+            for item in items:
+                self._replace_at_path(arguments, path, item)
+                self._iter_set_path(
+                    method, arguments, paths_items, set_items | {path: item}
+                )
+            return
+
+        arguments = self.__arguments_copy(arguments)
+        method(**arguments, tag=set_items)
+
+
+class MultiRequestFirst(MultiRequest):
+    &#34;&#34;&#34;Runs several requests concurrently and return the first successful
+    response.
+    &#34;&#34;&#34;
+
+    def __init__(
+        self, session: Session, workers: int, on_error: ErrorHandling, description: str, filter: Callable
+    ) -&gt; None:
+        super().__init__(session, workers, on_error, description)
+        self._filter = filter
+
+    def _get_results(self, pool: RequestPool):
+        for response in pool.as_completed():
+            if self._filter(response):
+                return response
+        return None
+
+    def get(self, url: str, **kwargs) -&gt; Response | BaseException | None:
+        return super().get(url, **kwargs)
+
+    def post(
+        self, url: str, data=None, json=None, **kwargs
+    ) -&gt; Response | BaseException | None:
+        return super().post(url, data, json, **kwargs)</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="tenlib.http.Session"><code class="flex name class">
+<span>class <span class="ident">Session</span></span>
+<span>(</span><span>max_connections: int = 10)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Pentest-compatible HTTP Session.</p>
+<p>As an extension of requests' <code><a title="tenlib.http.Session" href="#tenlib.http.Session">Session</a></code>, this class provides the default API
+and a few extra features:</p>
+<ul>
+<li>No SSL verification by default. SSL warnings are disabled.
+Controlled by <code><a title="tenlib.http.Session.verify" href="#tenlib.http.Session.verify">Session.verify</a></code>.</li>
+<li>HTTP redirects are not followed by default.
+Controlled by <code><a title="tenlib.http.Session.allow_redirects" href="#tenlib.http.Session.allow_redirects">Session.allow_redirects</a></code>.</li>
+<li>URL parameters are not reparsed by default ("as-is").
+Controlled by <code><a title="tenlib.http.Session.raw_url" href="#tenlib.http.Session.raw_url">Session.raw_url</a></code>.</li>
+<li>Proxies can be set using a string or the usual dictionary.</li>
+<li><code><a title="tenlib.http.Session.burp" href="#tenlib.http.Session.burp">Session.burp()</a></code> can be called in order to setup burp as a proxy, and
+removed using <code><a title="tenlib.http.Session.unburp" href="#tenlib.http.Session.unburp">Session.unburp()</a></code></li>
+</ul>
+<p>In addition, it is able to send requests concurrently using <code><a title="tenlib.http.Session.multi" href="#tenlib.http.Session.multi">Session.multi()</a></code>
+or <code><a title="tenlib.http.Session.pool" href="#tenlib.http.Session.pool">Session.pool()</a></code>.</p>
+<h2 id="examples">Examples</h2>
+<pre><code class="language-python-repl">&gt;&gt;&gt; s = Session()
+&gt;&gt;&gt; s.get('https://target.com/index/../admin/dashboard&lt;test&gt;').url
+'https://target.com/index/../admin/dashboard&lt;test&gt;'
+&gt;&gt;&gt; s.proxies = 'socks5://localhost:12345'
+</code></pre>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>max_connections</code></strong> :&ensp;<code>int</code></dt>
+<dd>Maximum number of concurrent HTTP connections.
+Defaults to 10.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Session(requests.Session):
+    &#34;&#34;&#34;Pentest-compatible HTTP Session.
+
+    As an extension of requests&#39; `Session`, this class provides the default API
+    and a few extra features:
+
+    - No SSL verification by default. SSL warnings are disabled.
+        Controlled by `Session.verify`.
+    - HTTP redirects are not followed by default.
+        Controlled by `Session.allow_redirects`.
+    - URL parameters are not reparsed by default (&#34;as-is&#34;).
+        Controlled by `Session.raw_url`.
+    - Proxies can be set using a string or the usual dictionary.
+    - `Session.burp` can be called in order to setup burp as a proxy, and
+        removed using `Session.unburp`
+
+    In addition, it is able to send requests concurrently using `Session.multi`
+    or `Session.pool`.
+
+    Examples:
+
+        &gt;&gt;&gt; s = Session()
+        &gt;&gt;&gt; s.get(&#39;https://target.com/index/../admin/dashboard&lt;test&gt;&#39;).url
+        &#39;https://target.com/index/../admin/dashboard&lt;test&gt;&#39;
+        &gt;&gt;&gt; s.proxies = &#39;socks5://localhost:12345&#39;
+
+    &#34;&#34;&#34;
+
+    raw_url: bool = True
+    &#34;&#34;&#34;Whether to reparse and url-encode characters in the URL.
+    &#34;&#34;&#34;
+    timeout: typing.Union[int, tuple[int, int]] = None
+    &#34;&#34;&#34;A global timeout for request and responses. Defaults to no timeout.
+    &#34;&#34;&#34;
+    verify: bool = False
+    &#34;&#34;&#34;Verify the SSL certificate of the server. Defaults to False.&#34;&#34;&#34;
+    allow_redirects: bool = False
+    &#34;&#34;&#34;Automatically follow HTTP redirects. Defaults to False.&#34;&#34;&#34;
+    max_connections: int
+    &#34;&#34;&#34;Maximum number of concurrent connections. Defaults to 10.&#34;&#34;&#34;
+
+    def __init__(self, max_connections: int = 10):
+        &#34;&#34;&#34;
+        Args:
+            max_connections (int): Maximum number of concurrent HTTP connections.
+                Defaults to 10.
+        &#34;&#34;&#34;
+        super().__init__()
+
+        self._burp_saved_state = {}
+
+        # Regular requote_uri function: allows to hook/restore it depending on
+        # raw_url&#39;s value
+        self._regular_requote_uri = requests.models.requote_uri
+        self._raw_requote_uri = lambda url: url
+        self.hooks = {&#34;response&#34;: self._response_hook}
+        self.max_connections = max_connections
+        self._build_adapters()
+
+    def _build_adapters(self):
+        adapter = requests.adapters.HTTPAdapter(pool_maxsize=self.max_connections)
+        self.mount(&#34;http://&#34;, adapter)
+        self.mount(&#34;https://&#34;, adapter)
+
+    # The three HTTP method calls set a default value for allow_redirects
+    # Override this behaviour
+
+    def get(self, url: str, **kwargs) -&gt; Response:
+        &#34;&#34;&#34;Sends a GET request. Returns a `Response` object.&#34;&#34;&#34;
+        kwargs.setdefault(&#34;allow_redirects&#34;, self.allow_redirects)
+        return super().get(url, **kwargs)
+
+    def post(self, url: str, data=None, json=None, **kwargs):
+        &#34;&#34;&#34;Sends a POST request. Returns a `Response` object.
+
+        Args:
+            url: URL for the new `Request` object.
+            data: (optional) Dictionary, list of tuples, bytes, or file-like
+                object to send in the body of the `Request`.
+            json: (optional) json to send in the body of the `Request`.
+            **kwargs: Optional arguments that `request` takes.
+
+        Returns:
+            Response
+        &#34;&#34;&#34;
+        return super().post(url, data, json, **kwargs)
+
+    def options(self, url: str, **kwargs) -&gt; Response:
+        &#34;&#34;&#34;Sends an OPTIONS request. Returns a `Response` object.&#34;&#34;&#34;
+        kwargs.setdefault(&#34;allow_redirects&#34;, self.allow_redirects)
+        return super().options(url, **kwargs)
+
+    def head(self, url: str, **kwargs) -&gt; Response:
+        &#34;&#34;&#34;Sends a HEAD request. Returns a `Response` object.&#34;&#34;&#34;
+        kwargs.setdefault(&#34;allow_redirects&#34;, self.allow_redirects)
+        return super().head(url, **kwargs)
+
+    def put(self, url: str, data=None, **kwargs) -&gt; Response:
+        &#34;&#34;&#34;Sends a PUT request. Returns a `Response` object.
+
+        Args:
+            url: URL for the new `Request` object.
+            data: (optional) Dictionary, list of tuples, bytes, or file-like
+                object to send in the body of the `Request`.
+            **kwargs: Optional arguments that `request` takes.
+
+        Returns:
+            Response
+        &#34;&#34;&#34;
+        return super().put(url, data, **kwargs)
+
+    def patch(self, url: str, data=None, **kwargs) -&gt; Response:
+        &#34;&#34;&#34;Sends a PATCH request. Returns a `Response` object.
+
+        Args:
+            url: URL for the new `Request` object.
+            data: (optional) Dictionary, list of tuples, bytes, or file-like
+                object to send in the body of the `Request`.
+            **kwargs: Optional arguments that `request` takes.
+
+        Returns:
+            Response
+        &#34;&#34;&#34;
+        return super().patch(url, data, **kwargs)
+
+    def delete(self, url, **kwargs) -&gt; Response:
+        &#34;&#34;&#34;Sends an OPTIONS request. Returns a `Response` object.&#34;&#34;&#34;
+        return super().delete(url, **kwargs)
+
+    def pool(
+        self, workers: int = None, on_error: ErrorHandling = &#34;raise&#34;, description: str=None
+    ) -&gt; RequestPool:
+        &#34;&#34;&#34;Creates a request pool.
+
+        Example:
+
+            with session.pool() as pool:
+                for i in range(10):
+                    pool.get(f&#39;https://target.com/?news_id={i}&#39;, tag=i)
+
+                for response in pool.as_completed():
+                    if response.contains(&#34;&lt;title&gt;Suspicious&lt;/title&gt;&#34;):
+                        break
+
+            msg_success(&#34;Found suspicious news with id={response.tag}&#34;)
+
+        Args:
+            workers (int): Number of workers in the pool. Defaults to
+                `self.max_connections`.
+            on_error (ErrorHandling): How to handle errors: `raise`, `return`,
+                or `skip`. Defaults to `raise`.
+
+        Returns:
+            RequestPool: request pool.
+        &#34;&#34;&#34;
+        if workers is None:
+            workers = self.max_connections
+        return RequestPool(self, workers, on_error, description)
+
+    def multi(
+        self, workers: int = None, on_error: ErrorHandling = &#34;raise&#34;, description: str=None
+    ) -&gt; MultiRequest:
+        &#34;&#34;&#34;Sets up a multi-request object, allowing to run multiple requests
+        concurrently.
+
+        &gt;&gt;&gt; s = Session()
+        &gt;&gt;&gt; responses = s.multi().get(&#34;https://target.com/news.php&#34;, params={&#34;id&#34;: Multi(range(10))})
+
+        Args:
+            workers (int): Number of workers in the pool. Defaults to
+                `self.max_connections`.
+            on_error (ErrorHandling): How to handle errors: `raise`, `return`,
+                or `skip`. Defaults to `raise`.
+
+        Returns:
+            MultiRequest: An object that allows to send multiple requests
+                concurrently.
+        &#34;&#34;&#34;
+        if workers is None:
+            workers = self.max_connections
+        return MultiRequest(self, workers, on_error, description)
+
+    def first(
+        self, filter: Callable, workers: int = None, on_error: ErrorHandling = &#34;raise&#34;, description: str=None
+    ) -&gt; MultiRequestFirst:
+        &#34;&#34;&#34;Returns the first response that matches the filter.
+        Responses are run concurrently.
+
+        Args:
+            filter (Callable): Filter function.
+
+        Returns:
+            Response: first response that matches the filter.
+        &#34;&#34;&#34;
+        if workers is None:
+            workers = self.max_connections
+        return MultiRequestFirst(self, workers, on_error, description, filter)
+
+    def prepare_request(self, request):
+        &#34;&#34;&#34;If raw_url is True, the `url` is sent as-is. Additional params are
+        urlencoded.
+        &#34;&#34;&#34;
+        prepared = super().prepare_request(request)
+
+        if not self.raw_url:
+            return prepared
+
+        prepared.url = request.url
+
+        if request.params:
+            enc_params = prepared._encode_params(request.params)
+            separator = &#34;?&#34; if &#34;?&#34; not in request.url else &#34;&amp;&#34;
+            prepared.url += separator + enc_params
+
+        return prepared
+
+    def __upgrade_kwargs(self, kwargs: dict):
+        kwargs.setdefault(&#34;allow_redirects&#34;, self.allow_redirects)
+        if self.timeout is not None:
+            kwargs.setdefault(&#34;timeout&#34;, self.timeout)
+
+    def request(self, method: str, url: str, **kwargs) -&gt; Response:
+        &#34;&#34;&#34;Constructs a `Request`, prepares it and sends it. Returns a
+        `Response` object.
+        &#34;&#34;&#34;
+        self.__upgrade_kwargs(kwargs)
+        return super().request(method, url, **kwargs)
+
+    def _response_hook(self, response: Response, **kwargs) -&gt; Response:
+        &#34;&#34;&#34;Change response encoding and replace the object by a `Response`.&#34;&#34;&#34;
+        if not response.encoding:
+            response.encoding = DEFAULT_ENCODING
+        return Response._from_response(self, response)
+
+    # Burp
+
+    def burp(self) -&gt; None:
+        &#34;&#34;&#34;Sets Burp as the proxy for every request, and sets `verify` to
+        `False`. To reset, use `Session.unburp`.
+        &#34;&#34;&#34;
+        if self._burp_saved_state:
+            return
+        self._burp_saved_state = {&#34;proxies&#34;: self.proxies, &#34;verify&#34;: self.verify}
+        self.proxies = config.burp_proxy
+        self.verify = False
+
+    def unburp(self) -&gt; None:
+        &#34;&#34;&#34;Resets the original proxies and the `verify` value.&#34;&#34;&#34;
+        if not self._burp_saved_state:
+            return
+        self.proxies = self._burp_saved_state[&#34;proxies&#34;]
+        self.verify = self._burp_saved_state[&#34;verify&#34;]
+        self._burp_saved_state = {}
+
+    # Proxies
+
+    @property
+    def proxies(self) -&gt; dict:
+        &#34;&#34;&#34;Set proxies. If set to a `str`, the proxy is used for every protocol.
+        If set to `None`, no proxy is used.
+
+        Args:
+
+            proxy (str, dict, None): Proxy to use
+
+        Examples:
+
+            &gt;&gt;&gt; session.proxies = &#39;localhost:8080&#39;
+            {&#39;all&#39;: &#39;localhost:8080&#39;}
+            &gt;&gt;&gt; session.proxies = {&#39;https&#39;: &#39;socks://proxy.net:12345&#39;}
+            {&#39;https&#39;: &#39;socks://proxy.net:12345&#39;}
+        &#34;&#34;&#34;
+        return self._proxies
+
+    @proxies.setter
+    def proxies(self, proxy) -&gt; None:
+        if proxy is None:
+            self._proxies = None
+        elif isinstance(proxy, dict):
+            self._proxies = proxy
+        elif isinstance(proxy, str):
+            self._proxies = {&#34;all&#34;: proxy}
+        else:
+            raise TypeError(f&#34;Invalid proxy type: {type(proxy).__name__}&#34;)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>requests.sessions.Session</li>
+<li>requests.sessions.SessionRedirectMixin</li>
+</ul>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li><a title="tenlib.http.ScopedSession" href="#tenlib.http.ScopedSession">ScopedSession</a></li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="tenlib.http.Session.max_connections"><code class="name">var <span class="ident">max_connections</span> : int</code></dt>
+<dd>
+<div class="desc"><p>Maximum number of concurrent connections. Defaults to 10.</p></div>
+</dd>
+<dt id="tenlib.http.Session.raw_url"><code class="name">var <span class="ident">raw_url</span> : bool</code></dt>
+<dd>
+<div class="desc"><p>Whether to reparse and url-encode characters in the URL.</p></div>
+</dd>
+<dt id="tenlib.http.Session.timeout"><code class="name">var <span class="ident">timeout</span> : Union[int, tuple[int, int]]</code></dt>
+<dd>
+<div class="desc"><p>A global timeout for request and responses. Defaults to no timeout.</p></div>
+</dd>
+<dt id="tenlib.http.Session.verify"><code class="name">var <span class="ident">verify</span> : bool</code></dt>
+<dd>
+<div class="desc"><p>Verify the SSL certificate of the server. Defaults to False.</p></div>
+</dd>
+<dt id="tenlib.http.Session.allow_redirects"><code class="name">var <span class="ident">allow_redirects</span> : bool</code></dt>
+<dd>
+<div class="desc"><p>Automatically follow HTTP redirects. Defaults to False.</p></div>
+</dd>
+</dl>
+<h3>Instance variables</h3>
+<dl>
+<dt id="tenlib.http.Session.proxies"><code class="name">var <span class="ident">proxies</span> : dict</code></dt>
+<dd>
+<div class="desc"><p>Set proxies. If set to a <code>str</code>, the proxy is used for every protocol.
+If set to <code>None</code>, no proxy is used.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>proxy</code></strong> :&ensp;<code>str, dict, None</code></dt>
+<dd>Proxy to use</dd>
+</dl>
+<h2 id="examples">Examples</h2>
+<pre><code class="language-python-repl">&gt;&gt;&gt; session.proxies = 'localhost:8080'
+{'all': 'localhost:8080'}
+&gt;&gt;&gt; session.proxies = {'https': 'socks://proxy.net:12345'}
+{'https': 'socks://proxy.net:12345'}
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def proxies(self) -&gt; dict:
+    &#34;&#34;&#34;Set proxies. If set to a `str`, the proxy is used for every protocol.
+    If set to `None`, no proxy is used.
+
+    Args:
+
+        proxy (str, dict, None): Proxy to use
+
+    Examples:
+
+        &gt;&gt;&gt; session.proxies = &#39;localhost:8080&#39;
+        {&#39;all&#39;: &#39;localhost:8080&#39;}
+        &gt;&gt;&gt; session.proxies = {&#39;https&#39;: &#39;socks://proxy.net:12345&#39;}
+        {&#39;https&#39;: &#39;socks://proxy.net:12345&#39;}
+    &#34;&#34;&#34;
+    return self._proxies</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="tenlib.http.Session.get"><code class="name flex">
+<span>def <span class="ident">get</span></span>(<span>self, url: str, **kwargs) ‑> <a title="tenlib.http.Response" href="#tenlib.http.Response">Response</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Sends a GET request. Returns a <code><a title="tenlib.http.Response" href="#tenlib.http.Response">Response</a></code> object.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get(self, url: str, **kwargs) -&gt; Response:
+    &#34;&#34;&#34;Sends a GET request. Returns a `Response` object.&#34;&#34;&#34;
+    kwargs.setdefault(&#34;allow_redirects&#34;, self.allow_redirects)
+    return super().get(url, **kwargs)</code></pre>
+</details>
+</dd>
+<dt id="tenlib.http.Session.post"><code class="name flex">
+<span>def <span class="ident">post</span></span>(<span>self, url: str, data=None, json=None, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Sends a POST request. Returns a <code><a title="tenlib.http.Response" href="#tenlib.http.Response">Response</a></code> object.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>url</code></strong></dt>
+<dd>URL for the new <code>Request</code> object.</dd>
+<dt><strong><code>data</code></strong></dt>
+<dd>(optional) Dictionary, list of tuples, bytes, or file-like
+object to send in the body of the <code>Request</code>.</dd>
+<dt><strong><code>json</code></strong></dt>
+<dd>(optional) json to send in the body of the <code>Request</code>.</dd>
+<dt><strong><code>**kwargs</code></strong></dt>
+<dd>Optional arguments that <code>request</code> takes.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>Response</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def post(self, url: str, data=None, json=None, **kwargs):
+    &#34;&#34;&#34;Sends a POST request. Returns a `Response` object.
+
+    Args:
+        url: URL for the new `Request` object.
+        data: (optional) Dictionary, list of tuples, bytes, or file-like
+            object to send in the body of the `Request`.
+        json: (optional) json to send in the body of the `Request`.
+        **kwargs: Optional arguments that `request` takes.
+
+    Returns:
+        Response
+    &#34;&#34;&#34;
+    return super().post(url, data, json, **kwargs)</code></pre>
+</details>
+</dd>
+<dt id="tenlib.http.Session.options"><code class="name flex">
+<span>def <span class="ident">options</span></span>(<span>self, url: str, **kwargs) ‑> <a title="tenlib.http.Response" href="#tenlib.http.Response">Response</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Sends an OPTIONS request. Returns a <code><a title="tenlib.http.Response" href="#tenlib.http.Response">Response</a></code> object.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def options(self, url: str, **kwargs) -&gt; Response:
+    &#34;&#34;&#34;Sends an OPTIONS request. Returns a `Response` object.&#34;&#34;&#34;
+    kwargs.setdefault(&#34;allow_redirects&#34;, self.allow_redirects)
+    return super().options(url, **kwargs)</code></pre>
+</details>
+</dd>
+<dt id="tenlib.http.Session.head"><code class="name flex">
+<span>def <span class="ident">head</span></span>(<span>self, url: str, **kwargs) ‑> <a title="tenlib.http.Response" href="#tenlib.http.Response">Response</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Sends a HEAD request. Returns a <code><a title="tenlib.http.Response" href="#tenlib.http.Response">Response</a></code> object.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def head(self, url: str, **kwargs) -&gt; Response:
+    &#34;&#34;&#34;Sends a HEAD request. Returns a `Response` object.&#34;&#34;&#34;
+    kwargs.setdefault(&#34;allow_redirects&#34;, self.allow_redirects)
+    return super().head(url, **kwargs)</code></pre>
+</details>
+</dd>
+<dt id="tenlib.http.Session.put"><code class="name flex">
+<span>def <span class="ident">put</span></span>(<span>self, url: str, data=None, **kwargs) ‑> <a title="tenlib.http.Response" href="#tenlib.http.Response">Response</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Sends a PUT request. Returns a <code><a title="tenlib.http.Response" href="#tenlib.http.Response">Response</a></code> object.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>url</code></strong></dt>
+<dd>URL for the new <code>Request</code> object.</dd>
+<dt><strong><code>data</code></strong></dt>
+<dd>(optional) Dictionary, list of tuples, bytes, or file-like
+object to send in the body of the <code>Request</code>.</dd>
+<dt><strong><code>**kwargs</code></strong></dt>
+<dd>Optional arguments that <code>request</code> takes.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>Response</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def put(self, url: str, data=None, **kwargs) -&gt; Response:
+    &#34;&#34;&#34;Sends a PUT request. Returns a `Response` object.
+
+    Args:
+        url: URL for the new `Request` object.
+        data: (optional) Dictionary, list of tuples, bytes, or file-like
+            object to send in the body of the `Request`.
+        **kwargs: Optional arguments that `request` takes.
+
+    Returns:
+        Response
+    &#34;&#34;&#34;
+    return super().put(url, data, **kwargs)</code></pre>
+</details>
+</dd>
+<dt id="tenlib.http.Session.patch"><code class="name flex">
+<span>def <span class="ident">patch</span></span>(<span>self, url: str, data=None, **kwargs) ‑> <a title="tenlib.http.Response" href="#tenlib.http.Response">Response</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Sends a PATCH request. Returns a <code><a title="tenlib.http.Response" href="#tenlib.http.Response">Response</a></code> object.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>url</code></strong></dt>
+<dd>URL for the new <code>Request</code> object.</dd>
+<dt><strong><code>data</code></strong></dt>
+<dd>(optional) Dictionary, list of tuples, bytes, or file-like
+object to send in the body of the <code>Request</code>.</dd>
+<dt><strong><code>**kwargs</code></strong></dt>
+<dd>Optional arguments that <code>request</code> takes.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>Response</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def patch(self, url: str, data=None, **kwargs) -&gt; Response:
+    &#34;&#34;&#34;Sends a PATCH request. Returns a `Response` object.
+
+    Args:
+        url: URL for the new `Request` object.
+        data: (optional) Dictionary, list of tuples, bytes, or file-like
+            object to send in the body of the `Request`.
+        **kwargs: Optional arguments that `request` takes.
+
+    Returns:
+        Response
+    &#34;&#34;&#34;
+    return super().patch(url, data, **kwargs)</code></pre>
+</details>
+</dd>
+<dt id="tenlib.http.Session.delete"><code class="name flex">
+<span>def <span class="ident">delete</span></span>(<span>self, url, **kwargs) ‑> <a title="tenlib.http.Response" href="#tenlib.http.Response">Response</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Sends an OPTIONS request. Returns a <code><a title="tenlib.http.Response" href="#tenlib.http.Response">Response</a></code> object.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def delete(self, url, **kwargs) -&gt; Response:
+    &#34;&#34;&#34;Sends an OPTIONS request. Returns a `Response` object.&#34;&#34;&#34;
+    return super().delete(url, **kwargs)</code></pre>
+</details>
+</dd>
+<dt id="tenlib.http.Session.pool"><code class="name flex">
+<span>def <span class="ident">pool</span></span>(<span>self, workers: int = None, on_error: ErrorHandling = 'raise', description: str = None) ‑> <a title="tenlib.http.RequestPool" href="#tenlib.http.RequestPool">RequestPool</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Creates a request pool.</p>
+<h2 id="example">Example</h2>
+<p>with session.pool() as pool:
+for i in range(10):
+pool.get(f'https://target.com/?news_id={i}', tag=i)</p>
+<pre><code>for response in pool.as_completed():
+    if response.contains("&lt;title&gt;Suspicious&lt;/title&gt;"):
+        break
+</code></pre>
+<p>msg_success("Found suspicious news with id={response.tag}")</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>workers</code></strong> :&ensp;<code>int</code></dt>
+<dd>Number of workers in the pool. Defaults to
+<code>self.max_connections</code>.</dd>
+<dt><strong><code>on_error</code></strong> :&ensp;<code>ErrorHandling</code></dt>
+<dd>How to handle errors: <code>raise</code>, <code>return</code>,
+or <code>skip</code>. Defaults to <code>raise</code>.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code><a title="tenlib.http.RequestPool" href="#tenlib.http.RequestPool">RequestPool</a></code></dt>
+<dd>request pool.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def pool(
+    self, workers: int = None, on_error: ErrorHandling = &#34;raise&#34;, description: str=None
+) -&gt; RequestPool:
+    &#34;&#34;&#34;Creates a request pool.
+
+    Example:
+
+        with session.pool() as pool:
+            for i in range(10):
+                pool.get(f&#39;https://target.com/?news_id={i}&#39;, tag=i)
+
+            for response in pool.as_completed():
+                if response.contains(&#34;&lt;title&gt;Suspicious&lt;/title&gt;&#34;):
+                    break
+
+        msg_success(&#34;Found suspicious news with id={response.tag}&#34;)
+
+    Args:
+        workers (int): Number of workers in the pool. Defaults to
+            `self.max_connections`.
+        on_error (ErrorHandling): How to handle errors: `raise`, `return`,
+            or `skip`. Defaults to `raise`.
+
+    Returns:
+        RequestPool: request pool.
+    &#34;&#34;&#34;
+    if workers is None:
+        workers = self.max_connections
+    return RequestPool(self, workers, on_error, description)</code></pre>
+</details>
+</dd>
+<dt id="tenlib.http.Session.multi"><code class="name flex">
+<span>def <span class="ident">multi</span></span>(<span>self, workers: int = None, on_error: ErrorHandling = 'raise', description: str = None) ‑> <a title="tenlib.http.MultiRequest" href="#tenlib.http.MultiRequest">MultiRequest</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Sets up a multi-request object, allowing to run multiple requests
+concurrently.</p>
+<pre><code class="language-python-repl">&gt;&gt;&gt; s = Session()
+&gt;&gt;&gt; responses = s.multi().get(&quot;https://target.com/news.php&quot;, params={&quot;id&quot;: Multi(range(10))})
+</code></pre>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>workers</code></strong> :&ensp;<code>int</code></dt>
+<dd>Number of workers in the pool. Defaults to
+<code>self.max_connections</code>.</dd>
+<dt><strong><code>on_error</code></strong> :&ensp;<code>ErrorHandling</code></dt>
+<dd>How to handle errors: <code>raise</code>, <code>return</code>,
+or <code>skip</code>. Defaults to <code>raise</code>.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code><a title="tenlib.http.MultiRequest" href="#tenlib.http.MultiRequest">MultiRequest</a></code></dt>
+<dd>An object that allows to send multiple requests
+concurrently.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def multi(
+    self, workers: int = None, on_error: ErrorHandling = &#34;raise&#34;, description: str=None
+) -&gt; MultiRequest:
+    &#34;&#34;&#34;Sets up a multi-request object, allowing to run multiple requests
+    concurrently.
+
+    &gt;&gt;&gt; s = Session()
+    &gt;&gt;&gt; responses = s.multi().get(&#34;https://target.com/news.php&#34;, params={&#34;id&#34;: Multi(range(10))})
+
+    Args:
+        workers (int): Number of workers in the pool. Defaults to
+            `self.max_connections`.
+        on_error (ErrorHandling): How to handle errors: `raise`, `return`,
+            or `skip`. Defaults to `raise`.
+
+    Returns:
+        MultiRequest: An object that allows to send multiple requests
+            concurrently.
+    &#34;&#34;&#34;
+    if workers is None:
+        workers = self.max_connections
+    return MultiRequest(self, workers, on_error, description)</code></pre>
+</details>
+</dd>
+<dt id="tenlib.http.Session.first"><code class="name flex">
+<span>def <span class="ident">first</span></span>(<span>self, filter: Callable, workers: int = None, on_error: ErrorHandling = 'raise', description: str = None) ‑> tenlib.http.MultiRequestFirst</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns the first response that matches the filter.
+Responses are run concurrently.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>filter</code></strong> :&ensp;<code>Callable</code></dt>
+<dd>Filter function.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code><a title="tenlib.http.Response" href="#tenlib.http.Response">Response</a></code></dt>
+<dd>first response that matches the filter.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def first(
+    self, filter: Callable, workers: int = None, on_error: ErrorHandling = &#34;raise&#34;, description: str=None
+) -&gt; MultiRequestFirst:
+    &#34;&#34;&#34;Returns the first response that matches the filter.
+    Responses are run concurrently.
+
+    Args:
+        filter (Callable): Filter function.
+
+    Returns:
+        Response: first response that matches the filter.
+    &#34;&#34;&#34;
+    if workers is None:
+        workers = self.max_connections
+    return MultiRequestFirst(self, workers, on_error, description, filter)</code></pre>
+</details>
+</dd>
+<dt id="tenlib.http.Session.prepare_request"><code class="name flex">
+<span>def <span class="ident">prepare_request</span></span>(<span>self, request)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>If raw_url is True, the <code>url</code> is sent as-is. Additional params are
+urlencoded.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def prepare_request(self, request):
+    &#34;&#34;&#34;If raw_url is True, the `url` is sent as-is. Additional params are
+    urlencoded.
+    &#34;&#34;&#34;
+    prepared = super().prepare_request(request)
+
+    if not self.raw_url:
+        return prepared
+
+    prepared.url = request.url
+
+    if request.params:
+        enc_params = prepared._encode_params(request.params)
+        separator = &#34;?&#34; if &#34;?&#34; not in request.url else &#34;&amp;&#34;
+        prepared.url += separator + enc_params
+
+    return prepared</code></pre>
+</details>
+</dd>
+<dt id="tenlib.http.Session.request"><code class="name flex">
+<span>def <span class="ident">request</span></span>(<span>self, method: str, url: str, **kwargs) ‑> <a title="tenlib.http.Response" href="#tenlib.http.Response">Response</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Constructs a <code>Request</code>, prepares it and sends it. Returns a
+<code><a title="tenlib.http.Response" href="#tenlib.http.Response">Response</a></code> object.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def request(self, method: str, url: str, **kwargs) -&gt; Response:
+    &#34;&#34;&#34;Constructs a `Request`, prepares it and sends it. Returns a
+    `Response` object.
+    &#34;&#34;&#34;
+    self.__upgrade_kwargs(kwargs)
+    return super().request(method, url, **kwargs)</code></pre>
+</details>
+</dd>
+<dt id="tenlib.http.Session.burp"><code class="name flex">
+<span>def <span class="ident">burp</span></span>(<span>self) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Sets Burp as the proxy for every request, and sets <code>verify</code> to
+<code>False</code>. To reset, use <code><a title="tenlib.http.Session.unburp" href="#tenlib.http.Session.unburp">Session.unburp()</a></code>.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def burp(self) -&gt; None:
+    &#34;&#34;&#34;Sets Burp as the proxy for every request, and sets `verify` to
+    `False`. To reset, use `Session.unburp`.
+    &#34;&#34;&#34;
+    if self._burp_saved_state:
+        return
+    self._burp_saved_state = {&#34;proxies&#34;: self.proxies, &#34;verify&#34;: self.verify}
+    self.proxies = config.burp_proxy
+    self.verify = False</code></pre>
+</details>
+</dd>
+<dt id="tenlib.http.Session.unburp"><code class="name flex">
+<span>def <span class="ident">unburp</span></span>(<span>self) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Resets the original proxies and the <code>verify</code> value.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def unburp(self) -&gt; None:
+    &#34;&#34;&#34;Resets the original proxies and the `verify` value.&#34;&#34;&#34;
+    if not self._burp_saved_state:
+        return
+    self.proxies = self._burp_saved_state[&#34;proxies&#34;]
+    self.verify = self._burp_saved_state[&#34;verify&#34;]
+    self._burp_saved_state = {}</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="tenlib.http.ScopedSession"><code class="flex name class">
+<span>class <span class="ident">ScopedSession</span></span>
+<span>(</span><span>base_url: str, max_connections: int = 10)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>HTTP Session scoped to a target URL.</p>
+<p>When issuing HTTP requests, the base URL is prepended to the given path.</p>
+<h2 id="examples">Examples</h2>
+<pre><code class="language-python-repl">&gt;&gt;&gt; s = ScopedSession('https://target.com/admin')
+&gt;&gt;&gt; await s.get('/user/login').url
+'https://www.target.com/admin/user/login'
+&gt;&gt;&gt; await s.get('/login/../dashboard').url
+'https://www.target.com/admin/login/../dashboard'
+&gt;&gt;&gt; await s.get('https://target.com/admin/something').url
+'https://target.com/admin/something'
+&gt;&gt;&gt; await s.get('https://target.com/user')
+    HTTPOutOfScopeError: &lt;https://target.com/user&gt; is not within
+    &lt;https://target.com/admin&gt;
+&gt;&gt;&gt; await s.get('/../user').url
+'https://target.com/admin/../user'
+</code></pre>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>base_url</code></strong> :&ensp;<code>str</code></dt>
+<dd>Base URL of the target</dd>
+<dt><strong><code>max_connections</code></strong> :&ensp;<code>int</code></dt>
+<dd>Maximum number of concurrent HTTP connections.
+Defaults to 10.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class ScopedSession(Session):
+    &#34;&#34;&#34;HTTP Session scoped to a target URL.
+
+    When issuing HTTP requests, the base URL is prepended to the given path.
+
+    Examples:
+
+        &gt;&gt;&gt; s = ScopedSession(&#39;https://target.com/admin&#39;)
+        &gt;&gt;&gt; await s.get(&#39;/user/login&#39;).url
+        &#39;https://www.target.com/admin/user/login&#39;
+        &gt;&gt;&gt; await s.get(&#39;/login/../dashboard&#39;).url
+        &#39;https://www.target.com/admin/login/../dashboard&#39;
+        &gt;&gt;&gt; await s.get(&#39;https://target.com/admin/something&#39;).url
+        &#39;https://target.com/admin/something&#39;
+        &gt;&gt;&gt; await s.get(&#39;https://target.com/user&#39;)
+            HTTPOutOfScopeError: https://target.com/user is not within
+            https://target.com/admin
+        &gt;&gt;&gt; await s.get(&#39;/../user&#39;).url
+        &#39;https://target.com/admin/../user&#39;
+    &#34;&#34;&#34;
+
+    def __init__(self, base_url: str, max_connections: int = 10):
+        &#34;&#34;&#34;
+        Args:
+            base_url (str): Base URL of the target
+            max_connections (int): Maximum number of concurrent HTTP connections.
+                Defaults to 10.
+        &#34;&#34;&#34;
+        if base_url.endswith(&#34;/&#34;):
+            base_url = base_url[:-1]
+        self.base_url = base_url
+        self._parsed_base_url = urllib.parse.urlparse(self.base_url)
+
+        super().__init__(max_connections)
+
+    def prepare_request(self, request):
+        &#34;&#34;&#34;Scopes given URL to the target if needed, and makes sure it is within
+        scope. Then, prepares the request before removing the hook on the URL
+        encoding function.
+        &#34;&#34;&#34;
+        request.url = self.get_absolute_url(request.url)
+        if not self.is_in_scope(request.url):
+            raise HTTPOutOfScopeError(request.url, self.base_url)
+        return super().prepare_request(request)
+
+    # Processing
+
+    def is_in_scope(self, url: str) -&gt; bool:
+        &#34;&#34;&#34;Verifies that given URL is within the target&#39;s scope.&#34;&#34;&#34;
+        bu = self._parsed_base_url
+        tu = urllib.parse.urlparse(url)
+        return (
+            bu.hostname == tu.hostname
+            and bu.port == tu.port
+            and bu.scheme == tu.scheme
+            and tu.path.startswith(bu.path)
+        )
+
+    def get_absolute_url(self, url: str, base: str=None) -&gt; str:
+        &#34;&#34;&#34;Merges base URL with the given one.
+        If the given URL starts with a slash, it is appended to the base URL. If
+        it starts with `http://` or `https://`, it is considered a full URL.
+        Else, an error is raised.
+
+        Using `urllib.parse.urljoin` does not do the job properly, as for
+        instance you want specially crafted paths such as
+        `/admin/login.php/../dashboard`.
+
+        Args:
+            url (str): URL to scope with base URL
+            base (str): Base URL
+
+        Returns:
+            str: Scoped URL
+        &#34;&#34;&#34;
+        if base is None:
+            base = self.base_url
+
+        if url.startswith(&#34;/&#34;):
+            return base + url
+        if url.startswith(&#34;https://&#34;) or url.startswith(&#34;http://&#34;):
+            return url
+
+        raise ValueError(f&#34;Unable to comprehend URL: {url}&#34;)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="tenlib.http.Session" href="#tenlib.http.Session">Session</a></li>
+<li>requests.sessions.Session</li>
+<li>requests.sessions.SessionRedirectMixin</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="tenlib.http.ScopedSession.prepare_request"><code class="name flex">
+<span>def <span class="ident">prepare_request</span></span>(<span>self, request)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Scopes given URL to the target if needed, and makes sure it is within
+scope. Then, prepares the request before removing the hook on the URL
+encoding function.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def prepare_request(self, request):
+    &#34;&#34;&#34;Scopes given URL to the target if needed, and makes sure it is within
+    scope. Then, prepares the request before removing the hook on the URL
+    encoding function.
+    &#34;&#34;&#34;
+    request.url = self.get_absolute_url(request.url)
+    if not self.is_in_scope(request.url):
+        raise HTTPOutOfScopeError(request.url, self.base_url)
+    return super().prepare_request(request)</code></pre>
+</details>
+</dd>
+<dt id="tenlib.http.ScopedSession.is_in_scope"><code class="name flex">
+<span>def <span class="ident">is_in_scope</span></span>(<span>self, url: str) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Verifies that given URL is within the target's scope.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def is_in_scope(self, url: str) -&gt; bool:
+    &#34;&#34;&#34;Verifies that given URL is within the target&#39;s scope.&#34;&#34;&#34;
+    bu = self._parsed_base_url
+    tu = urllib.parse.urlparse(url)
+    return (
+        bu.hostname == tu.hostname
+        and bu.port == tu.port
+        and bu.scheme == tu.scheme
+        and tu.path.startswith(bu.path)
+    )</code></pre>
+</details>
+</dd>
+<dt id="tenlib.http.ScopedSession.get_absolute_url"><code class="name flex">
+<span>def <span class="ident">get_absolute_url</span></span>(<span>self, url: str, base: str = None) ‑> str</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Merges base URL with the given one.
+If the given URL starts with a slash, it is appended to the base URL. If
+it starts with <code>http://</code> or <code>https://</code>, it is considered a full URL.
+Else, an error is raised.</p>
+<p>Using <code>urllib.parse.urljoin</code> does not do the job properly, as for
+instance you want specially crafted paths such as
+<code>/admin/login.php/../dashboard</code>.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>url</code></strong> :&ensp;<code>str</code></dt>
+<dd>URL to scope with base URL</dd>
+<dt><strong><code>base</code></strong> :&ensp;<code>str</code></dt>
+<dd>Base URL</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>str</code></dt>
+<dd>Scoped URL</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_absolute_url(self, url: str, base: str=None) -&gt; str:
+    &#34;&#34;&#34;Merges base URL with the given one.
+    If the given URL starts with a slash, it is appended to the base URL. If
+    it starts with `http://` or `https://`, it is considered a full URL.
+    Else, an error is raised.
+
+    Using `urllib.parse.urljoin` does not do the job properly, as for
+    instance you want specially crafted paths such as
+    `/admin/login.php/../dashboard`.
+
+    Args:
+        url (str): URL to scope with base URL
+        base (str): Base URL
+
+    Returns:
+        str: Scoped URL
+    &#34;&#34;&#34;
+    if base is None:
+        base = self.base_url
+
+    if url.startswith(&#34;/&#34;):
+        return base + url
+    if url.startswith(&#34;https://&#34;) or url.startswith(&#34;http://&#34;):
+        return url
+
+    raise ValueError(f&#34;Unable to comprehend URL: {url}&#34;)</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="tenlib.http.Session" href="#tenlib.http.Session">Session</a></b></code>:
+<ul class="hlist">
+<li><code><a title="tenlib.http.Session.allow_redirects" href="#tenlib.http.Session.allow_redirects">allow_redirects</a></code></li>
+<li><code><a title="tenlib.http.Session.burp" href="#tenlib.http.Session.burp">burp</a></code></li>
+<li><code><a title="tenlib.http.Session.delete" href="#tenlib.http.Session.delete">delete</a></code></li>
+<li><code><a title="tenlib.http.Session.first" href="#tenlib.http.Session.first">first</a></code></li>
+<li><code><a title="tenlib.http.Session.get" href="#tenlib.http.Session.get">get</a></code></li>
+<li><code><a title="tenlib.http.Session.head" href="#tenlib.http.Session.head">head</a></code></li>
+<li><code><a title="tenlib.http.Session.max_connections" href="#tenlib.http.Session.max_connections">max_connections</a></code></li>
+<li><code><a title="tenlib.http.Session.multi" href="#tenlib.http.Session.multi">multi</a></code></li>
+<li><code><a title="tenlib.http.Session.options" href="#tenlib.http.Session.options">options</a></code></li>
+<li><code><a title="tenlib.http.Session.patch" href="#tenlib.http.Session.patch">patch</a></code></li>
+<li><code><a title="tenlib.http.Session.pool" href="#tenlib.http.Session.pool">pool</a></code></li>
+<li><code><a title="tenlib.http.Session.post" href="#tenlib.http.Session.post">post</a></code></li>
+<li><code><a title="tenlib.http.Session.proxies" href="#tenlib.http.Session.proxies">proxies</a></code></li>
+<li><code><a title="tenlib.http.Session.put" href="#tenlib.http.Session.put">put</a></code></li>
+<li><code><a title="tenlib.http.Session.raw_url" href="#tenlib.http.Session.raw_url">raw_url</a></code></li>
+<li><code><a title="tenlib.http.Session.request" href="#tenlib.http.Session.request">request</a></code></li>
+<li><code><a title="tenlib.http.Session.timeout" href="#tenlib.http.Session.timeout">timeout</a></code></li>
+<li><code><a title="tenlib.http.Session.unburp" href="#tenlib.http.Session.unburp">unburp</a></code></li>
+<li><code><a title="tenlib.http.Session.verify" href="#tenlib.http.Session.verify">verify</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt id="tenlib.http.Response"><code class="flex name class">
+<span>class <span class="ident">Response</span></span>
+<span>(</span><span>session: <a title="tenlib.http.Session" href="#tenlib.http.Session">Session</a>)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Enhanced HTTP response.</p>
+<p>The response object can be filtered more easily using <code><a title="tenlib.http.Response.code" href="#tenlib.http.Response.code">Response.code()</a></code> and
+<code><a title="tenlib.http.Response.contains" href="#tenlib.http.Response.contains">Response.contains()</a></code>. It also contains a few helpers:</p>
+<ul>
+<li><code><a title="tenlib.http.Response.form" href="#tenlib.http.Response.form">Response.form()</a></code>: Parse, fill and submit forms</li>
+<li><code><a title="tenlib.http.Response.re" href="#tenlib.http.Response.re">Response.re</a></code>: Perform regex operations on the response</li>
+<li><code><a title="tenlib.http.Response.soup" href="#tenlib.http.Response.soup">Response.soup</a></code>: Returns a <code>BeautifulSoup</code> object</li>
+<li><code><a title="tenlib.http.Response.xml" href="#tenlib.http.Response.xml">Response.xml()</a></code>: Returns a dict representation of the response's XML</li>
+</ul>
+<p>Additionally, the response object is storable (see
+<code><a title="tenlib.struct.storable.Storable" href="struct/storable.html#tenlib.struct.storable.Storable">Storable</a></code>)</p>
+<h2 id="examples">Examples</h2>
+<p>Finding a pattern in a response:</p>
+<pre><code>&gt;&gt;&gt; response.re.search('&lt;data csrf-token="(.*?)"').group(1)
+'MyCsrfToken'
+</code></pre>
+<p>Finding every <code>&lt;p&gt;</code> tag:</p>
+<pre><code>&gt;&gt;&gt; response.soup.find('p')
+[&lt;Element 'p' &gt;, &lt;Element 'p' class=('errorButton',)&gt;]
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Response(requests.Response, struct.Storable):
+    &#34;&#34;&#34;Enhanced HTTP response.
+
+    The response object can be filtered more easily using `Response.code` and
+    `Response.contains`. It also contains a few helpers:
+
+    * `Response.form`: Parse, fill and submit forms
+    * `Response.re`: Perform regex operations on the response
+    * `Response.soup`: Returns a `BeautifulSoup` object
+    * `Response.xml`: Returns a dict representation of the response&#39;s XML
+
+    Additionally, the response object is storable (see
+    `tenlib.struct.storable.Storable`)
+
+    Examples:
+
+        Finding a pattern in a response:
+
+            &gt;&gt;&gt; response.re.search(&#39;&lt;data csrf-token=&#34;(.*?)&#34;&#39;).group(1)
+            &#39;MyCsrfToken&#39;
+
+        Finding every `&lt;p&gt;` tag:
+
+            &gt;&gt;&gt; response.soup.find(&#39;p&#39;)
+            [&lt;Element &#39;p&#39; &gt;, &lt;Element &#39;p&#39; class=(&#39;errorButton&#39;,)&gt;]
+    &#34;&#34;&#34;
+
+    session: Session
+    &#34;&#34;&#34;The session that was used to make the request.&#34;&#34;&#34;
+    tag: Any
+    &#34;&#34;&#34;A tag that can be used to identify the response.&#34;&#34;&#34;
+
+    def __init__(self, session: Session):
+        self.session = session
+        super().__init__()
+
+    @classmethod
+    def _from_response(cls, session: Session, response: requests.Response):
+        new_response = cls(session)
+        new_response.__dict__.update(response.__dict__)
+        return new_response
+
+    def code(self, *codes: int) -&gt; bool:
+        &#34;&#34;&#34;Returns `True` if the `status_code` is in `codes`.
+
+        Args:
+            *code (int): Possible status codes.
+
+        Examples:
+            &gt;&gt;&gt; response.status_code
+            500
+            &gt;&gt;&gt; response.code(200, 500, 403)
+            True
+            &gt;&gt;&gt; response.code(200, 302)
+            False
+        &#34;&#34;&#34;
+        return self.status_code in codes
+
+    def contains(self, needle: BytesOrStr) -&gt; bool:
+        &#34;&#34;&#34;Returns `True` if the response contents contains `needle`.&#34;&#34;&#34;
+        if isinstance(needle, str):
+            return needle in self.text
+        return needle in self.content
+
+    def follow_redirect(self) -&gt; Response:
+        &#34;&#34;&#34;Follows the redirection. Raises `ValueError` if no Location header is
+        found.
+        &#34;&#34;&#34;
+
+        for redirection in self.session.resolve_redirects(self, self.request):
+            return redirection
+
+    @cached_property
+    def re(self) -&gt; ResponseRegex:
+        &#34;&#34;&#34;A `ResponseRegex` object built from this response.&#34;&#34;&#34;
+        return ResponseRegex(self)
+
+    @cached_property
+    def soup(self) -&gt; BeautifulSoup:
+        &#34;&#34;&#34;A `BeautifulSoup` object built from this response.&#34;&#34;&#34;
+        return BeautifulSoup(self.content, &#34;lxml&#34;)
+
+    def form(self, selector: str = None, **attributes) -&gt; Form:
+        &#34;&#34;&#34;Finds a `&lt;form&gt;` tag with given CSS selector and extracts its action,
+        method and input/textarea fields to build a `Form` object.
+
+        Args:
+            selector: CSS selector of the `&lt;form&gt;` tag you want to extract.
+            **attributes: Attributes of the `&lt;form&gt;` tag you want to extract.
+
+        Raises:
+            FormNotFoundError: The form was not found in the page.
+
+        Examples:
+            &gt;&gt;&gt; response.form(&#39;#login-form&#39;)
+            ...
+            &gt;&gt;&gt; response.form(action=&#39;/login&#39;)
+            ...
+        &#34;&#34;&#34;
+        selector = selector or &#34;&#34;
+        selector = &#34;form&#34; + selector
+        selector += &#34;&#34;.join(f&#39;[{k}=&#34;{v}&#34;]&#39; for k, v in attributes.items())
+        form = self.soup.select_one(selector)
+        if not form:
+            raise FormNotFoundError(selector)
+
+        action = form.attrs.get(&#34;action&#34;, &#34;&#34;)
+        action = urllib.parse.urljoin(self.url, action)
+        method = form.attrs.get(&#34;method&#34;, &#34;GET&#34;)
+        data = {}
+
+        # TODO If inputs are malformed (for instance, no &#34;name&#34; attribute) it&#39;ll
+        # crash
+        inputs = form.select(&#34;input&#34;)
+        data.update(
+            {
+                input.attrs[&#34;name&#34;]: input.attrs.get(&#34;value&#34;, &#34;&#34;)
+                for input in inputs
+                if &#34;name&#34; in input.attrs
+            }
+        )
+        inputs = form.select(&#34;textarea&#34;)
+        data.update(
+            {
+                input.attrs[&#34;name&#34;]: input.contents[0]
+                for input in inputs
+                if &#34;name&#34; in input.attrs
+            }
+        )
+
+        return Form(self.session, action, method, data, self.url)
+
+    def expect(self, *codes: int) -&gt; None:
+        &#34;&#34;&#34;If the HTTP status code of the response is not within `codes`, raises
+        an `UnexpectedHTTPStatusCodeError`.
+
+        Args:
+            *codes (int): Possible status codes.
+
+        Raises:
+            UnexpectedHTTPStatusCodeError: if the response&#39;s status code is not
+                in `codes`.
+
+        Examples:
+            &gt;&gt;&gt; response.status_code
+            500
+            &gt;&gt;&gt; response.expect(200, 500, 403)
+            &gt;&gt;&gt; response.expect(200, 302)
+            UnexpectedHTTPStatusCodeError: Status code 500 is not one of (200, 302)
+        &#34;&#34;&#34;
+        if not self.code(*codes):
+            raise UnexpectedHTTPStatusCodeError(self, codes)
+
+    def select(self, selector: str) -&gt; list[BeautifulSoup]:
+        &#34;&#34;&#34;Returns a list of all elements matching the CSS selector.&#34;&#34;&#34;
+        return self.soup.select(selector)
+
+    def select_one(self, selector: str) -&gt; BeautifulSoup:
+        &#34;&#34;&#34;Returns the first element matching the CSS selector.&#34;&#34;&#34;
+        return self.soup.select_one(selector)
+
+    def xml(self) -&gt; struct.XMLDict:
+        &#34;&#34;&#34;Builds a dict representation of the XML response.&#34;&#34;&#34;
+        return struct.XMLDict.build(self.text)
+
+    def store_as_txt(self, path):
+        &#34;&#34;&#34;Saves both the HTTP request and the HTTP response in a file.&#34;&#34;&#34;
+        dump = requests_toolbelt.utils.dump
+        data = dump.dump_all(self, request_prefix=&#34;&#34;, response_prefix=&#34;&#34;)
+        fs.write(path, data)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>requests.models.Response</li>
+<li><a title="tenlib.struct.storable.Storable" href="struct/storable.html#tenlib.struct.storable.Storable">Storable</a></li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="tenlib.http.Response.session"><code class="name">var <span class="ident">session</span> : <a title="tenlib.http.Session" href="#tenlib.http.Session">Session</a></code></dt>
+<dd>
+<div class="desc"><p>The session that was used to make the request.</p></div>
+</dd>
+<dt id="tenlib.http.Response.tag"><code class="name">var <span class="ident">tag</span> : Any</code></dt>
+<dd>
+<div class="desc"><p>A tag that can be used to identify the response.</p></div>
+</dd>
+</dl>
+<h3>Instance variables</h3>
+<dl>
+<dt id="tenlib.http.Response.re"><code class="name">var <span class="ident">re</span></code></dt>
+<dd>
+<div class="desc"><p>A <code><a title="tenlib.http.ResponseRegex" href="#tenlib.http.ResponseRegex">ResponseRegex</a></code> object built from this response.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner=None):
+    if instance is None:
+        return self
+    if self.attrname is None:
+        raise TypeError(
+            &#34;Cannot use cached_property instance without calling __set_name__ on it.&#34;)
+    try:
+        cache = instance.__dict__
+    except AttributeError:  # not all objects have __dict__ (e.g. class defines slots)
+        msg = (
+            f&#34;No &#39;__dict__&#39; attribute on {type(instance).__name__!r} &#34;
+            f&#34;instance to cache {self.attrname!r} property.&#34;
+        )
+        raise TypeError(msg) from None
+    val = cache.get(self.attrname, _NOT_FOUND)
+    if val is _NOT_FOUND:
+        with self.lock:
+            # check if another thread filled cache while we awaited lock
+            val = cache.get(self.attrname, _NOT_FOUND)
+            if val is _NOT_FOUND:
+                val = self.func(instance)
+                try:
+                    cache[self.attrname] = val
+                except TypeError:
+                    msg = (
+                        f&#34;The &#39;__dict__&#39; attribute on {type(instance).__name__!r} instance &#34;
+                        f&#34;does not support item assignment for caching {self.attrname!r} property.&#34;
+                    )
+                    raise TypeError(msg) from None
+    return val</code></pre>
+</details>
+</dd>
+<dt id="tenlib.http.Response.soup"><code class="name">var <span class="ident">soup</span></code></dt>
+<dd>
+<div class="desc"><p>A <code>BeautifulSoup</code> object built from this response.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner=None):
+    if instance is None:
+        return self
+    if self.attrname is None:
+        raise TypeError(
+            &#34;Cannot use cached_property instance without calling __set_name__ on it.&#34;)
+    try:
+        cache = instance.__dict__
+    except AttributeError:  # not all objects have __dict__ (e.g. class defines slots)
+        msg = (
+            f&#34;No &#39;__dict__&#39; attribute on {type(instance).__name__!r} &#34;
+            f&#34;instance to cache {self.attrname!r} property.&#34;
+        )
+        raise TypeError(msg) from None
+    val = cache.get(self.attrname, _NOT_FOUND)
+    if val is _NOT_FOUND:
+        with self.lock:
+            # check if another thread filled cache while we awaited lock
+            val = cache.get(self.attrname, _NOT_FOUND)
+            if val is _NOT_FOUND:
+                val = self.func(instance)
+                try:
+                    cache[self.attrname] = val
+                except TypeError:
+                    msg = (
+                        f&#34;The &#39;__dict__&#39; attribute on {type(instance).__name__!r} instance &#34;
+                        f&#34;does not support item assignment for caching {self.attrname!r} property.&#34;
+                    )
+                    raise TypeError(msg) from None
+    return val</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="tenlib.http.Response.code"><code class="name flex">
+<span>def <span class="ident">code</span></span>(<span>self, *codes: int) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns <code>True</code> if the <code>status_code</code> is in <code>codes</code>.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>*code</code></strong> :&ensp;<code>int</code></dt>
+<dd>Possible status codes.</dd>
+</dl>
+<h2 id="examples">Examples</h2>
+<pre><code class="language-python-repl">&gt;&gt;&gt; response.status_code
+500
+&gt;&gt;&gt; response.code(200, 500, 403)
+True
+&gt;&gt;&gt; response.code(200, 302)
+False
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def code(self, *codes: int) -&gt; bool:
+    &#34;&#34;&#34;Returns `True` if the `status_code` is in `codes`.
+
+    Args:
+        *code (int): Possible status codes.
+
+    Examples:
+        &gt;&gt;&gt; response.status_code
+        500
+        &gt;&gt;&gt; response.code(200, 500, 403)
+        True
+        &gt;&gt;&gt; response.code(200, 302)
+        False
+    &#34;&#34;&#34;
+    return self.status_code in codes</code></pre>
+</details>
+</dd>
+<dt id="tenlib.http.Response.contains"><code class="name flex">
+<span>def <span class="ident">contains</span></span>(<span>self, needle: BytesOrStr) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns <code>True</code> if the response contents contains <code>needle</code>.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def contains(self, needle: BytesOrStr) -&gt; bool:
+    &#34;&#34;&#34;Returns `True` if the response contents contains `needle`.&#34;&#34;&#34;
+    if isinstance(needle, str):
+        return needle in self.text
+    return needle in self.content</code></pre>
+</details>
+</dd>
+<dt id="tenlib.http.Response.follow_redirect"><code class="name flex">
+<span>def <span class="ident">follow_redirect</span></span>(<span>self) ‑> <a title="tenlib.http.Response" href="#tenlib.http.Response">Response</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Follows the redirection. Raises <code>ValueError</code> if no Location header is
+found.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def follow_redirect(self) -&gt; Response:
+    &#34;&#34;&#34;Follows the redirection. Raises `ValueError` if no Location header is
+    found.
+    &#34;&#34;&#34;
+
+    for redirection in self.session.resolve_redirects(self, self.request):
+        return redirection</code></pre>
+</details>
+</dd>
+<dt id="tenlib.http.Response.form"><code class="name flex">
+<span>def <span class="ident">form</span></span>(<span>self, selector: str = None, **attributes) ‑> <a title="tenlib.http.Form" href="#tenlib.http.Form">Form</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Finds a <code>&lt;form&gt;</code> tag with given CSS selector and extracts its action,
+method and input/textarea fields to build a <code><a title="tenlib.http.Form" href="#tenlib.http.Form">Form</a></code> object.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>selector</code></strong></dt>
+<dd>CSS selector of the <code>&lt;form&gt;</code> tag you want to extract.</dd>
+<dt><strong><code>**attributes</code></strong></dt>
+<dd>Attributes of the <code>&lt;form&gt;</code> tag you want to extract.</dd>
+</dl>
+<h2 id="raises">Raises</h2>
+<dl>
+<dt><code><a title="tenlib.http.FormNotFoundError" href="#tenlib.http.FormNotFoundError">FormNotFoundError</a></code></dt>
+<dd>The form was not found in the page.</dd>
+</dl>
+<h2 id="examples">Examples</h2>
+<pre><code class="language-python-repl">&gt;&gt;&gt; response.form('#login-form')
+...
+&gt;&gt;&gt; response.form(action='/login')
+...
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def form(self, selector: str = None, **attributes) -&gt; Form:
+    &#34;&#34;&#34;Finds a `&lt;form&gt;` tag with given CSS selector and extracts its action,
+    method and input/textarea fields to build a `Form` object.
+
+    Args:
+        selector: CSS selector of the `&lt;form&gt;` tag you want to extract.
+        **attributes: Attributes of the `&lt;form&gt;` tag you want to extract.
+
+    Raises:
+        FormNotFoundError: The form was not found in the page.
+
+    Examples:
+        &gt;&gt;&gt; response.form(&#39;#login-form&#39;)
+        ...
+        &gt;&gt;&gt; response.form(action=&#39;/login&#39;)
+        ...
+    &#34;&#34;&#34;
+    selector = selector or &#34;&#34;
+    selector = &#34;form&#34; + selector
+    selector += &#34;&#34;.join(f&#39;[{k}=&#34;{v}&#34;]&#39; for k, v in attributes.items())
+    form = self.soup.select_one(selector)
+    if not form:
+        raise FormNotFoundError(selector)
+
+    action = form.attrs.get(&#34;action&#34;, &#34;&#34;)
+    action = urllib.parse.urljoin(self.url, action)
+    method = form.attrs.get(&#34;method&#34;, &#34;GET&#34;)
+    data = {}
+
+    # TODO If inputs are malformed (for instance, no &#34;name&#34; attribute) it&#39;ll
+    # crash
+    inputs = form.select(&#34;input&#34;)
+    data.update(
+        {
+            input.attrs[&#34;name&#34;]: input.attrs.get(&#34;value&#34;, &#34;&#34;)
+            for input in inputs
+            if &#34;name&#34; in input.attrs
+        }
+    )
+    inputs = form.select(&#34;textarea&#34;)
+    data.update(
+        {
+            input.attrs[&#34;name&#34;]: input.contents[0]
+            for input in inputs
+            if &#34;name&#34; in input.attrs
+        }
+    )
+
+    return Form(self.session, action, method, data, self.url)</code></pre>
+</details>
+</dd>
+<dt id="tenlib.http.Response.expect"><code class="name flex">
+<span>def <span class="ident">expect</span></span>(<span>self, *codes: int) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>If the HTTP status code of the response is not within <code>codes</code>, raises
+an <code><a title="tenlib.http.UnexpectedHTTPStatusCodeError" href="#tenlib.http.UnexpectedHTTPStatusCodeError">UnexpectedHTTPStatusCodeError</a></code>.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>*codes</code></strong> :&ensp;<code>int</code></dt>
+<dd>Possible status codes.</dd>
+</dl>
+<h2 id="raises">Raises</h2>
+<dl>
+<dt><code><a title="tenlib.http.UnexpectedHTTPStatusCodeError" href="#tenlib.http.UnexpectedHTTPStatusCodeError">UnexpectedHTTPStatusCodeError</a></code></dt>
+<dd>if the response's status code is not
+in <code>codes</code>.</dd>
+</dl>
+<h2 id="examples">Examples</h2>
+<pre><code class="language-python-repl">&gt;&gt;&gt; response.status_code
+500
+&gt;&gt;&gt; response.expect(200, 500, 403)
+&gt;&gt;&gt; response.expect(200, 302)
+UnexpectedHTTPStatusCodeError: Status code 500 is not one of (200, 302)
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def expect(self, *codes: int) -&gt; None:
+    &#34;&#34;&#34;If the HTTP status code of the response is not within `codes`, raises
+    an `UnexpectedHTTPStatusCodeError`.
+
+    Args:
+        *codes (int): Possible status codes.
+
+    Raises:
+        UnexpectedHTTPStatusCodeError: if the response&#39;s status code is not
+            in `codes`.
+
+    Examples:
+        &gt;&gt;&gt; response.status_code
+        500
+        &gt;&gt;&gt; response.expect(200, 500, 403)
+        &gt;&gt;&gt; response.expect(200, 302)
+        UnexpectedHTTPStatusCodeError: Status code 500 is not one of (200, 302)
+    &#34;&#34;&#34;
+    if not self.code(*codes):
+        raise UnexpectedHTTPStatusCodeError(self, codes)</code></pre>
+</details>
+</dd>
+<dt id="tenlib.http.Response.select"><code class="name flex">
+<span>def <span class="ident">select</span></span>(<span>self, selector: str) ‑> list[bs4.BeautifulSoup]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns a list of all elements matching the CSS selector.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def select(self, selector: str) -&gt; list[BeautifulSoup]:
+    &#34;&#34;&#34;Returns a list of all elements matching the CSS selector.&#34;&#34;&#34;
+    return self.soup.select(selector)</code></pre>
+</details>
+</dd>
+<dt id="tenlib.http.Response.select_one"><code class="name flex">
+<span>def <span class="ident">select_one</span></span>(<span>self, selector: str) ‑> bs4.BeautifulSoup</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns the first element matching the CSS selector.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def select_one(self, selector: str) -&gt; BeautifulSoup:
+    &#34;&#34;&#34;Returns the first element matching the CSS selector.&#34;&#34;&#34;
+    return self.soup.select_one(selector)</code></pre>
+</details>
+</dd>
+<dt id="tenlib.http.Response.xml"><code class="name flex">
+<span>def <span class="ident">xml</span></span>(<span>self) ‑> <a title="tenlib.struct.xmldict.XMLDict" href="struct/xmldict.html#tenlib.struct.xmldict.XMLDict">XMLDict</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Builds a dict representation of the XML response.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def xml(self) -&gt; struct.XMLDict:
+    &#34;&#34;&#34;Builds a dict representation of the XML response.&#34;&#34;&#34;
+    return struct.XMLDict.build(self.text)</code></pre>
+</details>
+</dd>
+<dt id="tenlib.http.Response.store_as_txt"><code class="name flex">
+<span>def <span class="ident">store_as_txt</span></span>(<span>self, path)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Saves both the HTTP request and the HTTP response in a file.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def store_as_txt(self, path):
+    &#34;&#34;&#34;Saves both the HTTP request and the HTTP response in a file.&#34;&#34;&#34;
+    dump = requests_toolbelt.utils.dump
+    data = dump.dump_all(self, request_prefix=&#34;&#34;, response_prefix=&#34;&#34;)
+    fs.write(path, data)</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="tenlib.struct.storable.Storable" href="struct/storable.html#tenlib.struct.storable.Storable">Storable</a></b></code>:
+<ul class="hlist">
+<li><code><a title="tenlib.struct.storable.Storable.store" href="struct/storable.html#tenlib.struct.storable.Storable.store">store</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt id="tenlib.http.ResponseRegex"><code class="flex name class">
+<span>class <span class="ident">ResponseRegex</span></span>
+<span>(</span><span>response: <a title="tenlib.http.Response" href="#tenlib.http.Response">Response</a>)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Helper class allowing to perform regex function calls onto the response.
+If the pattern is a <code>str</code>, it will be matched against <code>Response.text</code>. If
+it is <code>bytes</code>, it will be matched against <code>Response.content</code>.</p>
+<p>For instance</p>
+<pre><code>response.re.search('test[0-9]+')
+</code></pre>
+<p>is equivalent to</p>
+<pre><code>re.search('test[0-9]+', response.text)
+</code></pre>
+<p>and</p>
+<pre><code>response.re.sub(b'someth[iI]ng', b'else')
+</code></pre>
+<p>is equivalent to</p>
+<pre><code>re.sub(b'someth[iI]ng', b'else', response.content)
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class ResponseRegex:
+    &#34;&#34;&#34;Helper class allowing to perform regex function calls onto the response.
+    If the pattern is a `str`, it will be matched against `Response.text`. If
+    it is `bytes`, it will be matched against `Response.content`.
+
+    For instance
+
+        response.re.search(&#39;test[0-9]+&#39;)
+
+    is equivalent to
+
+        re.search(&#39;test[0-9]+&#39;, response.text)
+
+    and
+
+        response.re.sub(b&#39;someth[iI]ng&#39;, b&#39;else&#39;)
+
+    is equivalent to
+
+        re.sub(b&#39;someth[iI]ng&#39;, b&#39;else&#39;, response.content)
+    &#34;&#34;&#34;
+
+    A = re.A
+    I = re.I
+    S = re.S
+    L = re.L
+    M = re.M
+    X = re.X
+
+    def __init__(self, response: Response):
+        self.response = response
+
+    def search(self, pattern: BytesOrStr, flags: int = 0):
+        &#34;&#34;&#34;Calls `re.search` onto the HTTP response.&#34;&#34;&#34;
+        return re.search(pattern, self._target(pattern), flags)
+
+    def match(self, pattern: BytesOrStr, flags: int = 0):
+        &#34;&#34;&#34;Calls `re.match` onto the HTTP response.&#34;&#34;&#34;
+        return re.match(pattern, self._target(pattern), flags)
+
+    def findall(self, pattern: BytesOrStr, flags: int = 0):
+        &#34;&#34;&#34;Calls `re.findall` onto the HTTP response.&#34;&#34;&#34;
+        return re.findall(pattern, self._target(pattern), flags)
+
+    def sub(
+        self, pattern: BytesOrStr, replacement: BytesOrStr, *args, **kwargs
+    ) -&gt; BytesOrStr:
+        &#34;&#34;&#34;Calls `re.sub` onto the HTTP response.&#34;&#34;&#34;
+        return re.sub(pattern, replacement, self._target(pattern), *args, **kwargs)
+
+    def _target(self, pattern: BytesOrStr) -&gt; BytesOrStr:
+        &#34;&#34;&#34;Returns either the byte representation or the text representation
+        of the response depending on the type of `pattern`.
+        &#34;&#34;&#34;
+        if isinstance(pattern, bytes):
+            return self.response.content
+        return self.response.text</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="tenlib.http.ResponseRegex.A"><code class="name">var <span class="ident">A</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="tenlib.http.ResponseRegex.I"><code class="name">var <span class="ident">I</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="tenlib.http.ResponseRegex.S"><code class="name">var <span class="ident">S</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="tenlib.http.ResponseRegex.L"><code class="name">var <span class="ident">L</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="tenlib.http.ResponseRegex.M"><code class="name">var <span class="ident">M</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="tenlib.http.ResponseRegex.X"><code class="name">var <span class="ident">X</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="tenlib.http.ResponseRegex.search"><code class="name flex">
+<span>def <span class="ident">search</span></span>(<span>self, pattern: BytesOrStr, flags: int = 0)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Calls <code>re.search</code> onto the HTTP response.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def search(self, pattern: BytesOrStr, flags: int = 0):
+    &#34;&#34;&#34;Calls `re.search` onto the HTTP response.&#34;&#34;&#34;
+    return re.search(pattern, self._target(pattern), flags)</code></pre>
+</details>
+</dd>
+<dt id="tenlib.http.ResponseRegex.match"><code class="name flex">
+<span>def <span class="ident">match</span></span>(<span>self, pattern: BytesOrStr, flags: int = 0)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Calls <code>re.match</code> onto the HTTP response.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def match(self, pattern: BytesOrStr, flags: int = 0):
+    &#34;&#34;&#34;Calls `re.match` onto the HTTP response.&#34;&#34;&#34;
+    return re.match(pattern, self._target(pattern), flags)</code></pre>
+</details>
+</dd>
+<dt id="tenlib.http.ResponseRegex.findall"><code class="name flex">
+<span>def <span class="ident">findall</span></span>(<span>self, pattern: BytesOrStr, flags: int = 0)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Calls <code>re.findall</code> onto the HTTP response.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def findall(self, pattern: BytesOrStr, flags: int = 0):
+    &#34;&#34;&#34;Calls `re.findall` onto the HTTP response.&#34;&#34;&#34;
+    return re.findall(pattern, self._target(pattern), flags)</code></pre>
+</details>
+</dd>
+<dt id="tenlib.http.ResponseRegex.sub"><code class="name flex">
+<span>def <span class="ident">sub</span></span>(<span>self, pattern: BytesOrStr, replacement: BytesOrStr, *args, **kwargs) ‑> Union[str, bytes]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Calls <code>re.sub</code> onto the HTTP response.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def sub(
+    self, pattern: BytesOrStr, replacement: BytesOrStr, *args, **kwargs
+) -&gt; BytesOrStr:
+    &#34;&#34;&#34;Calls `re.sub` onto the HTTP response.&#34;&#34;&#34;
+    return re.sub(pattern, replacement, self._target(pattern), *args, **kwargs)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="tenlib.http.Form"><code class="flex name class">
+<span>class <span class="ident">Form</span></span>
+<span>(</span><span>session: <a title="tenlib.http.Session" href="#tenlib.http.Session">Session</a>, action: str, method: str, data: dict, referer: str = None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Represents an HTTP form, with its action (target URL), method, and data.</p>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>session</code></strong> :&ensp;<code><a title="tenlib.http.Session" href="#tenlib.http.Session">Session</a></code></dt>
+<dd>HTTP session</dd>
+<dt><strong><code>action</code></strong> :&ensp;<code>str</code></dt>
+<dd>Form's action URL</dd>
+<dt><strong><code>method</code></strong> :&ensp;<code>str</code></dt>
+<dd>Form's HTTP method</dd>
+</dl>
+<h2 id="examples">Examples</h2>
+<p>Grab <code>&lt;form id="form_login" action="/user/login" method="POST"&gt;</code>, check
+the CSRF token, change credentials and submit it:</p>
+<pre><code>&gt;&gt;&gt; f = response.form(id="form_login")
+&gt;&gt;&gt; f
+Form(
+    action='https://www.target.com/user/login',
+    method='POST',
+    data={
+        'login': '',
+        'password': '',
+        '_csrf_token': '3e8c31f3880701247c910479e9ac99f8ba2c6819'
+    }
+)
+&gt;&gt;&gt; f["_csrf_token"]
+'3e8c31f3880701247c910479e9ac99f8ba2c6819'
+&gt;&gt;&gt; f["login"] = 'test@test.fr'
+&gt;&gt;&gt; f["password"] = 'haricot'
+&gt;&gt;&gt; response = f.submit()
+</code></pre>
+<p>Grab <code>&lt;form name="edition"&gt;</code>, change the username and submit it to
+<code>/user/edit</code>:</p>
+<pre><code>&gt;&gt;&gt; new_response = await response.form(name="edition").update(
+...     username='my_new_username'
+... ).submit('/user/edit')
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Form:
+    &#34;&#34;&#34;Represents an HTTP form, with its action (target URL), method, and data.
+
+    Attributes:
+        session (Session): HTTP session
+        action (str): Form&#39;s action URL
+        method (str): Form&#39;s HTTP method
+
+    Examples:
+        Grab `&lt;form id=&#34;form_login&#34; action=&#34;/user/login&#34; method=&#34;POST&#34;&gt;`, check
+        the CSRF token, change credentials and submit it:
+
+            &gt;&gt;&gt; f = response.form(id=&#34;form_login&#34;)
+            &gt;&gt;&gt; f
+            Form(
+                action=&#39;https://www.target.com/user/login&#39;,
+                method=&#39;POST&#39;,
+                data={
+                    &#39;login&#39;: &#39;&#39;,
+                    &#39;password&#39;: &#39;&#39;,
+                    &#39;_csrf_token&#39;: &#39;3e8c31f3880701247c910479e9ac99f8ba2c6819&#39;
+                }
+            )
+            &gt;&gt;&gt; f[&#34;_csrf_token&#34;]
+            &#39;3e8c31f3880701247c910479e9ac99f8ba2c6819&#39;
+            &gt;&gt;&gt; f[&#34;login&#34;] = &#39;test@test.fr&#39;
+            &gt;&gt;&gt; f[&#34;password&#34;] = &#39;haricot&#39;
+            &gt;&gt;&gt; response = f.submit()
+
+        Grab `&lt;form name=&#34;edition&#34;&gt;`, change the username and submit it to
+        `/user/edit`:
+
+            &gt;&gt;&gt; new_response = await response.form(name=&#34;edition&#34;).update(
+            ...     username=&#39;my_new_username&#39;
+            ... ).submit(&#39;/user/edit&#39;)
+    &#34;&#34;&#34;
+
+    session: Session = None
+    &#34;&#34;&#34;HTTP Session&#34;&#34;&#34;
+    action: str = None
+    &#34;&#34;&#34;Form action (URL to send it to)&#34;&#34;&#34;
+    method: str = None
+    &#34;&#34;&#34;HTTP method to sent the form with.&#34;&#34;&#34;
+    data: dict
+    &#34;&#34;&#34;Form data.&#34;&#34;&#34;
+
+    def __init__(self, session: Session, action: str, method: str, data: dict, referer: str=None):
+        self.session = session
+        self.action = action
+        self.method = method
+        self.data = data
+        self.referer = referer
+        
+        
+    @property
+    def referrer(self):
+        # Referer is actually a misspelling of Referrer
+        return self.referer
+    
+    @referrer.setter
+    def referrer(self, value):
+        # Referer is actually a misspelling of Referrer
+        self.referer = value
+
+    def submit(self, action: str = None, method: str = None, **kwargs) -&gt; Response:
+        &#34;&#34;&#34;Submits the form.
+
+        Args:
+            action (str): URL to send the form data to.
+                If not set, the form&#39;s action will be used
+            method (str): HTTP method to use.
+                If not set, the form&#39;s method will be used
+            kwargs: Arguments to send to the `Session.request` call.
+
+        Returns:
+            Response: HTTP response
+        &#34;&#34;&#34;
+        if action is None:
+            action = self.action
+        if method is None:
+            method = self.method
+
+        args_key = &#34;params&#34; if method == &#34;GET&#34; else &#34;data&#34;
+        kwargs[args_key] = self.data
+        if self.referer:
+            kwargs.setdefault(&#34;headers&#34;, {}).setdefault(&#34;Referer&#34;, self.referer)
+
+        return self.session.request(method, action, **kwargs)
+
+    def __repr__(self):
+        return (
+            f&#34;{type(self).__name__}(&#34;
+            f&#34;action={self.action!r}, &#34;
+            f&#34;method={self.method!r}, &#34;
+            f&#34;data={self.data})&#34;
+        )
+
+    def update(self, data: dict = None, **kwargs) -&gt; Form:
+        &#34;&#34;&#34;Updates the form&#39;s data.&#34;&#34;&#34;
+        self.data.update(data, **kwargs)
+        return self
+
+    def __getitem__(self, key):
+        return self.data[key]
+
+    def __setitem__(self, key, value):
+        self.data[key] = value</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="tenlib.http.Form.data"><code class="name">var <span class="ident">data</span> : dict</code></dt>
+<dd>
+<div class="desc"><p>Form data.</p></div>
+</dd>
+<dt id="tenlib.http.Form.session"><code class="name">var <span class="ident">session</span> : <a title="tenlib.http.Session" href="#tenlib.http.Session">Session</a></code></dt>
+<dd>
+<div class="desc"><p>HTTP Session</p></div>
+</dd>
+<dt id="tenlib.http.Form.action"><code class="name">var <span class="ident">action</span> : str</code></dt>
+<dd>
+<div class="desc"><p>Form action (URL to send it to)</p></div>
+</dd>
+<dt id="tenlib.http.Form.method"><code class="name">var <span class="ident">method</span> : str</code></dt>
+<dd>
+<div class="desc"><p>HTTP method to sent the form with.</p></div>
+</dd>
+</dl>
+<h3>Instance variables</h3>
+<dl>
+<dt id="tenlib.http.Form.referrer"><code class="name">var <span class="ident">referrer</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def referrer(self):
+    # Referer is actually a misspelling of Referrer
+    return self.referer</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="tenlib.http.Form.submit"><code class="name flex">
+<span>def <span class="ident">submit</span></span>(<span>self, action: str = None, method: str = None, **kwargs) ‑> <a title="tenlib.http.Response" href="#tenlib.http.Response">Response</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Submits the form.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>action</code></strong> :&ensp;<code>str</code></dt>
+<dd>URL to send the form data to.
+If not set, the form's action will be used</dd>
+<dt><strong><code>method</code></strong> :&ensp;<code>str</code></dt>
+<dd>HTTP method to use.
+If not set, the form's method will be used</dd>
+<dt><strong><code>kwargs</code></strong></dt>
+<dd>Arguments to send to the <code><a title="tenlib.http.Session.request" href="#tenlib.http.Session.request">Session.request()</a></code> call.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code><a title="tenlib.http.Response" href="#tenlib.http.Response">Response</a></code></dt>
+<dd>HTTP response</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def submit(self, action: str = None, method: str = None, **kwargs) -&gt; Response:
+    &#34;&#34;&#34;Submits the form.
+
+    Args:
+        action (str): URL to send the form data to.
+            If not set, the form&#39;s action will be used
+        method (str): HTTP method to use.
+            If not set, the form&#39;s method will be used
+        kwargs: Arguments to send to the `Session.request` call.
+
+    Returns:
+        Response: HTTP response
+    &#34;&#34;&#34;
+    if action is None:
+        action = self.action
+    if method is None:
+        method = self.method
+
+    args_key = &#34;params&#34; if method == &#34;GET&#34; else &#34;data&#34;
+    kwargs[args_key] = self.data
+    if self.referer:
+        kwargs.setdefault(&#34;headers&#34;, {}).setdefault(&#34;Referer&#34;, self.referer)
+
+    return self.session.request(method, action, **kwargs)</code></pre>
+</details>
+</dd>
+<dt id="tenlib.http.Form.update"><code class="name flex">
+<span>def <span class="ident">update</span></span>(<span>self, data: dict = None, **kwargs) ‑> <a title="tenlib.http.Form" href="#tenlib.http.Form">Form</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Updates the form's data.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def update(self, data: dict = None, **kwargs) -&gt; Form:
+    &#34;&#34;&#34;Updates the form&#39;s data.&#34;&#34;&#34;
+    self.data.update(data, **kwargs)
+    return self</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="tenlib.http.Multi"><code class="flex name class">
+<span>class <span class="ident">Multi</span></span>
+<span>(</span><span>items: list)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Indicates an element that holds several values.
+This must be used with <code><a title="tenlib.http.MultiRequest" href="#tenlib.http.MultiRequest">MultiRequest</a></code>.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@dataclass
+class Multi:
+    &#34;&#34;&#34;Indicates an element that holds several values.
+    This must be used with `MultiRequest`.
+    &#34;&#34;&#34;
+
+    items: list</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="tenlib.http.Multi.items"><code class="name">var <span class="ident">items</span> : list</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="tenlib.http.RequestPool"><code class="flex name class">
+<span>class <span class="ident">RequestPool</span></span>
+<span>(</span><span>session: <a title="tenlib.http.Session" href="#tenlib.http.Session">Session</a>, workers: int, on_error: ErrorHandling, description: str = None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A request pool is a pool of requests that can be executed in parallel.</p>
+<p>The pool is thread-safe, and can (should) be used as a context manager.</p>
+<p>After requests have been submitted, the pool can provide the responses back
+in order of submission or of completion.
+Exiting the context manager will cause the pool to cancel all pending
+requests.</p>
+<h2 id="examples">Examples</h2>
+<p>Submit 10 GET requests to <code>/user/{i}</code>, run them concurrently, and get
+responses in order of submission:</p>
+<pre><code>with session.pool() as pool:
+    for i in range(10):
+        pool.get(f"/user/{i}")
+    responses = pool.in_order()
+
+for i, response in enumerate(responses):
+    msg_info(f"User #{i} has {response.json()['posts']} posts")
+</code></pre>
+<p><em>Note: for this usage, <code><a title="tenlib.http.Session.multi" href="#tenlib.http.Session.multi">Session.multi()</a></code> is more convenient.</em></p>
+<p>Try out 10 different URLs, and get the first response that returns a
+200 status code:</p>
+<pre><code>with session.pool() as pool:
+    for id in news_ids:
+        pool.get(f"/news.php?id={id}", tag=id)
+
+    for response in pool.as_completed():
+        if response.code(200):
+            break
+    else:
+        failure("No response returned a 200 status code")
+
+msg_success(f"Got response for news with ID={response.tag}")
+msg_info(response.text)
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class RequestPool:
+    &#34;&#34;&#34;A request pool is a pool of requests that can be executed in parallel.
+
+    The pool is thread-safe, and can (should) be used as a context manager.
+
+    After requests have been submitted, the pool can provide the responses back
+    in order of submission or of completion.
+    Exiting the context manager will cause the pool to cancel all pending
+    requests.
+
+    Examples:
+
+        Submit 10 GET requests to `/user/{i}`, run them concurrently, and get
+        responses in order of submission:
+
+            with session.pool() as pool:
+                for i in range(10):
+                    pool.get(f&#34;/user/{i}&#34;)
+                responses = pool.in_order()
+
+            for i, response in enumerate(responses):
+                msg_info(f&#34;User #{i} has {response.json()[&#39;posts&#39;]} posts&#34;)
+
+        *Note: for this usage, `Session.multi` is more convenient.*
+
+        Try out 10 different URLs, and get the first response that returns a
+        200 status code:
+
+            with session.pool() as pool:
+                for id in news_ids:
+                    pool.get(f&#34;/news.php?id={id}&#34;, tag=id)
+
+                for response in pool.as_completed():
+                    if response.code(200):
+                        break
+                else:
+                    failure(&#34;No response returned a 200 status code&#34;)
+
+            msg_success(f&#34;Got response for news with ID={response.tag}&#34;)
+            msg_info(response.text)
+    &#34;&#34;&#34;
+
+    def __init__(self, session: Session, workers: int, on_error: ErrorHandling, description: str=None):
+        self._session: Session = session
+        self._executor: ThreadPoolExecutor = ThreadPoolExecutor(max_workers=workers)
+        self._queue: list[Future[Response]] = []
+        self._on_error = on_error
+        self._description = description
+        self._progress: Progress = None
+
+    def __enter__(self) -&gt; RequestPool:
+        self._executor.__enter__()
+        if self._description is not None:
+            self._progress = progress(transient=True)
+            self._progress.add_task(description=self._description, total=len(self._queue))
+            self._progress.start()
+        return self
+
+    def __exit__(self, exc_type, exc_value, exc_traceback):
+        &#34;&#34;&#34;Shut downs the pool. Cancels all pending requests.&#34;&#34;&#34;
+        if self._progress:
+            self._progress.stop()
+            self._progress = None
+        self._executor.shutdown(wait=False, cancel_futures=True)
+
+    def _submit_request(self, method, *args, tag, **kwargs) -&gt; Future[Response]:
+        future = self._executor.submit(getattr(self._session, method), *args, **kwargs)
+        future.tag = tag
+        self._queue.append(future)
+        if self._progress:
+            self._progress.update(0, total=len(self._queue))
+            future.add_done_callback(lambda _: self._progress and self._progress.advance(0))
+        return future
+
+    def get(self, url: str, *args, tag=None, **kwargs) -&gt; Future[Response]:
+        &#34;&#34;&#34;Queues a GET request.&#34;&#34;&#34;
+        return self._submit_request(&#34;get&#34;, url, *args, tag=tag, **kwargs)
+
+    def post(
+        self, url: str, data=None, json=None, *args, tag=None, **kwargs
+    ) -&gt; Future[Response]:
+        &#34;&#34;&#34;Queues a POST request.&#34;&#34;&#34;
+        return self._submit_request(&#34;post&#34;, url, data, json, *args, tag=tag, **kwargs)
+
+    def _tag_results(
+        self, generator: Generator[Future[Response]]
+    ) -&gt; Generator[Response | BaseException, None, None]:
+        &#34;&#34;&#34;Returns the results of a generator of futures, with the tag.
+        If an exception was raised, it will be re-raised, or returned, in
+        function of the `on_error` parameter.
+        &#34;&#34;&#34;
+        on_error = self._on_error
+        for future in generator:
+            exception = future.exception()
+            if not exception:
+                response = future.result()
+                response.tag = future.tag
+                yield response
+            else:
+                if on_error == &#34;raise&#34;:
+                    raise exception
+                if on_error == &#34;skip&#34;:
+                    continue
+                exception.tag = future.tag
+                yield exception
+
+    def _as_completed_futures(self) -&gt; Generator[Future[Response], None, None]:
+        &#34;&#34;&#34;Yields futures as they complete, even if they were added to the pool
+        after the call.
+        &#34;&#34;&#34;
+        done = set()
+        current_len = len(self._queue)
+        while True:
+            old_len = current_len
+            todo = set(self._queue) - done
+            try:
+                for item in as_completed(todo, 0.3):
+                    done.add(item)
+                    yield item
+                    current_len = len(self._queue)
+                    if current_len &gt; old_len:
+                        break
+                current_len = len(self._queue)
+            except TimeoutError:
+                continue
+            if current_len == old_len:
+                break
+
+    def in_order(self) -&gt; list[Response | BaseException]:
+        &#34;&#34;&#34;Returns the HTTP responses, in order of submission.&#34;&#34;&#34;
+        return list(self._tag_results(self._queue))
+
+    def as_completed(self) -&gt; Generator[Response | BaseException]:
+        &#34;&#34;&#34;Yields HTTP responses as they arrive.
+
+        for response in pool.as_completed():
+            msg_info(f&#34;Received {response.tag}: {response.status_code}&#34;)
+        &#34;&#34;&#34;
+        for response in self._tag_results(self._as_completed_futures()):
+            yield response</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="tenlib.http.RequestPool.get"><code class="name flex">
+<span>def <span class="ident">get</span></span>(<span>self, url: str, *args, tag=None, **kwargs) ‑> concurrent.futures._base.Future[<a title="tenlib.http.Response" href="#tenlib.http.Response">Response</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Queues a GET request.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get(self, url: str, *args, tag=None, **kwargs) -&gt; Future[Response]:
+    &#34;&#34;&#34;Queues a GET request.&#34;&#34;&#34;
+    return self._submit_request(&#34;get&#34;, url, *args, tag=tag, **kwargs)</code></pre>
+</details>
+</dd>
+<dt id="tenlib.http.RequestPool.post"><code class="name flex">
+<span>def <span class="ident">post</span></span>(<span>self, url: str, data=None, json=None, *args, tag=None, **kwargs) ‑> concurrent.futures._base.Future[<a title="tenlib.http.Response" href="#tenlib.http.Response">Response</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Queues a POST request.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def post(
+    self, url: str, data=None, json=None, *args, tag=None, **kwargs
+) -&gt; Future[Response]:
+    &#34;&#34;&#34;Queues a POST request.&#34;&#34;&#34;
+    return self._submit_request(&#34;post&#34;, url, data, json, *args, tag=tag, **kwargs)</code></pre>
+</details>
+</dd>
+<dt id="tenlib.http.RequestPool.in_order"><code class="name flex">
+<span>def <span class="ident">in_order</span></span>(<span>self) ‑> list[<a title="tenlib.http.Response" href="#tenlib.http.Response">Response</a> | BaseException]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns the HTTP responses, in order of submission.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def in_order(self) -&gt; list[Response | BaseException]:
+    &#34;&#34;&#34;Returns the HTTP responses, in order of submission.&#34;&#34;&#34;
+    return list(self._tag_results(self._queue))</code></pre>
+</details>
+</dd>
+<dt id="tenlib.http.RequestPool.as_completed"><code class="name flex">
+<span>def <span class="ident">as_completed</span></span>(<span>self) ‑> Generator[<a title="tenlib.http.Response" href="#tenlib.http.Response">Response</a> | BaseException]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Yields HTTP responses as they arrive.</p>
+<p>for response in pool.as_completed():
+msg_info(f"Received {response.tag}: {response.status_code}")</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def as_completed(self) -&gt; Generator[Response | BaseException]:
+    &#34;&#34;&#34;Yields HTTP responses as they arrive.
+
+    for response in pool.as_completed():
+        msg_info(f&#34;Received {response.tag}: {response.status_code}&#34;)
+    &#34;&#34;&#34;
+    for response in self._tag_results(self._as_completed_futures()):
+        yield response</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="tenlib.http.MultiRequest"><code class="flex name class">
+<span>class <span class="ident">MultiRequest</span></span>
+<span>(</span><span>session: <a title="tenlib.http.Session" href="#tenlib.http.Session">Session</a>, workers: int, on_error: ErrorHandling, description: str)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Runs several requests concurrently and return the responses as
+a list.</p>
+<h2 id="examples">Examples</h2>
+<p>Runs <code>/get?p1=1</code>, <code>/get?p1=2</code>, <code>/get?p1=3</code>, and returns the responses:</p>
+<pre><code>&gt;&gt;&gt; s = Session()
+&gt;&gt;&gt; responses = s.multi().get("https://httpbin.org/get", params={"p1": Multi([1, 2, 3])})
+</code></pre>
+<p>Bruteforces a login form and returns the responses:</p>
+<pre><code>&gt;&gt;&gt; s = Session()
+&gt;&gt;&gt; usernames = ["admin", "tomcat"]
+&gt;&gt;&gt; passwords = ["admin", "tomcat", "admin123456", "tomcat123456"]
+&gt;&gt;&gt; responses = s.multi().post(
+...    "http://target.com/manager/html",
+...    data={"username": Multi(usernames), "password": Multi(passwords)}
+... )
+</code></pre>
+<p>The tags of the responses are a dict containing, for each multi, the "path"
+to it and its value. For example:</p>
+<pre><code>&gt;&gt;&gt; responses[3].tag
+{("data", "username"): "admin", ("data", "password"): "admin123456"}
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class MultiRequest:
+    &#34;&#34;&#34;Runs several requests concurrently and return the responses as
+    a list.
+
+    Examples:
+
+        Runs `/get?p1=1`, `/get?p1=2`, `/get?p1=3`, and returns the responses:
+
+            &gt;&gt;&gt; s = Session()
+            &gt;&gt;&gt; responses = s.multi().get(&#34;https://httpbin.org/get&#34;, params={&#34;p1&#34;: Multi([1, 2, 3])})
+
+        Bruteforces a login form and returns the responses:
+
+
+            &gt;&gt;&gt; s = Session()
+            &gt;&gt;&gt; usernames = [&#34;admin&#34;, &#34;tomcat&#34;]
+            &gt;&gt;&gt; passwords = [&#34;admin&#34;, &#34;tomcat&#34;, &#34;admin123456&#34;, &#34;tomcat123456&#34;]
+            &gt;&gt;&gt; responses = s.multi().post(
+            ...    &#34;http://target.com/manager/html&#34;,
+            ...    data={&#34;username&#34;: Multi(usernames), &#34;password&#34;: Multi(passwords)}
+            ... )
+
+    The tags of the responses are a dict containing, for each multi, the &#34;path&#34;
+    to it and its value. For example:
+
+        &gt;&gt;&gt; responses[3].tag
+        {(&#34;data&#34;, &#34;username&#34;): &#34;admin&#34;, (&#34;data&#34;, &#34;password&#34;): &#34;admin123456&#34;}
+    &#34;&#34;&#34;
+
+    def __init__(self, session: Session, workers: int, on_error: ErrorHandling, description: str) -&gt; None:
+        self._session: Session = session
+        self._workers = workers
+        self._on_error = on_error
+        self._description = description
+
+    def get(self, url: str, **kwargs) -&gt; list[Response]:
+        &#34;&#34;&#34;Sends GET requests. Returns a list of `Response`s.&#34;&#34;&#34;
+        return self._run_requests(&#34;get&#34;, url=url, **kwargs)
+
+    def post(self, url: str, data=None, json=None, **kwargs) -&gt; list[Response]:
+        &#34;&#34;&#34;Sends POST requests. Returns a list of `Response`s.
+
+        Args:
+            url: URL for the new `Request` object.
+            data: (optional) Dictionary, list of tuples, bytes, or file-like
+                object to send in the body of the `Request`.
+            json: (optional) json to send in the body of the `Request`.
+            **kwargs: Optional arguments that `request` takes.
+
+        Returns:
+            list[Response]: List of responses
+        &#34;&#34;&#34;
+        return self._run_requests(&#34;post&#34;, url=url, data=data, json=json, **kwargs)
+
+    def _run_requests(self, method: str, **kwargs) -&gt; list[Response]:
+        pool = self._session.pool(self._workers, self._on_error, self._description)
+        paths_items: dict[Any, Multi] = {}
+
+        # Find Multi instances in both args and kwargs
+        self._find_multis_in_value(paths_items, (), kwargs)
+
+        # Small optimisation: if there are more than one Multi, we can convert
+        # the last ones to a list in order not to iterate over them multiple
+        # times.
+        paths_items = {
+            path: list(multi.items)
+            if i &gt;= 1 and not hasattr(multi, &#34;__len__&#34;)
+            else multi.items
+            for i, (path, multi) in enumerate(paths_items.items())
+        }
+
+        # Repeat the request for each item in the Multis
+
+        arguments = self.__arguments_copy(kwargs)
+        method = getattr(pool, method)
+
+        with pool:
+            self._iter_set_path(method, arguments, list(paths_items.items()), {})
+            return self._get_results(pool)
+
+    def _get_results(self, pool: RequestPool):
+        return pool.in_order()
+
+    def _find_multis_in_value(self, paths: dict, path: tuple, value: Any) -&gt; None:
+        if isinstance(value, Multi):
+            paths[path] = value
+        elif isinstance(value, (list, tuple)):
+            for i, item in enumerate(value):
+                self._find_multis_in_value(paths, path + (i,), item)
+        elif isinstance(value, dict):
+            for key, item in value.items():
+                self._find_multis_in_value(paths, path + (key,), item)
+
+    def __arguments_copy(self, arguments) -&gt; Any:
+        if isinstance(arguments, dict):
+            return {k: self.__arguments_copy(v) for k, v in arguments.items()}
+        if isinstance(arguments, (list, tuple)):
+            return [self.__arguments_copy(v) for v in arguments]
+        if isinstance(arguments, Multi):
+            return &#34;X&#34;
+        return arguments
+
+    def _replace_at_path(self, arguments, path, value) -&gt; None:
+        deep = arguments
+        *path, last = path
+        for stop in path:
+            deep = deep[stop]
+        deep[last] = value
+
+    def _iter_set_path(
+        self,
+        method: Callable,
+        arguments: dict,
+        paths_items: list[tuple[tuple, Multi]],
+        set_items: tuple,
+    ) -&gt; None:
+        &#34;&#34;&#34;Fills the arguments with the items from the Multi instances.
+
+        Args:
+            method (Callable): Session method to call
+            arguments (dict): Base arguments
+            paths_items (list[tuple[tuple, Multi]]): For each multi, a path to
+                find it in the arguments and the items of the multi
+            set_items (dict): Items from multi instances that have already
+                been set
+        &#34;&#34;&#34;
+        try:
+            (path, items), *paths_items = paths_items
+        except ValueError:
+            # No more path: arguments have been filled, run the method
+            pass
+        else:
+            for item in items:
+                self._replace_at_path(arguments, path, item)
+                self._iter_set_path(
+                    method, arguments, paths_items, set_items | {path: item}
+                )
+            return
+
+        arguments = self.__arguments_copy(arguments)
+        method(**arguments, tag=set_items)</code></pre>
+</details>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li>tenlib.http.MultiRequestFirst</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="tenlib.http.MultiRequest.get"><code class="name flex">
+<span>def <span class="ident">get</span></span>(<span>self, url: str, **kwargs) ‑> list[<a title="tenlib.http.Response" href="#tenlib.http.Response">Response</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Sends GET requests. Returns a list of <code><a title="tenlib.http.Response" href="#tenlib.http.Response">Response</a></code>s.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get(self, url: str, **kwargs) -&gt; list[Response]:
+    &#34;&#34;&#34;Sends GET requests. Returns a list of `Response`s.&#34;&#34;&#34;
+    return self._run_requests(&#34;get&#34;, url=url, **kwargs)</code></pre>
+</details>
+</dd>
+<dt id="tenlib.http.MultiRequest.post"><code class="name flex">
+<span>def <span class="ident">post</span></span>(<span>self, url: str, data=None, json=None, **kwargs) ‑> list[<a title="tenlib.http.Response" href="#tenlib.http.Response">Response</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Sends POST requests. Returns a list of <code><a title="tenlib.http.Response" href="#tenlib.http.Response">Response</a></code>s.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>url</code></strong></dt>
+<dd>URL for the new <code>Request</code> object.</dd>
+<dt><strong><code>data</code></strong></dt>
+<dd>(optional) Dictionary, list of tuples, bytes, or file-like
+object to send in the body of the <code>Request</code>.</dd>
+<dt><strong><code>json</code></strong></dt>
+<dd>(optional) json to send in the body of the <code>Request</code>.</dd>
+<dt><strong><code>**kwargs</code></strong></dt>
+<dd>Optional arguments that <code>request</code> takes.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>list[<a title="tenlib.http.Response" href="#tenlib.http.Response">Response</a>]</code></dt>
+<dd>List of responses</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def post(self, url: str, data=None, json=None, **kwargs) -&gt; list[Response]:
+    &#34;&#34;&#34;Sends POST requests. Returns a list of `Response`s.
+
+    Args:
+        url: URL for the new `Request` object.
+        data: (optional) Dictionary, list of tuples, bytes, or file-like
+            object to send in the body of the `Request`.
+        json: (optional) json to send in the body of the `Request`.
+        **kwargs: Optional arguments that `request` takes.
+
+    Returns:
+        list[Response]: List of responses
+    &#34;&#34;&#34;
+    return self._run_requests(&#34;post&#34;, url=url, data=data, json=json, **kwargs)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="tenlib.http.HTTPOutOfScopeError"><code class="flex name class">
+<span>class <span class="ident">HTTPOutOfScopeError</span></span>
+<span>(</span><span>url, base)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>URL is out of scope.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class HTTPOutOfScopeError(TenError):
+    &#34;&#34;&#34;URL is out of scope.&#34;&#34;&#34;
+
+    def __init__(self, url, base):
+        super().__init__(f&#34;{url} is not within {base}&#34;)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="tenlib.exception.TenError" href="exception.html#tenlib.exception.TenError">TenError</a></li>
+<li>builtins.Exception</li>
+<li>builtins.BaseException</li>
+</ul>
+</dd>
+<dt id="tenlib.http.UnexpectedHTTPStatusCodeError"><code class="flex name class">
+<span>class <span class="ident">UnexpectedHTTPStatusCodeError</span></span>
+<span>(</span><span>response, status_codes)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>HTTP status code unexpected.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class UnexpectedHTTPStatusCodeError(TenError):
+    &#34;&#34;&#34;HTTP status code unexpected.&#34;&#34;&#34;
+
+    def __init__(self, response, status_codes):
+        super().__init__(
+            f&#34;Status code {response.status_code} is not one of {status_codes}&#34;
+        )</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="tenlib.exception.TenError" href="exception.html#tenlib.exception.TenError">TenError</a></li>
+<li>builtins.Exception</li>
+<li>builtins.BaseException</li>
+</ul>
+</dd>
+<dt id="tenlib.http.FormNotFoundError"><code class="flex name class">
+<span>class <span class="ident">FormNotFoundError</span></span>
+<span>(</span><span>selector)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>No form could be found using the given selector.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class FormNotFoundError(TenError):
+    &#34;&#34;&#34;No form could be found using the given selector.&#34;&#34;&#34;
+
+    def __init__(self, selector):
+        super().__init__(f&#34;Could not find form using selector: {selector!r}&#34;)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="tenlib.exception.TenError" href="exception.html#tenlib.exception.TenError">TenError</a></li>
+<li>builtins.Exception</li>
+<li>builtins.BaseException</li>
+</ul>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="tenlib" href="index.html">tenlib</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="tenlib.http.Session" href="#tenlib.http.Session">Session</a></code></h4>
+<ul class="two-column">
+<li><code><a title="tenlib.http.Session.get" href="#tenlib.http.Session.get">get</a></code></li>
+<li><code><a title="tenlib.http.Session.post" href="#tenlib.http.Session.post">post</a></code></li>
+<li><code><a title="tenlib.http.Session.options" href="#tenlib.http.Session.options">options</a></code></li>
+<li><code><a title="tenlib.http.Session.head" href="#tenlib.http.Session.head">head</a></code></li>
+<li><code><a title="tenlib.http.Session.put" href="#tenlib.http.Session.put">put</a></code></li>
+<li><code><a title="tenlib.http.Session.patch" href="#tenlib.http.Session.patch">patch</a></code></li>
+<li><code><a title="tenlib.http.Session.delete" href="#tenlib.http.Session.delete">delete</a></code></li>
+<li><code><a title="tenlib.http.Session.pool" href="#tenlib.http.Session.pool">pool</a></code></li>
+<li><code><a title="tenlib.http.Session.multi" href="#tenlib.http.Session.multi">multi</a></code></li>
+<li><code><a title="tenlib.http.Session.first" href="#tenlib.http.Session.first">first</a></code></li>
+<li><code><a title="tenlib.http.Session.prepare_request" href="#tenlib.http.Session.prepare_request">prepare_request</a></code></li>
+<li><code><a title="tenlib.http.Session.request" href="#tenlib.http.Session.request">request</a></code></li>
+<li><code><a title="tenlib.http.Session.burp" href="#tenlib.http.Session.burp">burp</a></code></li>
+<li><code><a title="tenlib.http.Session.unburp" href="#tenlib.http.Session.unburp">unburp</a></code></li>
+<li><code><a title="tenlib.http.Session.proxies" href="#tenlib.http.Session.proxies">proxies</a></code></li>
+<li><code><a title="tenlib.http.Session.max_connections" href="#tenlib.http.Session.max_connections">max_connections</a></code></li>
+<li><code><a title="tenlib.http.Session.raw_url" href="#tenlib.http.Session.raw_url">raw_url</a></code></li>
+<li><code><a title="tenlib.http.Session.timeout" href="#tenlib.http.Session.timeout">timeout</a></code></li>
+<li><code><a title="tenlib.http.Session.verify" href="#tenlib.http.Session.verify">verify</a></code></li>
+<li><code><a title="tenlib.http.Session.allow_redirects" href="#tenlib.http.Session.allow_redirects">allow_redirects</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="tenlib.http.ScopedSession" href="#tenlib.http.ScopedSession">ScopedSession</a></code></h4>
+<ul class="">
+<li><code><a title="tenlib.http.ScopedSession.prepare_request" href="#tenlib.http.ScopedSession.prepare_request">prepare_request</a></code></li>
+<li><code><a title="tenlib.http.ScopedSession.is_in_scope" href="#tenlib.http.ScopedSession.is_in_scope">is_in_scope</a></code></li>
+<li><code><a title="tenlib.http.ScopedSession.get_absolute_url" href="#tenlib.http.ScopedSession.get_absolute_url">get_absolute_url</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="tenlib.http.Response" href="#tenlib.http.Response">Response</a></code></h4>
+<ul class="two-column">
+<li><code><a title="tenlib.http.Response.code" href="#tenlib.http.Response.code">code</a></code></li>
+<li><code><a title="tenlib.http.Response.contains" href="#tenlib.http.Response.contains">contains</a></code></li>
+<li><code><a title="tenlib.http.Response.follow_redirect" href="#tenlib.http.Response.follow_redirect">follow_redirect</a></code></li>
+<li><code><a title="tenlib.http.Response.form" href="#tenlib.http.Response.form">form</a></code></li>
+<li><code><a title="tenlib.http.Response.expect" href="#tenlib.http.Response.expect">expect</a></code></li>
+<li><code><a title="tenlib.http.Response.select" href="#tenlib.http.Response.select">select</a></code></li>
+<li><code><a title="tenlib.http.Response.select_one" href="#tenlib.http.Response.select_one">select_one</a></code></li>
+<li><code><a title="tenlib.http.Response.xml" href="#tenlib.http.Response.xml">xml</a></code></li>
+<li><code><a title="tenlib.http.Response.store_as_txt" href="#tenlib.http.Response.store_as_txt">store_as_txt</a></code></li>
+<li><code><a title="tenlib.http.Response.re" href="#tenlib.http.Response.re">re</a></code></li>
+<li><code><a title="tenlib.http.Response.soup" href="#tenlib.http.Response.soup">soup</a></code></li>
+<li><code><a title="tenlib.http.Response.session" href="#tenlib.http.Response.session">session</a></code></li>
+<li><code><a title="tenlib.http.Response.tag" href="#tenlib.http.Response.tag">tag</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="tenlib.http.ResponseRegex" href="#tenlib.http.ResponseRegex">ResponseRegex</a></code></h4>
+<ul class="two-column">
+<li><code><a title="tenlib.http.ResponseRegex.search" href="#tenlib.http.ResponseRegex.search">search</a></code></li>
+<li><code><a title="tenlib.http.ResponseRegex.match" href="#tenlib.http.ResponseRegex.match">match</a></code></li>
+<li><code><a title="tenlib.http.ResponseRegex.findall" href="#tenlib.http.ResponseRegex.findall">findall</a></code></li>
+<li><code><a title="tenlib.http.ResponseRegex.sub" href="#tenlib.http.ResponseRegex.sub">sub</a></code></li>
+<li><code><a title="tenlib.http.ResponseRegex.A" href="#tenlib.http.ResponseRegex.A">A</a></code></li>
+<li><code><a title="tenlib.http.ResponseRegex.I" href="#tenlib.http.ResponseRegex.I">I</a></code></li>
+<li><code><a title="tenlib.http.ResponseRegex.S" href="#tenlib.http.ResponseRegex.S">S</a></code></li>
+<li><code><a title="tenlib.http.ResponseRegex.L" href="#tenlib.http.ResponseRegex.L">L</a></code></li>
+<li><code><a title="tenlib.http.ResponseRegex.M" href="#tenlib.http.ResponseRegex.M">M</a></code></li>
+<li><code><a title="tenlib.http.ResponseRegex.X" href="#tenlib.http.ResponseRegex.X">X</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="tenlib.http.Form" href="#tenlib.http.Form">Form</a></code></h4>
+<ul class="two-column">
+<li><code><a title="tenlib.http.Form.submit" href="#tenlib.http.Form.submit">submit</a></code></li>
+<li><code><a title="tenlib.http.Form.update" href="#tenlib.http.Form.update">update</a></code></li>
+<li><code><a title="tenlib.http.Form.referrer" href="#tenlib.http.Form.referrer">referrer</a></code></li>
+<li><code><a title="tenlib.http.Form.data" href="#tenlib.http.Form.data">data</a></code></li>
+<li><code><a title="tenlib.http.Form.session" href="#tenlib.http.Form.session">session</a></code></li>
+<li><code><a title="tenlib.http.Form.action" href="#tenlib.http.Form.action">action</a></code></li>
+<li><code><a title="tenlib.http.Form.method" href="#tenlib.http.Form.method">method</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="tenlib.http.Multi" href="#tenlib.http.Multi">Multi</a></code></h4>
+<ul class="">
+<li><code><a title="tenlib.http.Multi.items" href="#tenlib.http.Multi.items">items</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="tenlib.http.RequestPool" href="#tenlib.http.RequestPool">RequestPool</a></code></h4>
+<ul class="">
+<li><code><a title="tenlib.http.RequestPool.get" href="#tenlib.http.RequestPool.get">get</a></code></li>
+<li><code><a title="tenlib.http.RequestPool.post" href="#tenlib.http.RequestPool.post">post</a></code></li>
+<li><code><a title="tenlib.http.RequestPool.in_order" href="#tenlib.http.RequestPool.in_order">in_order</a></code></li>
+<li><code><a title="tenlib.http.RequestPool.as_completed" href="#tenlib.http.RequestPool.as_completed">as_completed</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="tenlib.http.MultiRequest" href="#tenlib.http.MultiRequest">MultiRequest</a></code></h4>
+<ul class="">
+<li><code><a title="tenlib.http.MultiRequest.get" href="#tenlib.http.MultiRequest.get">get</a></code></li>
+<li><code><a title="tenlib.http.MultiRequest.post" href="#tenlib.http.MultiRequest.post">post</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="tenlib.http.HTTPOutOfScopeError" href="#tenlib.http.HTTPOutOfScopeError">HTTPOutOfScopeError</a></code></h4>
+</li>
+<li>
+<h4><code><a title="tenlib.http.UnexpectedHTTPStatusCodeError" href="#tenlib.http.UnexpectedHTTPStatusCodeError">UnexpectedHTTPStatusCodeError</a></code></h4>
+</li>
+<li>
+<h4><code><a title="tenlib.http.FormNotFoundError" href="#tenlib.http.FormNotFoundError">FormNotFoundError</a></code></h4>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>

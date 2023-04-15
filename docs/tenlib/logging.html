@@ -1,0 +1,390 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>tenlib.logging API documentation</title>
+<meta name="description" content="Everything related to logging …" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>tenlib.logging</code></h1>
+</header>
+<section id="section-intro">
+<p>Everything related to logging.</p>
+<p>Ten exposes a <code>log</code> objet that you can use to log various messages:</p>
+<pre><code class="language-python">&gt;&gt;&gt; log.info('Hello')
+&gt;&gt;&gt; log.debug('There')
+</code></pre>
+<p>To set the verbosity of logging in the CLI (default: none), use <code><a title="tenlib.logging.set_cli_level" href="#tenlib.logging.set_cli_level">set_cli_level()</a></code>.</p>
+<p>Additionally, logs are written to a log file (in <code>~/ten.log</code> by default).
+To set the level of logging in this file, use <code><a title="tenlib.logging.set_level" href="#tenlib.logging.set_level">set_level()</a></code>. Change the path using
+<code><a title="tenlib.logging.set_file" href="#tenlib.logging.set_file">set_file()</a></code>.</p>
+<pre><code class="language-python">&gt;&gt;&gt; log.info('Hello')
+&gt;&gt;&gt; logging.set_cli_level('DEBUG')
+&gt;&gt;&gt; log.error('Woops!')
+[07/13/22 17:49:07] ERROR    Woops !                                   &lt;stdin&gt;:1
+</code></pre>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">&#34;&#34;&#34;Everything related to logging.
+
+Ten exposes a `log` objet that you can use to log various messages:
+
+```python
+&gt;&gt;&gt; log.info(&#39;Hello&#39;)
+&gt;&gt;&gt; log.debug(&#39;There&#39;)
+```
+
+To set the verbosity of logging in the CLI (default: none), use `set_cli_level`.
+
+Additionally, logs are written to a log file (in `~/ten.log` by default).
+To set the level of logging in this file, use `set_level`. Change the path using
+`set_file`.
+
+```python
+&gt;&gt;&gt; log.info(&#39;Hello&#39;)
+&gt;&gt;&gt; logging.set_cli_level(&#39;DEBUG&#39;)
+&gt;&gt;&gt; log.error(&#39;Woops!&#39;)
+[07/13/22 17:49:07] ERROR    Woops !                                   &lt;stdin&gt;:1
+```
+&#34;&#34;&#34;
+
+import logging
+import os.path
+import typing
+from logging import Handler, Logger
+
+from rich.console import Console
+from rich.logging import RichHandler
+
+from tenlib.config import config
+
+__all__ = [
+    &#34;logger&#34;,
+    &#34;log&#34;,
+    &#34;set_level&#34;,
+    &#34;set_cli_level&#34;,
+    &#34;set_file&#34;,
+    &#34;CRITICAL&#34;,
+    &#34;ERROR&#34;,
+    &#34;WARNING&#34;,
+    &#34;INFO&#34;,
+    &#34;DEBUG&#34;,
+    &#34;NOTSET&#34;,
+    &#34;SUCCESS&#34;,
+    &#34;FAILURE&#34;,
+    &#34;TRACE&#34;,
+]
+
+__cli_handler: Handler = None
+__file_handler: Handler = None
+
+
+def _define_log_level(levelName, levelNum, methodName=None):
+    &#34;&#34;&#34;Comprehensively adds a new logging level to the `logging` module and the
+    currently configured logging class.
+
+    `levelName` becomes an attribute of the `logging` module with the value
+    `levelNum`. `methodName` becomes a convenience method for both `logging`
+    itself and the class returned by `logging.getLoggerClass()` (usually just
+    `logging.Logger`). If `methodName` is not specified, `levelName.lower()` is
+    used.
+
+    To avoid accidental clobberings of existing attributes, this method will
+    raise an `AttributeError` if the level name is already an attribute of the
+    `logging` module or if the method name is already present
+
+    Example
+    -------
+    &gt;&gt;&gt; addLoggingLevel(&#39;TRACE&#39;, logging.DEBUG - 5)
+    &gt;&gt;&gt; logging.getLogger(__name__).setLevel(&#34;TRACE&#34;)
+    &gt;&gt;&gt; logging.getLogger(__name__).trace(&#39;that worked&#39;)
+    &gt;&gt;&gt; logging.trace(&#39;so did this&#39;)
+    &gt;&gt;&gt; logging.TRACE
+    5
+
+    Source: https://stackoverflow.com/questions/2183233/how-to-add-a-custom-loglevel-to-pythons-logging-facility/35804945#35804945
+    &#34;&#34;&#34;
+    if not methodName:
+        methodName = levelName.lower()
+
+    if hasattr(logging, levelName):
+        raise AttributeError(f&#34;{levelName} already defined in logging module&#34;)
+    if hasattr(logging, methodName):
+        raise AttributeError(f&#34;{methodName} already defined in logging module&#34;)
+    if hasattr(logging.getLoggerClass(), methodName):
+        raise AttributeError(f&#34;{methodName} already defined in logger class&#34;)
+
+    # This method was inspired by the answers to Stack Overflow post
+    # http://stackoverflow.com/q/2183233/2988730, especially
+    # http://stackoverflow.com/a/13638084/2988730
+    def logForLevel(self, message, *args, **kwargs):
+        if self.isEnabledFor(levelNum):
+            self._log(levelNum, message, args, **kwargs)
+
+    def logToRoot(message, *args, **kwargs):
+        logging.log(levelNum, message, *args, **kwargs)
+
+    logging.addLevelName(levelNum, levelName)
+    setattr(logging, levelName, levelNum)
+    setattr(logging.getLoggerClass(), methodName, logForLevel)
+    setattr(logging, methodName, logToRoot)
+
+
+def logger(name=&#34;ten&#34;) -&gt; Logger:
+    &#34;&#34;&#34;Return a logger with the specified name or, if name is None, return a
+    logger which is the root logger of the hierarchy.
+    &#34;&#34;&#34;
+    return logging.getLogger(name)
+
+
+def set_cli_level(level):
+    &#34;&#34;&#34;Sets the threshold for the CLI logger to `level`.&#34;&#34;&#34;
+    if not __cli_handler:
+        _create_default_cli_handler()
+    __cli_handler.setLevel(level)
+
+
+def set_level(level):
+    &#34;&#34;&#34;Sets the threshold for the file logger to `level`.&#34;&#34;&#34;
+    if not __file_handler:
+        _create_default_file_handler()
+
+    __file_handler.setLevel(level)
+
+
+def set_file(file: typing.Union[str, typing.IO[str]]) -&gt; None:
+    &#34;&#34;&#34;Set the location of the log file.
+
+    Example:
+
+        &gt;&gt;&gt; logging.set_file(&#39;/tmp/test.log&#39;)
+        &gt;&gt;&gt; logging.set_file(open(&#39;/tmp/test2.log&#39;, &#39;a+&#39;))
+    &#34;&#34;&#34;
+    if not __file_handler:
+        _create_default_file_handler()
+
+    if isinstance(file, str):
+        file = open(file, &#34;w&#34;)
+
+    old_file = __file_handler.console.file
+    __file_handler.console.file = file
+    old_file.close()
+
+
+def _get_root_logger() -&gt; Logger:
+    return logger(None)
+
+
+def _set_cli_handler(handler: Handler):
+    global __cli_handler
+
+    __cli_handler = __replace_handler(__cli_handler, handler, logging.CRITICAL)
+
+
+def _set_file_handler(handler: Handler):
+    global __file_handler
+
+    __file_handler = __replace_handler(__file_handler, handler, logging.DEBUG)
+
+
+def __replace_handler(old_handler: Handler, handler: Handler, default_level) -&gt; Handler:
+    &#34;&#34;&#34;Replaces previous handler with new one. If there was no handler, set the
+    log level to `default_level`.
+    &#34;&#34;&#34;
+    root_logger = _get_root_logger()
+
+    if old_handler:
+        level = old_handler.level
+        root_logger.removeHandler(old_handler)
+    else:
+        level = default_level
+
+    handler.setLevel(level)
+    root_logger.addHandler(handler)
+
+    return handler
+
+
+def _create_default_cli_handler():
+    console = Console(stderr=True)
+    handler = RichHandler(console=console)
+    _set_cli_handler(handler)
+
+
+def _create_default_file_handler():
+    file = open(config.log_file, &#34;a+&#34;)
+    console = Console(file=file, color_system=&#34;truecolor&#34;)
+    handler = RichHandler(console=console)
+    _set_file_handler(handler)
+
+
+# Create logging levels
+
+_define_log_level(&#34;SUCCESS&#34;, 25)
+_define_log_level(&#34;FAILURE&#34;, 26)
+_define_log_level(&#34;TRACE&#34;, 11)
+
+# Reference logging levels
+
+# Original
+CRITICAL = logging.CRITICAL
+ERROR = logging.ERROR
+WARNING = logging.WARNING
+INFO = logging.INFO
+DEBUG = logging.DEBUG
+NOTSET = logging.NOTSET
+
+# Added
+SUCCESS = logging.SUCCESS
+FAILURE = logging.FAILURE
+TRACE = logging.TRACE
+
+# Kill urllib3&#39;s HTTPs logging
+
+logging.getLogger(&#34;urllib3&#34;).setLevel(logging.ERROR)
+
+# Add our default handler
+
+logging.basicConfig(level=&#34;NOTSET&#34;, format=&#34;%(message)s&#34;, datefmt=&#34;[%X]&#34;, handlers=[])
+
+_create_default_file_handler()
+
+log = logger(&#34;ten&#34;)</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="tenlib.logging.logger"><code class="name flex">
+<span>def <span class="ident">logger</span></span>(<span>name='ten') ‑> logging.Logger</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Return a logger with the specified name or, if name is None, return a
+logger which is the root logger of the hierarchy.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def logger(name=&#34;ten&#34;) -&gt; Logger:
+    &#34;&#34;&#34;Return a logger with the specified name or, if name is None, return a
+    logger which is the root logger of the hierarchy.
+    &#34;&#34;&#34;
+    return logging.getLogger(name)</code></pre>
+</details>
+</dd>
+<dt id="tenlib.logging.set_level"><code class="name flex">
+<span>def <span class="ident">set_level</span></span>(<span>level)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Sets the threshold for the file logger to <code>level</code>.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def set_level(level):
+    &#34;&#34;&#34;Sets the threshold for the file logger to `level`.&#34;&#34;&#34;
+    if not __file_handler:
+        _create_default_file_handler()
+
+    __file_handler.setLevel(level)</code></pre>
+</details>
+</dd>
+<dt id="tenlib.logging.set_cli_level"><code class="name flex">
+<span>def <span class="ident">set_cli_level</span></span>(<span>level)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Sets the threshold for the CLI logger to <code>level</code>.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def set_cli_level(level):
+    &#34;&#34;&#34;Sets the threshold for the CLI logger to `level`.&#34;&#34;&#34;
+    if not __cli_handler:
+        _create_default_cli_handler()
+    __cli_handler.setLevel(level)</code></pre>
+</details>
+</dd>
+<dt id="tenlib.logging.set_file"><code class="name flex">
+<span>def <span class="ident">set_file</span></span>(<span>file: Union[str, IO[str]]) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Set the location of the log file.</p>
+<h2 id="example">Example</h2>
+<pre><code class="language-python-repl">&gt;&gt;&gt; logging.set_file('/tmp/test.log')
+&gt;&gt;&gt; logging.set_file(open('/tmp/test2.log', 'a+'))
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def set_file(file: typing.Union[str, typing.IO[str]]) -&gt; None:
+    &#34;&#34;&#34;Set the location of the log file.
+
+    Example:
+
+        &gt;&gt;&gt; logging.set_file(&#39;/tmp/test.log&#39;)
+        &gt;&gt;&gt; logging.set_file(open(&#39;/tmp/test2.log&#39;, &#39;a+&#39;))
+    &#34;&#34;&#34;
+    if not __file_handler:
+        _create_default_file_handler()
+
+    if isinstance(file, str):
+        file = open(file, &#34;w&#34;)
+
+    old_file = __file_handler.console.file
+    __file_handler.console.file = file
+    old_file.close()</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="tenlib" href="index.html">tenlib</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="tenlib.logging.logger" href="#tenlib.logging.logger">logger</a></code></li>
+<li><code><a title="tenlib.logging.set_level" href="#tenlib.logging.set_level">set_level</a></code></li>
+<li><code><a title="tenlib.logging.set_cli_level" href="#tenlib.logging.set_cli_level">set_cli_level</a></code></li>
+<li><code><a title="tenlib.logging.set_file" href="#tenlib.logging.set_file">set_file</a></code></li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>

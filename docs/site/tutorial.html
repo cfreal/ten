@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://example.com/tutorial.html" />
+      <link rel="shortcut icon" href="img/favicon.ico" />
+    <title>Tutorials and examples - ten's documentation</title>
+    <link rel="stylesheet" href="css/theme.css" />
+    <link rel="stylesheet" href="css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Tutorials and examples";
+        var mkdocs_page_input_path = "tutorial.md";
+        var mkdocs_page_url = "/tutorial.html";
+      </script>
+    
+    <script src="js/jquery-3.6.0.min.js" defer></script>
+    <!--[if lt IE 9]>
+      <script src="js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
+      <script>hljs.initHighlightingOnLoad();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="index.html" class="icon icon-home"> ten's documentation
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="./search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="index.html">Home</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="flow.html">Flow: Input, output, and flow control</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="transform.html">Transform: Convert data</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="http.html">HTTP: requests on steroids</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="shell.html">Shell: run commands</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="fs.html">Filesystem: manage folders and files</a>
+                </li>
+              </ul>
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="tutorial.html">Tutorials and examples</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#wordpress-user-enumeration">Wordpress user enumeration</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#first-script">First script</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#adding-parameters">Adding parameters</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#get-username-from-the-redirect-page">Get username from the redirect page</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#running-requests-concurrently">Running requests concurrently</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#let-user-pick-number-of-connections">Let user pick number of connections</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#allow-for-a-proxy">Allow for a proxy</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#add-a-progress-bar">Add a progress bar</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#documentation">Documentation</a>
+    </li>
+        </ul>
+    </li>
+    </ul>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">ten's documentation</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html" class="icon icon-home" alt="Docs"></a> &raquo;</li>
+      <li>Tutorials and examples</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="tutorials-and-examples">Tutorials and examples</h1>
+<h2 id="wordpress-user-enumeration">Wordpress user enumeration</h2>
+<ul>
+<li>Concerns: flow, http</li>
+</ul>
+<p>Although enumerating wordpress users isn't the most interesting part of a pentest, and it can be done by hundred of scripts, it's an interesting way to learn how to to build a simple script with ten, and then gradually improve it to make it more efficient, cleaner, and well-documented.</p>
+<p>The goal is to list wordpress users (name and slug) using the well-known technique consisting in iterating over the <code>author</code> parameter: <code>/?author=1</code>, <code>/?author=2</code>, etc.</p>
+<p>First, we'll do the most simple implementation possible.</p>
+<h3 id="first-script">First script</h3>
+<p>First, create a template using:</p>
+<pre><code class="language-shell">$ ten wordpress-enum.py
+</code></pre>
+<p>This opens a template script on your favourite editor. Our script necessarily requires a URL, so let's add the url as an input parameter:</p>
+<pre><code class="language-python">@entry
+def main(url):
+    session = ScopedSession(url)
+</code></pre>
+<p>The arguments to the entry function are automatically mapped to CLI input. We can now run:</p>
+<pre><code class="language-shell">$ ./wordpress-enum.py http://target.com
+</code></pre>
+<p>If the author with ID 2 exists, fetching <code>/?author=2</code> results in a redirect to <code>/author/&lt;slug-of-author&gt;/</code>.
+We'll start simple: let's just make a for loop that gets the HTTP response and extracts the slug.
+<em>ten</em> uses the same API as <code>requests</code>! We can use <code>session.get</code> to get the response. It does not, by default, follow redirects, however.</p>
+<pre><code class="language-python">@entry
+def main(url):
+    session = ScopedSession(url)
+    for id in range(1, 101):
+        response = session.get(&quot;/&quot;, params={&quot;author&quot;: id})
+        if response.is_redirect:
+            redirect = response.headers[&quot;location&quot;]
+            if &quot;/author/&quot; in redirect:
+                slug = redirect.split(&quot;/&quot;)[-2]
+                msg_info(f&quot;Found author #{id} with slug {slug}&quot;)
+</code></pre>
+<p>Let's try out the script:</p>
+<pre><code class="language-shell">$ ./wordpress-enum.py http://target.com
+[*] Found author #1 with slug user_smt
+[*] Found author #3 with slug blogsmt-com
+[*] Found author #9 with slug y-toma-fr
+[*] Found author #10 with slug p-tim-fr
+[*] Found author #11 with slug x-levieux-fr
+[*] Found author #12 with slug hr-fr
+</code></pre>
+<p>It works fine, but we can improve the implementation in many, many ways:</p>
+<ul>
+<li>Let the user pick the maximum user IDs to try out</li>
+<li>Get username from the redirect page</li>
+<li>Run requests concurrently</li>
+<li>Let the user pick number of concurrent connections</li>
+<li>Let the user pick a proxy</li>
+<li>Add information about progress</li>
+<li>Document the script</li>
+</ul>
+<p>Let's tackle these one by one.</p>
+<h3 id="adding-parameters">Adding parameters</h3>
+<p>Let's let the user pick the number of user IDs to bruteforce, defaulting to 100.</p>
+<pre><code class="language-python">def main(url, max_users=100):
+    session = ScopedSession(url)
+    for id in range(1, max_users + 1):
+        ...
+</code></pre>
+<p>It's as simple as this: since the default value is an integer, ten assumes the value needs to be numeric.</p>
+<pre><code class="language-shell">$ ./wordpress-enum.py http://target.com --max-users=10
+[*] Found author #1 with slug user_smt
+[*] Found author #3 with slug blogsmt-com
+[*] Found author #9 with slug y-toma-fr
+[*] Found author #10 with slug p-tim-fr
+</code></pre>
+<p>Or, with a shortcut:</p>
+<pre><code class="language-shell">$ ./wordpress-enum.py http://target.com -m 10
+</code></pre>
+<p>If we removed the default value, we'd have to tell <em>ten</em> that we expect an <code>int</code> using python's typing:</p>
+<pre><code class="language-python">def main(url, max_users: int):
+</code></pre>
+<h3 id="get-username-from-the-redirect-page">Get username from the redirect page</h3>
+<p>Generally, after the redirect, we land on the page describing the Wordpress author, and the HTML looks like:</p>
+<pre><code class="language-html">&lt;html&gt;
+...
+&lt;title&gt;[name-of-user], author on Wordpress site&lt;title&gt;
+...
+&lt;/html&gt;
+</code></pre>
+<p>As a result, we can follow the redirect;</p>
+<pre><code class="language-python">response = response.follow_redirect()
+</code></pre>
+<p>and then use a CSS selector to extract the title's contents:</p>
+<pre><code class="language-python">title = response.select_one(&quot;title&quot;).text
+</code></pre>
+<p>As a result, we obtain the username</p>
+<pre><code class="language-python">@entry
+def main(url, max_users=100):
+    session = ScopedSession(url)
+    for id in range(max_users):
+        response = session.get(&quot;/&quot;, params={&quot;author&quot;: id})
+        if response.is_redirect:
+            redirect = response.headers[&quot;location&quot;]
+            if &quot;/author/&quot; in redirect:
+                slug = redirect.split(&quot;/&quot;)[-2]
+                response = response.follow_redirect()
+                title = response.select_one(&quot;title&quot;).text
+                username = title.split(&quot;,&quot;, 1)[0]
+                msg_info(f&quot;Found author #{id} with slug {slug}: {username}&quot;)
+</code></pre>
+<p>Let's refactor the code a little bit to remove indent:</p>
+<pre><code class="language-python">@entry
+def main(url, max_users=100):
+    session = ScopedSession(url)
+    for id in range(max_users):
+        response = session.get(&quot;/&quot;, params={&quot;author&quot;: id})
+        if not response.is_redirect:
+            continue
+        redirect = response.headers[&quot;location&quot;]
+        if not &quot;/author/&quot; in redirect:
+            continue
+        slug = redirect.split(&quot;/&quot;)[-2]
+        response = response.follow_redirect()
+        username = response.select_one(&quot;title&quot;).text.split(&quot;,&quot;, 1)[0]
+        msg_info(f&quot;Found author #{id} with slug {slug}: {username}&quot;)
+</code></pre>
+<h3 id="running-requests-concurrently">Running requests concurrently</h3>
+<p>At the moment, we run each HTTP request one by one. We can improve the process by running them concurrently. There are several ways to do this, but since we want to keep each response, we can just use <code>multi()</code>:</p>
+<pre><code class="language-python">responses = session.multi().get(&quot;/&quot;, params={&quot;author&quot;: Multi(range(1, max_users+1))})
+</code></pre>
+<p><code>Session.multi()</code> returns a list of responses, where each request is submitted once per value in the <code>Multi()</code> instance. Here, we thus get a request to <code>/?author=1</code>, <code>/?author=2</code>, etc.
+The requests are run concurrently. The requests are then returned in the same order as they were submitted.</p>
+<p>We then need to iterate over the responses as we did before:</p>
+<pre><code class="language-python">for id, response in enumerate(responses, start=1):
+    ...
+</code></pre>
+<p>We are here in a simple case were it is easy to find the <code>id</code> from the index of the response in the list: the n<sup>th</sup> response corresponds to id <em>n</em>. However, sometimes the multis might not be numerical; you can also get this value from the <code>tag</code> element of the response:</p>
+<pre><code class="language-python">for response in responses:
+    id = response.tag[&quot;params&quot;, &quot;author&quot;]
+    ...
+</code></pre>
+<h3 id="let-user-pick-number-of-connections">Let user pick number of connections</h3>
+<p>By default, a session maintains, at most, 10 concurrent connections. We might want to let the user pick this themselves:</p>
+<pre><code class="language-python">@entry
+def main(url, max_users=100, max_connections=10):
+    session = ScopedSession(url, max_connections=max_connections)
+</code></pre>
+<h3 id="allow-for-a-proxy">Allow for a proxy</h3>
+<p>While attacking stuff on the internet, you often need to use proxies. Setting <code>Session.proxies</code> to a string automatically uses it for all requests:</p>
+<pre><code class="language-python">@entry
+def main(url, max_users=100, max_connections=10, proxy=None):
+    session = ScopedSession(url, max_connections=max_connections)
+    session.proxies = proxy
+</code></pre>
+<p>We now have a pretty clean script with a few customizable options. Let's make the script <strong>ready for release</strong> with a cleaner GUI, documentation, etc.</p>
+<h3 id="add-a-progress-bar">Add a progress bar</h3>
+<p>Multi can display a progress bar indicating its progress. Simply add a <code>description</code> argument describing what is happening:</p>
+<pre><code class="language-python">@entry
+def main(url, max_users=100, max_connections=10):
+    session = ScopedSession(url, max_connections=max_connections)
+    responses = session.multi(
+        description=&quot;Bruteforcing author IDs&quot;
+    ).get(&quot;/&quot;, params={&quot;author&quot;: Multi(range(max_users))})
+</code></pre>
+<p>Now, you get a beautiful progress bar while the process is running.</p>
+<p>The second step of the exploitation, which resolves the redirects, should be faster, so it does not need a progress bar. Let's just add a spinner to point out that it is running:</p>
+<pre><code class="language-python">with msg_status(&quot;Resolving usernames...&quot;):
+    for response in responses:
+        ...
+</code></pre>
+<h3 id="documentation">Documentation</h3>
+<p>Our program is now fast and it looks good. We need to handle the most dreaded step of development: documentation. If we run <code>--help</code> right now, we get the strict minimum:</p>
+<pre><code class="language-shell">./wordpress-enum.py --help                                                 
+Usage: wordpress-enum.py [-h] [-m MAX_USERS] [-M MAX_CONNECTIONS] [-p PROXY] url
+
+Positional Arguments:
+  url
+
+Options:
+  -h, --help            show this help message and exit
+  -m, --max-users MAX_USERS
+  -M, --max-connections MAX_CONNECTIONS
+  -p, --proxy PROXY
+</code></pre>
+<p>We'll document the script and its parameters in a blink. Let's start by adding a documentation to the main entrypoint.</p>
+<pre><code class="language-python">@entry
+def main(url, max_users=100, max_connections=10, proxy=None):
+    &quot;&quot;&quot;Obtains Wordpress user slugs and usernames by bruteforcing author IDs.
+    &quot;&quot;&quot;
+</code></pre>
+<p>The help message gets a little bit better. However, we should also document arguments. This can be done by using <code>arg("name", "description")</code>:</p>
+<pre><code class="language-python">@entry
+@arg(&quot;url&quot;, &quot;URL of the WP website&quot;)
+@arg(&quot;max_users&quot;, &quot;Maximum amount of user IDs to bruteforce&quot;)
+@arg(&quot;max_connections&quot;, &quot;Maximum number of concurrent connections&quot;)
+@arg(&quot;proxy&quot;, &quot;Optional proxy to use&quot;)
+def main(url, max_users=100, max_connections=10, proxy=None):
+    &quot;&quot;&quot;Obtains Wordpress user slugs and usernames by bruteforcing author IDs.
+    &quot;&quot;&quot;
+</code></pre>
+<p>That's it ! Our program is documented, and ready for release.</p>
+<pre><code class="language-shell">./wordpress-enum.py --help
+Usage: wordpress-enum.py [-h] [-m MAX_USERS] [-M MAX_CONNECTIONS] [-p PROXY] url
+
+Obtains Wordpress user slugs and usernames by bruteforcing author IDs.
+
+Positional Arguments:
+  url                   URL of the WP website
+
+Options:
+  -h, --help            show this help message and exit
+  -m, --max-users MAX_USERS
+                        Maximum amount of user IDs to bruteforce
+  -M, --max-connections MAX_CONNECTIONS
+                        Maximum number of concurrent connections
+  -p, --proxy PROXY     Optional proxy to use
+</code></pre>
+<p>We are ready to go !</p>
+<p>Here's the final script:</p>
+<pre><code class="language-python">#!/usr/bin/env python3
+
+from ten import *
+
+
+@entry
+@arg(&quot;url&quot;, &quot;URL of the WP website&quot;)
+@arg(&quot;max_users&quot;, &quot;Maximum amount of user IDs to bruteforce&quot;)
+@arg(&quot;max_connections&quot;, &quot;Maximum number of concurrent connections&quot;)
+@arg(&quot;proxy&quot;, &quot;Optional proxy to use&quot;)
+def main(url, max_users=100, max_connections=10, proxy=None):
+    &quot;&quot;&quot;Obtains Wordpress user slugs and usernames by bruteforcing author IDs.
+    &quot;&quot;&quot;
+    session = ScopedSession(url, max_connections=max_connections)
+    session.proxies = proxy
+    responses = session.multi(
+        description=&quot;Bruteforcing author IDs&quot;
+    ).get(&quot;/&quot;, params={&quot;author&quot;: Multi(range(max_users))})
+
+    with msg_status(&quot;Resolving usernames...&quot;):
+        for response in responses:
+            id = response.tag[&quot;params&quot;, &quot;author&quot;]
+            if not response.is_redirect:
+                continue
+            redirect = response.headers[&quot;location&quot;]
+            if not &quot;/author/&quot; in redirect:
+                continue
+            slug = redirect.split(&quot;/&quot;)[-2]
+            response = response.follow_redirect()
+            username = response.select_one(&quot;title&quot;).text.split(&quot;,&quot;, 1)[0]
+            msg_info(f&quot;Found author #{id} with slug {slug}: {username}&quot;)
+
+main()
+</code></pre>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="fs.html" class="btn btn-neutral float-left" title="Filesystem: manage folders and files"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="fs.html" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+  </span>
+</div>
+    <script>var base_url = '.';</script>
+    <script src="js/theme_extra.js" defer></script>
+    <script src="js/theme.js" defer></script>
+      <script src="search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
+
+</body>
+</html>

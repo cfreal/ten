@@ -1,0 +1,7 @@
+__pycache__/
+*.py[cod]
+work/
+htmlcov/
+.coverage
+.vscode
+TODO.md

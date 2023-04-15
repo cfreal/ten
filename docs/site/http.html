@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://example.com/http.html" />
+      <link rel="shortcut icon" href="img/favicon.ico" />
+    <title>HTTP: requests on steroids - ten's documentation</title>
+    <link rel="stylesheet" href="css/theme.css" />
+    <link rel="stylesheet" href="css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "HTTP: requests on steroids";
+        var mkdocs_page_input_path = "http.md";
+        var mkdocs_page_url = "/http.html";
+      </script>
+    
+    <script src="js/jquery-3.6.0.min.js" defer></script>
+    <!--[if lt IE 9]>
+      <script src="js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
+      <script>hljs.initHighlightingOnLoad();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="index.html" class="icon icon-home"> ten's documentation
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="./search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="index.html">Home</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="flow.html">Flow: Input, output, and flow control</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="transform.html">Transform: Convert data</a>
+                </li>
+              </ul>
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="http.html">HTTP: requests on steroids</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#example-comparison-requeststen">Example comparison requests/ten</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#session">Session</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#creating-a-standard-session-and-issuing-http-requests">Creating a standard session and issuing HTTP requests</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#creating-a-scoped-session">Creating a scoped session</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#setting-a-proxy">Setting a proxy</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#proxying-through-burp">Proxying through Burp</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#raw-urls">Raw URLs</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#http-responses">HTTP Responses</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#status-code">Status code</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#text-matching">Text matching</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#regular-expressions">Regular expressions</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#beautifulsoup-checking-the-dom">BeautifulSoup: checking the DOM</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#forms">Forms</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#getting-a-form">Getting a form</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#setting-form-values">Setting form values</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#sending-the-form">Sending the form</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#multi-first-pool-send-concurrent-requests">Multi, First, Pool: Send concurrent requests</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#multi-run-all-concurrent-requests">Multi: run all concurrent requests</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#first-stop-as-soon-as-one-request-succeeds">First: stop as soon as one request succeeds</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#pool-advanced-concurrency">Pool: advanced concurrency</a>
+    </li>
+        </ul>
+    </li>
+    </ul>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="shell.html">Shell: run commands</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="fs.html">Filesystem: manage folders and files</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorials and examples</a>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">ten's documentation</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html" class="icon icon-home" alt="Docs"></a> &raquo;</li>
+      <li>HTTP: requests on steroids</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="http-requests-on-steroids">HTTP: requests on steroids</h1>
+<p>The HTTP module is implemented on top of
+<a href="https://requests.readthedocs.io/en/master/">requests</a>, but provides additional
+features. Refer to <a href="../tenlib/http.html"><code>tenlib.http</code>'s documentation</a> for details.</p>
+<ul>
+<li><a href="#http-requests-on-steroids">HTTP: requests on steroids</a><ul>
+<li><a href="#example-comparison-requeststen">Example comparison requests/ten</a></li>
+<li><a href="#session">Session</a><ul>
+<li><a href="#creating-a-standard-session-and-issuing-http-requests">Creating a standard session and issuing HTTP requests</a></li>
+<li><a href="#creating-a-scoped-session">Creating a scoped session</a></li>
+<li><a href="#setting-a-proxy">Setting a proxy</a></li>
+<li><a href="#proxying-through-burp">Proxying through Burp</a></li>
+<li><a href="#raw-urls">Raw URLs</a></li>
+</ul>
+</li>
+<li><a href="#http-responses">HTTP Responses</a><ul>
+<li><a href="#status-code">Status code</a></li>
+<li><a href="#text-matching">Text matching</a></li>
+<li><a href="#regular-expressions">Regular expressions</a></li>
+<li><a href="#beautifulsoup-checking-the-dom">BeautifulSoup: checking the DOM</a></li>
+</ul>
+</li>
+<li><a href="#forms">Forms</a><ul>
+<li><a href="#getting-a-form">Getting a form</a></li>
+<li><a href="#setting-form-values">Setting form values</a></li>
+<li><a href="#sending-the-form">Sending the form</a></li>
+</ul>
+</li>
+<li><a href="#multi-first-pool-send-concurrent-requests">Multi, First, Pool: Send concurrent requests</a><ul>
+<li><a href="#multi-run-all-concurrent-requests">Multi: run all concurrent requests</a></li>
+<li><a href="#first-stop-as-soon-as-one-request-succeeds">First: stop as soon as one request succeeds</a></li>
+<li><a href="#pool-advanced-concurrency">Pool: advanced concurrency</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="example-comparison-requeststen">Example comparison requests/ten</h2>
+<p>Let's say you want to log in as an administrator on a Drupal website. You want
+to proxy the traffic through Burp to check if everything works correctly.
+With <code>requests</code>, you'd have the following script:</p>
+<pre><code class="language-python">import requests
+import re
+
+URL = 'http://site.com'
+
+def main():
+    session = Session()
+    session.verify = False
+
+    session.proxies = {'http': 'localhost:8080', 'https': 'localhost:8080'}
+
+    # GET request to get CSRF token, form ID, etc.
+
+    response = session.get(URL + '/user/login')
+
+    form_build_id = re.search('name=&quot;form_build_id&quot; value=&quot;(.*?)&quot;', response.text).group(1)
+    form_token = re.search('name=&quot;form_token&quot; value=&quot;(.*?)&quot;', response.text).group(1)
+    form_id = re.search('name=&quot;form_id&quot; value=&quot;(.*?)&quot;', response.text).group(1)
+
+    # Log in
+
+    response = session.post(
+        URL + '/user/login',
+        data={
+            'user': 'someone',
+            'pass': 'password1!'
+            'form_build_id': form_build_id,
+            'form_token': form_token,
+            'form_id': form_id,
+        }
+    }
+
+    if response.status_code != 200:
+        print('Unable to log in')
+        exit()
+
+    if 'Welcome, admin' not in response.text:
+        print('User is not an administrator')
+        exit()
+
+    print('Login successful !')
+
+main()
+</code></pre>
+<p>With <code>ten</code>, you'd have:</p>
+<pre><code class="language-python">from ten import *
+
+URL = 'http://site.com'
+
+@entry
+def main():
+    session = ScopedSession(URL)
+    session.burp()
+
+    response = session.get('/user/login')
+
+    form = response.form(id='user-login')
+    form.update({
+        'user': 'someone',
+        'pass': 'password1!'
+    })
+    response = form.submit()
+
+    if not response.code(200):
+        failure('Unable to log in')
+
+    if not response.contains('Welcome, admin'):
+        failure('User is not an administrator')
+
+    msg_success('Login successful !')
+
+
+main()
+</code></pre>
+<p>Faster, and more readable. But that's not all the http module can do.</p>
+<h2 id="session">Session</h2>
+<h3 id="creating-a-standard-session-and-issuing-http-requests">Creating a standard session and issuing HTTP requests</h3>
+<p>Create a session like so:</p>
+<pre><code class="language-python">session = Session()
+</code></pre>
+<p>The API is the same as <code>requests.Session</code>'s API.</p>
+<pre><code class="language-python"># Some GET request
+response = session.get('https://site.com/', headers={...}, ...)
+# Some POST request
+response = session.post('https://site.com/user/login', data={...}, ...)
+</code></pre>
+<h3 id="creating-a-scoped-session">Creating a scoped session</h3>
+<p>When you're bound to send several requests to the same website, you often end
+up having to concat the base URL with the path. Instead, you can use a
+<code>ScopedSession</code>:</p>
+<pre><code class="language-python">session = ScopedSession('http://target.com/admin')
+</code></pre>
+<p>You'd call methods like this:</p>
+<pre><code class="language-python"># GET http://target.com/admin/login
+response = await session.get('/login')
+</code></pre>
+<p>If you request something that is out of scope, it'll raise an exception:</p>
+<pre><code class="language-python"># raises HTTPOutOfScopeError
+response = await session.get('http://target.com/user')
+</code></pre>
+<h3 id="setting-a-proxy">Setting a proxy</h3>
+<p>The standard <code>requests</code> API requires you to set proxies as a dictionary. Now,
+a string suffices:</p>
+<pre><code class="language-python">session.proxies = &quot;socks5://localhost:8888&quot;
+</code></pre>
+<h3 id="proxying-through-burp">Proxying through Burp</h3>
+<p>If you need to debug some requests, you can call <code>Session.burp()</code> to set the
+proxy to <code>localhost:8080</code>.</p>
+<pre><code class="language-python">session.burp()
+</code></pre>
+<p>When you're done, unset it like so:</p>
+<pre><code class="language-python">session.unburp()
+</code></pre>
+<h3 id="raw-urls">Raw URLs</h3>
+<p>By default, URL's path is not re-evaluated by <strong>ten</strong>, allowing the use of non-canonical URLs, or un-encoded URLs:</p>
+<pre><code class="language-python"># GET /portal/../admin?param=&lt;xss&gt; HTTP/1.1
+response = session.get(&quot;https://target.com/portal/../admin?param=&lt;xss&gt;&quot;)
+</code></pre>
+<p>To go back to the <code>requests</code> behaviour, were the URL is canonicalized and GET parameters are re-encoded, set <code>raw_url</code> to <code>False</code>.</p>
+<pre><code class="language-python">session.raw_url = False
+# GET /admin?param=%3Cxss%3E HTTP/1.1
+response = session.get(&quot;https://target.com/portal/../admin?param=&lt;xss&gt;&quot;)
+</code></pre>
+<h2 id="http-responses">HTTP Responses</h2>
+<p>Upon receiving an HTTP response, one will generally make sure they are OK, using the HTTP status code or looking for keywords in the contents, and then parse their contents to extract data.</p>
+<h3 id="status-code">Status code</h3>
+<p>Comparing the HTTP status code with several:</p>
+<pre><code class="language-python">if response.code(200, 302):
+    ...
+</code></pre>
+<p>Exiting when an unexpected code happens:</p>
+<pre><code class="language-python">response.expect(200)
+</code></pre>
+<h3 id="text-matching">Text matching</h3>
+<p>Use <code>Response.contains()</code> to quickly check for keywords, as string or bytes:</p>
+<pre><code class="language-python">if response.contains('login successful'):
+    ...
+</code></pre>
+<pre><code class="language-python">if response.contains(b'login successful'):
+    ...
+</code></pre>
+<h3 id="regular-expressions">Regular expressions</h3>
+<p>Every response object contains a <code>re</code> property that has the same API as the <code>re</code>
+module. It handles both <code>str</code> and <code>bytes</code>.</p>
+<pre><code class="language-python">match = response.re.search(r'token:([0-9]+)')
+</code></pre>
+<pre><code class="language-python">changed = response.re.sub(
+    br'\x00\x00\x7f.{5}', b''
+)
+</code></pre>
+<h3 id="beautifulsoup-checking-the-dom">BeautifulSoup: checking the DOM</h3>
+<p>A <a href="https://www.crummy.com/software/BeautifulSoup/bs4/doc/">BeautifulSoup</a> object is available as <code>response.soup</code>:</p>
+<pre><code class="language-python">p_tags = response.soup.find('p')
+</code></pre>
+<p>In addition, <code>select()</code> and <code>select_one()</code> are access elements using CSS selectors:</p>
+<pre><code class="language-python">token = response.select_one('input[name=&quot;token&quot;]').attrs[&quot;value&quot;]
+</code></pre>
+<h2 id="forms">Forms</h2>
+<h3 id="getting-a-form">Getting a form</h3>
+<p>Use the <code>Response.form</code> method to extract a form from a response:</p>
+<pre><code class="language-python">login_form = response.form(id=&quot;user-login&quot;)
+</code></pre>
+<p>Any combination of HTML attributes can be used to select the form:</p>
+<pre><code class="language-python">login_form = response.form(action=&quot;/user/login&quot;, method=&quot;POST&quot;)
+</code></pre>
+<p>The <code>form</code> method returns a <code>Form</code> object, which contains the form's data, and
+can be used to submit the form.</p>
+<pre><code class="language-python">Form(
+    action='https://www.drupal.org/user/login',
+    method='post',
+    data={
+        'name': '',
+        'pass': '',
+        'form_build_id': 'form-b2WxheXaaeswzS13Ypq5YhAWMJLRk8-fs_xT9VMceXw',
+        'form_token': '9l0gj6ZY1OJBZ9I9ZKWvaNetevSRw2e5dHycs7SBzPs',
+        'form_id': 'user_login',
+        'op': 'Log in'
+    }
+)
+</code></pre>
+<h3 id="setting-form-values">Setting form values</h3>
+<p>Form values can be read/written as a dict:</p>
+<pre><code class="language-python">csrf_token = form[&quot;token&quot;]
+form[&quot;user&quot;] = &quot;test@yopmail.com&quot;
+form[&quot;password&quot;] = &quot;Password123!&quot;
+</code></pre>
+<p>or using the <code>update()</code> method:</p>
+<pre><code class="language-python">form.update({&quot;user&quot;: &quot;test@yopmail.com&quot;, &quot;password&quot;: &quot;Password123!&quot;})
+</code></pre>
+<p>The underlying dictionary is stored in <code>form.data</code>.</p>
+<h3 id="sending-the-form">Sending the form</h3>
+<p>You can then submit the form:</p>
+<pre><code class="language-python">response = form.submit()
+</code></pre>
+<h2 id="multi-first-pool-send-concurrent-requests">Multi, First, Pool: Send concurrent requests</h2>
+<h3 id="multi-run-all-concurrent-requests">Multi: run all concurrent requests</h3>
+<p>Oftentimes, you'll need to send multiple requests at the same time. For example, when you're fuzzing a parameter, you'll want to send a request for each payload.
+<strong>ten</strong> provides helpers to do so, easily, and in a readable way.</p>
+<p>Say you want to retrieve the first 10 news from a website. You could do it like so:</p>
+<pre><code class="language-python">session = ScopedSession(&quot;https://target.com/&quot;)
+responses = [session.get(f&quot;/news/{id}&quot;) for id in range(10)]
+</code></pre>
+<p>However, requests are done one after the other, which is inefficient. Using <code>Multi</code>, you can retrieve them concurrently:</p>
+<pre><code class="language-python">session = ScopedSession(&quot;https://target.com/&quot;)
+responses = session.multi().get(Multi(f&quot;/news/{id}&quot; for id in range(10)))
+</code></pre>
+<p>The Multi keyword can be anywhere in the call. If you want to issue POST requests to <code>/api/news</code>, with <code>news_id</code> being 0 to 9, you can do:</p>
+<pre><code class="language-python">session = ScopedSession(&quot;https://target.com/&quot;)
+responses = session.multi().post(&quot;/api/news&quot;, data={&quot;news_id&quot;: Multi(range(10))})
+</code></pre>
+<p>Even better, you can use several Multi keywords:</p>
+<pre><code class="language-python"># Get news for each month and day of the year 2023
+session = ScopedSession(&quot;https://target.com/&quot;)
+responses = session.multi().post(
+    &quot;/api/news&quot;,
+    data={
+        &quot;year&quot;: 2023,
+        &quot;month&quot;: Multi(range(1, 13)),
+        &quot;day&quot;: Multi(range(1, 32))
+    }
+)
+</code></pre>
+<p>This code would produce <em>12 * 31</em> requests, all done concurrently.</p>
+<h3 id="first-stop-as-soon-as-one-request-succeeds">First: stop as soon as one request succeeds</h3>
+<p><code>Session.multi()</code> will run every request to completion. In some cases, you might want to stop as soon as one request succeeds. For example, when you're fuzzing a parameter, you might want to stop as soon as you find a working payload. You can do so by using <code>Session.first()</code>.</p>
+<pre><code class="language-python">def news_exists(r: Response):
+    return r.code(200) and r.contains(&quot;&lt;title&gt;News id&quot;)
+
+first_news = session.first(news_exists).get(Multi(f&quot;/news/{id}&quot; for id in range(10)))
+</code></pre>
+<p>This code runs requests concurrently until one matches the <code>news_exists</code> predicate. It then returns the first response that matches, and cancel the other requests.</p>
+<h3 id="pool-advanced-concurrency">Pool: advanced concurrency</h3>
+<p>For more advanced usage, you can use <code>Session.pool()</code>, which produces a <code>Pool</code> object. Pool objects run requests concurrently, and allow you to add requests to the pool, and retrieve responses as they come.</p>
+<pre><code class="language-python">with session.pool() as pool:
+    # Queue 10 requests
+    for id in range(10):
+        pool.get(f&quot;/news/{id}&quot;)
+    # Retrieve responses, in order
+    responses = pool.in_order()
+</code></pre>
+<p>In addition, you can get responses as they arrive using <code>pool.as_completed()</code>:</p>
+<pre><code class="language-python">with session.pool() as pool:
+    # Queue 10 requests
+    for id in range(10):
+        pool.get(f&quot;/news/{id}&quot;, tag=id)
+
+    # Get responses, as they arrive
+    for response in pool.as_completed():
+        msg_info(f&quot;Received {response.tag}: {response.status_code}&quot;)
+</code></pre>
+<p>The <code>tag</code> argument is optional, and can be used to identify responses.</p>
+<p>As soon as you leave the <code>with</code> block, all pending requests are cancelled.
+Use this to keep only some of the responses, and cancel the requests you don't
+need:</p>
+<pre><code class="language-python">with session.pool() as pool:
+    for id in range(100):
+        pool.get(f&quot;/news/{id}&quot;, tag=id)
+
+    for response in pool.as_completed():
+        msg_info(f&quot;Received {response.tag}: {response.status_code}&quot;)
+        if response.code(200) and response.contains(&quot;News id&quot;):
+            break
+
+# At this point, all pending requests have been cancelled
+msg_success(f&quot;Found a news with ID {response.tag}&quot;)
+</code></pre>
+<p>Pool support adding new items while being iterated upon. If you're building some kind of crawler, you might need to add new requests whenever you find directories. Here the sample code for a very simple crawler:</p>
+<pre><code class="language-python">    s = ScopedSession(url)
+    s.raw_url = False
+
+    with s.pool() as pool:
+        pool.get(&quot;/&quot;)
+        done = set()
+        for response in pool.as_completed():
+            done.add(response.url)
+            msg_info(response.url)
+
+            # Directory: extract links and add them to the pool
+            if response.contains(&quot;Index of &quot;):
+                urls = [a.attrs[&quot;href&quot;] for a in response.select(&quot;a&quot;)]
+                urls = {urljoin(response.url, u) for u in urls}
+                urls = urls - done
+                for url in urls:
+                    if s.is_in_scope(url) and url.endswith('/'):
+                        pool.get(url)
+            # File
+            else:
+                # Save to disk ?
+                ...
+</code></pre>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="transform.html" class="btn btn-neutral float-left" title="Transform: Convert data"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="shell.html" class="btn btn-neutral float-right" title="Shell: run commands">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="transform.html" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="shell.html" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script>var base_url = '.';</script>
+    <script src="js/theme_extra.js" defer></script>
+    <script src="js/theme.js" defer></script>
+      <script src="search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
+
+</body>
+</html>

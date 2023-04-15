@@ -1,0 +1,661 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>tenlib.struct.proxy API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>tenlib.struct.proxy</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">from __future__ import annotations
+
+from collections.abc import MutableMapping
+from collections import UserList
+
+
+__all__ = [
+    &#34;TenDict&#34;,
+    &#34;TenList&#34;,
+    &#34;wrap_object&#34;,
+]
+
+
+def wrap_object(obj):
+    &#34;&#34;&#34;Converts an object into a proxy item. `dict`s are converted to a
+    `TenDict`, `list`s to a `TenList`.
+    &#34;&#34;&#34;
+    if type(obj) is list:
+        return TenList(obj)
+    if type(obj) is dict:
+        return TenDict(obj)
+    return obj
+
+
+class GetItemProxy:
+    &#34;&#34;&#34;A proxy class that converts sequences and dicts to their proxified
+    equivalent, to access items as properties recursively.
+    &#34;&#34;&#34;
+
+    def __getitem__(self, key):
+        return wrap_object(super().__getitem__(key))
+
+
+# We would happily use collections.UserDict here, but since the internal object
+# is referenced as `data`, we wouldn&#39;t be able to do wrapper.data = &#39;something&#39;.
+class UserDict(MutableMapping):
+    __wo__: dict
+
+    def __init__(self, *args, **kwargs):
+        if len(args) == 1 and isinstance(args[0], dict) and not kwargs:
+            wo = args[0]
+        else:
+            wo = dict(*args, **kwargs)
+        self.__wo__ = wo
+
+    def __len__(self):
+        return len(self.__wo__)
+
+    def __getitem__(self, key):
+        if key in self.__wo__:
+            return self.__wo__[key]
+        if hasattr(self.__class__, &#34;__missing__&#34;):
+            return self.__class__.__missing__(self, key)
+        raise KeyError(key)
+
+    def __setitem__(self, key, item):
+        self.__wo__[key] = item
+
+    def __delitem__(self, key):
+        del self.__wo__[key]
+
+    def __iter__(self):
+        return iter(self.__wo__)
+
+    # Modify __contains__ to work correctly when __missing__ is present
+    def __contains__(self, key):
+        return key in self.__wo__
+
+    # Now, add the methods in dicts but not in MutableMapping
+    def __repr__(self):
+        return repr(self.__wo__)
+
+    def __copy__(self):
+        inst = self.__class__.__new__(self.__class__)
+        inst.__dict__.update(self.__dict__)
+        # Create a copy and avoid triggering descriptors
+        inst.__dict__[&#34;__wo__&#34;] = self.__dict__[&#34;__wo__&#34;].copy()
+        return inst
+
+    def copy(self):
+        if self.__class__ is UserDict:
+            return UserDict(self.__wo__.copy())
+        import copy
+
+        data = self.__wo__
+        try:
+            self.__wo__ = {}
+            c = copy.copy(self)
+        finally:
+            self.__wo__ = data
+        c.update(self)
+        return c
+
+    @classmethod
+    def fromkeys(cls, iterable, value=None):
+        d = cls()
+        for key in iterable:
+            d[key] = value
+        return d
+
+
+class TenDict(GetItemProxy, UserDict):
+    &#34;&#34;&#34;Proxy for `dict` that allows you to access items as properties
+    recursively and provides other helpers.
+
+    Examples:
+
+        Items can be accessed as attributes:
+
+        &gt;&gt;&gt; some = TenDict({&#39;a&#39;: &#39;b&#39;, &#39;c&#39;, &#39;d&#39;})
+        &gt;&gt;&gt; some.a
+        &#39;b&#39;
+        &gt;&gt;&gt; some.c = &#39;e&#39;
+        &gt;&gt;&gt; some.c
+        &#39;e&#39;
+
+        This property is recursive:
+
+        &gt;&gt;&gt; deep = TenDict({
+        ...     &#39;some_list&#39;: [
+        ...         {&#39;some_dict&#39;: {
+        ...             &#39;a_value&#39;: 3
+        ...         }}
+        ...     ]
+        ... })
+        &gt;&gt;&gt; deep.some_list[0].some_dict.a_value
+        3
+
+        Helpers are available:
+
+        &gt;&gt;&gt; some = TenDict({&#39;key1&#39;: &#39;value1&#39;, &#39;key2&#39;: &#39;value2&#39;})
+        &gt;&gt;&gt; some.setdefaults({&#39;key2&#39;: &#39;value2_new&#39;, &#39;key3&#39;: &#39;value3&#39;})
+        TenDict({&#39;key1&#39;: &#39;value1&#39;, &#39;key2&#39;: &#39;value2&#39;, &#39;key3&#39;: &#39;value3&#39;})
+        &gt;&gt;&gt; some.keep(&#39;key1&#39;, &#39;key3&#39;)
+        TenDict({&#39;key1&#39;: &#39;value1&#39;, &#39;key3&#39;: &#39;value3&#39;})
+
+        The instance is a proxy, modifying the `TenDict` instance modifies the
+        original `dict` as well.
+
+        &gt;&gt;&gt; some_dict = {&#39;a&#39;: &#39;b&#39;, &#39;c&#39;: &#39;d&#39;}
+        &gt;&gt;&gt; proxy = TenDict(some_dict)
+        &gt;&gt;&gt; proxy[&#39;e&#39;] = &#39;f&#39;
+        &gt;&gt;&gt; proxy
+        TenDict({&#39;a&#39;: 3, &#39;c&#39;: &#39;d&#39;, &#39;e&#39;: &#39;f&#39;})
+        &gt;&gt;&gt; some_dict
+        {&#39;a&#39;: 3, &#39;c&#39;: &#39;d&#39;, &#39;e&#39;: &#39;f&#39;}
+    &#34;&#34;&#34;
+
+    __annotations_cache__ = {}
+
+    def __getattr__(self, name):
+        # This means that the expected attribute is annotated but not defined
+        if name in self._defined_annotations():
+            raise AttributeError(name)
+        try:
+            return self[name]
+        except KeyError:
+            raise AttributeError(name) from None
+
+    @classmethod
+    def _defined_annotations(cls):
+        &#34;&#34;&#34;Returns a set containing every annotation of the base class and its
+        superclasses.
+        &#34;&#34;&#34;
+        try:
+            return cls.__annotations_cache__[cls]
+        except KeyError:
+            pass
+
+        cache = cls.__annotations_cache__[cls] = set()
+
+        for scls in cls.__mro__:
+            try:
+                cache |= set(scls.__annotations__.keys())
+            except AttributeError:
+                pass
+
+        return cache
+
+    def __setattr__(self, name, value):
+        if name in self._defined_annotations() or name in dir(self):
+            super().__setattr__(name, value)
+        else:
+            self[name] = value
+
+    def __delattr__(self, name):
+        if name in self._defined_annotations() or name in dir(self):
+            return super().__delattr__(name)
+
+        try:
+            del self[name]
+        except KeyError:
+            raise AttributeError(name) from None
+
+    def __repr__(self):
+        return f&#34;{type(self).__name__}({self.__wo__!r})&#34;
+
+    def update(self, *args, **kwargs) -&gt; TenDict:
+        &#34;&#34;&#34;Same as `dict.update()`, but returns the instance.&#34;&#34;&#34;
+        self.__wo__.update(*args, **kwargs)
+        return self
+
+    def setdefaults(self, other={}, **kwargs) -&gt; TenDict:
+        &#34;&#34;&#34;Generalizes `dict.setdefault()` for several values, and returns the
+        instance.
+
+        &gt;&gt;&gt; some = TenDict({&#39;key1&#39;: &#39;value1&#39;, &#39;key2&#39;: &#39;value2&#39;})
+        &gt;&gt;&gt; some.setdefaults({&#39;key2&#39;: &#39;value2_new&#39;, &#39;key3&#39;: &#39;value3&#39;})
+        TenDict({&#39;key1&#39;: &#39;value1&#39;, &#39;key2&#39;: &#39;value2&#39;, &#39;key3&#39;: &#39;value3&#39;})
+        &#34;&#34;&#34;
+        kwargs.update(other)
+        for k, v in kwargs.items():
+            self.setdefault(k, v)
+        return self
+
+    def keep(self, *to_keep) -&gt; TenDict:
+        &#34;&#34;&#34;Returns a `TenDict` that contains only the given keys.
+
+        &gt;&gt;&gt; some = TenDict({&#39;a&#39;: 1, &#39;b&#39;: 2, &#39;c&#39;: 3, &#39;d&#39;: 4})
+        &gt;&gt;&gt; some.keep(&#39;a&#39;, &#39;d&#39;)
+        TenDict({&#39;a&#39;: 1, &#39;d&#39;: 4})
+        &#34;&#34;&#34;
+        new = TenDict()
+
+        for k in to_keep:
+            try:
+                new[k] = self[k]
+            except KeyError:
+                pass
+
+        return new
+
+
+class TenList(GetItemProxy, UserList):
+    def __init__(self, lst=None):
+        if lst is None:
+            self.data = []
+        elif isinstance(lst, list):
+            self.data = lst
+        else:
+            self.data = list(lst)
+
+    def __repr__(self):
+        return f&#34;{type(self).__name__}({self.data!r})&#34;</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="tenlib.struct.proxy.wrap_object"><code class="name flex">
+<span>def <span class="ident">wrap_object</span></span>(<span>obj)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Converts an object into a proxy item. <code>dict</code>s are converted to a
+<code><a title="tenlib.struct.proxy.TenDict" href="#tenlib.struct.proxy.TenDict">TenDict</a></code>, <code>list</code>s to a <code><a title="tenlib.struct.proxy.TenList" href="#tenlib.struct.proxy.TenList">TenList</a></code>.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def wrap_object(obj):
+    &#34;&#34;&#34;Converts an object into a proxy item. `dict`s are converted to a
+    `TenDict`, `list`s to a `TenList`.
+    &#34;&#34;&#34;
+    if type(obj) is list:
+        return TenList(obj)
+    if type(obj) is dict:
+        return TenDict(obj)
+    return obj</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="tenlib.struct.proxy.TenDict"><code class="flex name class">
+<span>class <span class="ident">TenDict</span></span>
+<span>(</span><span>*args, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Proxy for <code>dict</code> that allows you to access items as properties
+recursively and provides other helpers.</p>
+<h2 id="examples">Examples</h2>
+<p>Items can be accessed as attributes:</p>
+<pre><code class="language-python-repl">&gt;&gt;&gt; some = TenDict({'a': 'b', 'c', 'd'})
+&gt;&gt;&gt; some.a
+'b'
+&gt;&gt;&gt; some.c = 'e'
+&gt;&gt;&gt; some.c
+'e'
+</code></pre>
+<p>This property is recursive:</p>
+<pre><code class="language-python-repl">&gt;&gt;&gt; deep = TenDict({
+...     'some_list': [
+...         {'some_dict': {
+...             'a_value': 3
+...         }}
+...     ]
+... })
+&gt;&gt;&gt; deep.some_list[0].some_dict.a_value
+3
+</code></pre>
+<p>Helpers are available:</p>
+<pre><code class="language-python-repl">&gt;&gt;&gt; some = TenDict({'key1': 'value1', 'key2': 'value2'})
+&gt;&gt;&gt; some.setdefaults({'key2': 'value2_new', 'key3': 'value3'})
+TenDict({'key1': 'value1', 'key2': 'value2', 'key3': 'value3'})
+&gt;&gt;&gt; some.keep('key1', 'key3')
+TenDict({'key1': 'value1', 'key3': 'value3'})
+</code></pre>
+<p>The instance is a proxy, modifying the <code><a title="tenlib.struct.proxy.TenDict" href="#tenlib.struct.proxy.TenDict">TenDict</a></code> instance modifies the
+original <code>dict</code> as well.</p>
+<pre><code class="language-python-repl">&gt;&gt;&gt; some_dict = {'a': 'b', 'c': 'd'}
+&gt;&gt;&gt; proxy = TenDict(some_dict)
+&gt;&gt;&gt; proxy['e'] = 'f'
+&gt;&gt;&gt; proxy
+TenDict({'a': 3, 'c': 'd', 'e': 'f'})
+&gt;&gt;&gt; some_dict
+{'a': 3, 'c': 'd', 'e': 'f'}
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class TenDict(GetItemProxy, UserDict):
+    &#34;&#34;&#34;Proxy for `dict` that allows you to access items as properties
+    recursively and provides other helpers.
+
+    Examples:
+
+        Items can be accessed as attributes:
+
+        &gt;&gt;&gt; some = TenDict({&#39;a&#39;: &#39;b&#39;, &#39;c&#39;, &#39;d&#39;})
+        &gt;&gt;&gt; some.a
+        &#39;b&#39;
+        &gt;&gt;&gt; some.c = &#39;e&#39;
+        &gt;&gt;&gt; some.c
+        &#39;e&#39;
+
+        This property is recursive:
+
+        &gt;&gt;&gt; deep = TenDict({
+        ...     &#39;some_list&#39;: [
+        ...         {&#39;some_dict&#39;: {
+        ...             &#39;a_value&#39;: 3
+        ...         }}
+        ...     ]
+        ... })
+        &gt;&gt;&gt; deep.some_list[0].some_dict.a_value
+        3
+
+        Helpers are available:
+
+        &gt;&gt;&gt; some = TenDict({&#39;key1&#39;: &#39;value1&#39;, &#39;key2&#39;: &#39;value2&#39;})
+        &gt;&gt;&gt; some.setdefaults({&#39;key2&#39;: &#39;value2_new&#39;, &#39;key3&#39;: &#39;value3&#39;})
+        TenDict({&#39;key1&#39;: &#39;value1&#39;, &#39;key2&#39;: &#39;value2&#39;, &#39;key3&#39;: &#39;value3&#39;})
+        &gt;&gt;&gt; some.keep(&#39;key1&#39;, &#39;key3&#39;)
+        TenDict({&#39;key1&#39;: &#39;value1&#39;, &#39;key3&#39;: &#39;value3&#39;})
+
+        The instance is a proxy, modifying the `TenDict` instance modifies the
+        original `dict` as well.
+
+        &gt;&gt;&gt; some_dict = {&#39;a&#39;: &#39;b&#39;, &#39;c&#39;: &#39;d&#39;}
+        &gt;&gt;&gt; proxy = TenDict(some_dict)
+        &gt;&gt;&gt; proxy[&#39;e&#39;] = &#39;f&#39;
+        &gt;&gt;&gt; proxy
+        TenDict({&#39;a&#39;: 3, &#39;c&#39;: &#39;d&#39;, &#39;e&#39;: &#39;f&#39;})
+        &gt;&gt;&gt; some_dict
+        {&#39;a&#39;: 3, &#39;c&#39;: &#39;d&#39;, &#39;e&#39;: &#39;f&#39;}
+    &#34;&#34;&#34;
+
+    __annotations_cache__ = {}
+
+    def __getattr__(self, name):
+        # This means that the expected attribute is annotated but not defined
+        if name in self._defined_annotations():
+            raise AttributeError(name)
+        try:
+            return self[name]
+        except KeyError:
+            raise AttributeError(name) from None
+
+    @classmethod
+    def _defined_annotations(cls):
+        &#34;&#34;&#34;Returns a set containing every annotation of the base class and its
+        superclasses.
+        &#34;&#34;&#34;
+        try:
+            return cls.__annotations_cache__[cls]
+        except KeyError:
+            pass
+
+        cache = cls.__annotations_cache__[cls] = set()
+
+        for scls in cls.__mro__:
+            try:
+                cache |= set(scls.__annotations__.keys())
+            except AttributeError:
+                pass
+
+        return cache
+
+    def __setattr__(self, name, value):
+        if name in self._defined_annotations() or name in dir(self):
+            super().__setattr__(name, value)
+        else:
+            self[name] = value
+
+    def __delattr__(self, name):
+        if name in self._defined_annotations() or name in dir(self):
+            return super().__delattr__(name)
+
+        try:
+            del self[name]
+        except KeyError:
+            raise AttributeError(name) from None
+
+    def __repr__(self):
+        return f&#34;{type(self).__name__}({self.__wo__!r})&#34;
+
+    def update(self, *args, **kwargs) -&gt; TenDict:
+        &#34;&#34;&#34;Same as `dict.update()`, but returns the instance.&#34;&#34;&#34;
+        self.__wo__.update(*args, **kwargs)
+        return self
+
+    def setdefaults(self, other={}, **kwargs) -&gt; TenDict:
+        &#34;&#34;&#34;Generalizes `dict.setdefault()` for several values, and returns the
+        instance.
+
+        &gt;&gt;&gt; some = TenDict({&#39;key1&#39;: &#39;value1&#39;, &#39;key2&#39;: &#39;value2&#39;})
+        &gt;&gt;&gt; some.setdefaults({&#39;key2&#39;: &#39;value2_new&#39;, &#39;key3&#39;: &#39;value3&#39;})
+        TenDict({&#39;key1&#39;: &#39;value1&#39;, &#39;key2&#39;: &#39;value2&#39;, &#39;key3&#39;: &#39;value3&#39;})
+        &#34;&#34;&#34;
+        kwargs.update(other)
+        for k, v in kwargs.items():
+            self.setdefault(k, v)
+        return self
+
+    def keep(self, *to_keep) -&gt; TenDict:
+        &#34;&#34;&#34;Returns a `TenDict` that contains only the given keys.
+
+        &gt;&gt;&gt; some = TenDict({&#39;a&#39;: 1, &#39;b&#39;: 2, &#39;c&#39;: 3, &#39;d&#39;: 4})
+        &gt;&gt;&gt; some.keep(&#39;a&#39;, &#39;d&#39;)
+        TenDict({&#39;a&#39;: 1, &#39;d&#39;: 4})
+        &#34;&#34;&#34;
+        new = TenDict()
+
+        for k in to_keep:
+            try:
+                new[k] = self[k]
+            except KeyError:
+                pass
+
+        return new</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>tenlib.struct.proxy.GetItemProxy</li>
+<li>tenlib.struct.proxy.UserDict</li>
+<li>collections.abc.MutableMapping</li>
+<li>collections.abc.Mapping</li>
+<li>collections.abc.Collection</li>
+<li>collections.abc.Sized</li>
+<li>collections.abc.Iterable</li>
+<li>collections.abc.Container</li>
+</ul>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li><a title="tenlib.struct.xmldict.XMLDict" href="xmldict.html#tenlib.struct.xmldict.XMLDict">XMLDict</a></li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="tenlib.struct.proxy.TenDict.update"><code class="name flex">
+<span>def <span class="ident">update</span></span>(<span>self, *args, **kwargs) ‑> <a title="tenlib.struct.proxy.TenDict" href="#tenlib.struct.proxy.TenDict">TenDict</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Same as <code>dict.update()</code>, but returns the instance.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def update(self, *args, **kwargs) -&gt; TenDict:
+    &#34;&#34;&#34;Same as `dict.update()`, but returns the instance.&#34;&#34;&#34;
+    self.__wo__.update(*args, **kwargs)
+    return self</code></pre>
+</details>
+</dd>
+<dt id="tenlib.struct.proxy.TenDict.setdefaults"><code class="name flex">
+<span>def <span class="ident">setdefaults</span></span>(<span>self, other={}, **kwargs) ‑> <a title="tenlib.struct.proxy.TenDict" href="#tenlib.struct.proxy.TenDict">TenDict</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Generalizes <code>dict.setdefault()</code> for several values, and returns the
+instance.</p>
+<pre><code class="language-python-repl">&gt;&gt;&gt; some = TenDict({'key1': 'value1', 'key2': 'value2'})
+&gt;&gt;&gt; some.setdefaults({'key2': 'value2_new', 'key3': 'value3'})
+TenDict({'key1': 'value1', 'key2': 'value2', 'key3': 'value3'})
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def setdefaults(self, other={}, **kwargs) -&gt; TenDict:
+    &#34;&#34;&#34;Generalizes `dict.setdefault()` for several values, and returns the
+    instance.
+
+    &gt;&gt;&gt; some = TenDict({&#39;key1&#39;: &#39;value1&#39;, &#39;key2&#39;: &#39;value2&#39;})
+    &gt;&gt;&gt; some.setdefaults({&#39;key2&#39;: &#39;value2_new&#39;, &#39;key3&#39;: &#39;value3&#39;})
+    TenDict({&#39;key1&#39;: &#39;value1&#39;, &#39;key2&#39;: &#39;value2&#39;, &#39;key3&#39;: &#39;value3&#39;})
+    &#34;&#34;&#34;
+    kwargs.update(other)
+    for k, v in kwargs.items():
+        self.setdefault(k, v)
+    return self</code></pre>
+</details>
+</dd>
+<dt id="tenlib.struct.proxy.TenDict.keep"><code class="name flex">
+<span>def <span class="ident">keep</span></span>(<span>self, *to_keep) ‑> <a title="tenlib.struct.proxy.TenDict" href="#tenlib.struct.proxy.TenDict">TenDict</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns a <code><a title="tenlib.struct.proxy.TenDict" href="#tenlib.struct.proxy.TenDict">TenDict</a></code> that contains only the given keys.</p>
+<pre><code class="language-python-repl">&gt;&gt;&gt; some = TenDict({'a': 1, 'b': 2, 'c': 3, 'd': 4})
+&gt;&gt;&gt; some.keep('a', 'd')
+TenDict({'a': 1, 'd': 4})
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def keep(self, *to_keep) -&gt; TenDict:
+    &#34;&#34;&#34;Returns a `TenDict` that contains only the given keys.
+
+    &gt;&gt;&gt; some = TenDict({&#39;a&#39;: 1, &#39;b&#39;: 2, &#39;c&#39;: 3, &#39;d&#39;: 4})
+    &gt;&gt;&gt; some.keep(&#39;a&#39;, &#39;d&#39;)
+    TenDict({&#39;a&#39;: 1, &#39;d&#39;: 4})
+    &#34;&#34;&#34;
+    new = TenDict()
+
+    for k in to_keep:
+        try:
+            new[k] = self[k]
+        except KeyError:
+            pass
+
+    return new</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="tenlib.struct.proxy.TenList"><code class="flex name class">
+<span>class <span class="ident">TenList</span></span>
+<span>(</span><span>lst=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A proxy class that converts sequences and dicts to their proxified
+equivalent, to access items as properties recursively.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class TenList(GetItemProxy, UserList):
+    def __init__(self, lst=None):
+        if lst is None:
+            self.data = []
+        elif isinstance(lst, list):
+            self.data = lst
+        else:
+            self.data = list(lst)
+
+    def __repr__(self):
+        return f&#34;{type(self).__name__}({self.data!r})&#34;</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>tenlib.struct.proxy.GetItemProxy</li>
+<li>collections.UserList</li>
+<li>collections.abc.MutableSequence</li>
+<li>collections.abc.Sequence</li>
+<li>collections.abc.Reversible</li>
+<li>collections.abc.Collection</li>
+<li>collections.abc.Sized</li>
+<li>collections.abc.Iterable</li>
+<li>collections.abc.Container</li>
+</ul>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li>tenlib.struct.xmldict.XMLList</li>
+</ul>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="tenlib.struct" href="index.html">tenlib.struct</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="tenlib.struct.proxy.wrap_object" href="#tenlib.struct.proxy.wrap_object">wrap_object</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="tenlib.struct.proxy.TenDict" href="#tenlib.struct.proxy.TenDict">TenDict</a></code></h4>
+<ul class="">
+<li><code><a title="tenlib.struct.proxy.TenDict.update" href="#tenlib.struct.proxy.TenDict.update">update</a></code></li>
+<li><code><a title="tenlib.struct.proxy.TenDict.setdefaults" href="#tenlib.struct.proxy.TenDict.setdefaults">setdefaults</a></code></li>
+<li><code><a title="tenlib.struct.proxy.TenDict.keep" href="#tenlib.struct.proxy.TenDict.keep">keep</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="tenlib.struct.proxy.TenList" href="#tenlib.struct.proxy.TenList">TenList</a></code></h4>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>
