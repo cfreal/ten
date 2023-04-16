@@ -5,9 +5,8 @@
 ## Installation
 
 ```
-$ pip3 install -r requirements.pip
-$ export PYTHONPATH="$(pwd)/ten:$PYTHONPATH"
-$ export PATH="$(pwd)/tools:$PATH"
+$ poetry install
+$ poetry shell
 ```
 
 ## Quick start

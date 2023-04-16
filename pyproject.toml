@@ -1,0 +1,36 @@
+[tool.poetry]
+name = "ten"
+version = "0.1.0"
+description = "A (small) web exploit framework"
+authors = ["Charles Fol <folcharles@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+pyyaml = "^6.0"
+beautifulsoup4 = "^4.12.2"
+colorama = "^0.4.6"
+rich = "^13.3.4"
+requests = "^2.28.2"
+requests-toolbelt = "^0.10.1"
+lxml = "^4.9.2"
+
+
+[tool.poetry.group.docs]
+optional = true
+
+[tool.poetry.group.docs.dependencies]
+mkdocs = "^1.4.2"
+pdoc3 = "^0.10.0"
+
+
+[tool.poetry.group.test]
+optional = true
+
+[tool.poetry.group.test.dependencies]
+pytest = "^7.3.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
