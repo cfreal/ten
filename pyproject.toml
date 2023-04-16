@@ -4,6 +4,10 @@ version = "0.1.0"
 description = "A (small) web exploit framework"
 authors = ["Charles Fol <folcharles@gmail.com>"]
 readme = "README.md"
+packages = [
+    { include = "ten" },
+    { include = "tenlib" }
+]
 
 [tool.poetry.dependencies]
 python = "^3.9"
@@ -30,6 +34,9 @@ optional = true
 [tool.poetry.group.test.dependencies]
 pytest = "^7.3.1"
 
+[tool.poetry.scripts]
+tf = "tenlib.cli:transform"
+ten = "tenlib.cli:ten"
 
 [build-system]
 requires = ["poetry-core"]
