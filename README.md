@@ -36,8 +36,21 @@ It includes tutorials, quickstart guides, and the Python documentation.
 ```
 $ git clone https://github.com/cfreal/ten.git
 $ cd ten
+```
+
+**ten** can be installed from source using *pip* or *poetry*. It requires Python 3.9 or higher.
+
+### With poetry
+
+```
 $ poetry install
 $ poetry shell
+```
+
+### With pip
+
+```
+$ pip install .
 ```
 
 # Example
