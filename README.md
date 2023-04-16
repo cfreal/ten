@@ -36,9 +36,8 @@ It includes tutorials, quickstart guides, and the Python documentation.
 ```
 $ git clone https://github.com/cfreal/ten.git
 $ cd ten
-$ pip3 install -r requirements.pip
-$ export PYTHONPATH="$(pwd)/ten:$PYTHONPATH"
-$ export PATH="$(pwd)/tools:$PATH"
+$ poetry install
+$ poetry shell
 ```
 
 # Example
