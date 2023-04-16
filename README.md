@@ -33,6 +33,8 @@ It includes tutorials, quickstart guides, and the Python documentation.
 
 # Installation
 
+First clone the repository and cd into it:
+
 ```
 $ git clone https://github.com/cfreal/ten.git
 $ cd ten
