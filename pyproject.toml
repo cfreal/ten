@@ -34,6 +34,10 @@ optional = true
 [tool.poetry.group.test.dependencies]
 pytest = "^7.3.1"
 
+
+[tool.poetry.group.dev.dependencies]
+black = "^23.3.0"
+
 [tool.poetry.scripts]
 tf = "tenlib.cli:transform"
 ten = "tenlib.cli:ten"
