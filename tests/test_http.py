@@ -681,10 +681,10 @@ class FakeMultiSession(http.Session):
     the URL, the params, and the data.
     """
     def request(self, method, url, params: dict = {}, **kwargs):
-        id = params.get("id", None)
+        id = params.get("id")
         if id == 50:
             raise ValueError("Some HTTP error occured")
-        return FakeResponse((url, params, kwargs.get("data", None)))
+        return FakeResponse((url, params, kwargs.get("data")))
 
 
 class TestPool(TenTestCase):
