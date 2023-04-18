@@ -789,6 +789,7 @@ def track(
     progress = Progress(
         *_progress_columns,
         transient=transient,
+        console=get_console(),
     )
 
     with progress:
