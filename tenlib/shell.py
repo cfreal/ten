@@ -51,3 +51,14 @@ def get_output(
     process.stdout.close()
     process.stderr.close()
     return stdout, stderr
+
+
+def escape(cmd: str) -> str:
+    """Escapes an argument for a shell command.
+    
+    Example:
+    
+        >>> shell.escape("abc'def")
+        "'abc'\''def'"
+    """
+    return "'" + cmd.replace("'", "'\\''") + "'"
