@@ -11,7 +11,7 @@ def string(size: int = 8, charset: str = _string.ascii_letters + _string.digits)
         'VVclsHsC2H'
         >>> string(charset="abc")
         'bcacbbcc'
-    
+
     Args:
         size (int): Size of the string
         charset (str): Charset to extract characters from
@@ -24,7 +24,7 @@ def string(size: int = 8, charset: str = _string.ascii_letters + _string.digits)
 
 def alpha(size: int = 8) -> str:
     """Generates a random alphanumeric string.
-    
+
     Example:
 
         >>> alpha(10)
@@ -41,9 +41,9 @@ def alpha(size: int = 8) -> str:
 
 def lower(size: int = 8) -> str:
     """Generates a random lowercase string.
-    
+
     Example:
-    
+
         >>> lower(10)
         'mkswzvglno'
 
@@ -58,9 +58,9 @@ def lower(size: int = 8) -> str:
 
 def hexa(size: int = 40) -> str:
     """Generates a random hexadecimal string.
-    
+
     Example:
-    
+
         >>> hexa(10)
         '7f33d853ef'
 
@@ -75,9 +75,9 @@ def hexa(size: int = 40) -> str:
 
 def digits(size: int = 8) -> str:
     """Generates a random digit string.
-    
+
     Example:
-    
+
         >>> digits(10)
         '3030278136'
 
@@ -89,11 +89,12 @@ def digits(size: int = 8) -> str:
     """
     return string(size, charset=_string.digits)
 
+
 def number(min: int = 0, max: int = 100000) -> int:
     """Generates a random integer between `min` and `max`, included.
-    
+
     Example:
-    
+
         >>> number(1, 10)
         8
 

@@ -1,8 +1,7 @@
 import itertools
 import urllib.parse
 
-from tenlib import struct
-from tenlib.transform.generic import multiform, wrap_join_format, to_str
+from tenlib.transform.generic import multiform, wrap_join_format
 
 
 @multiform

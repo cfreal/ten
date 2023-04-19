@@ -163,7 +163,9 @@ user1,user1@user.net,user1passwd
         self.assertEqual(wjf(empty="empty_string")(""), "empty_string")
 
     def test_hash(self):
-        self.assertEqual(transform.hashing.md5("ABC"), "902fbdd2b1df0c4f70b4a5d23525e932")
+        self.assertEqual(
+            transform.hashing.md5("ABC"), "902fbdd2b1df0c4f70b4a5d23525e932"
+        )
         self.assertEqual(
             transform.hashing.sha1("ABC"), "3c01bdbb26f358bab27f267924aa2c9a03fcfdb8"
         )
@@ -232,27 +234,37 @@ user1,user1@user.net,user1passwd
 
         with self.assertRaises(TypeError):
             u(UnknownType())
+
     def test_multiform_type_hinting_not_str_or_bytes_raises_typeerror(self):
-            
         with self.assertRaises(TypeError) as cm:
+
             @multiform
             def u(data: int):
                 return data
-        self.assertEqual(str(cm.exception), "First argument of multiform-decored function should have a type of str or bytes, not int")
-        
+
+        self.assertEqual(
+            str(cm.exception),
+            "First argument of multiform-decored function should have a type of str or bytes, not int",
+        )
+
     def test_multiform_type_hinting_not_set_raises_typeerror(self):
         with self.assertRaises(TypeError) as cm:
+
             @multiform
             def u(data):
                 return data
-        self.assertEqual(str(cm.exception), "First argument of multiform-decored function should have a type annotation")
-        
+
+        self.assertEqual(
+            str(cm.exception),
+            "First argument of multiform-decored function should have a type annotation",
+        )
+
     def test_multiform_type_hinting_set_to_str_is_fine(self):
         @multiform
         def u(data: str) -> str:
             return data.upper()
+
         self.assertEqual(u("aBc"), "ABC")
-        
 
     def test_sql(self):
         self.assertEqual(
@@ -393,14 +405,14 @@ user1,user1@user.net,user1passwd
         s = R.hexa(size=103)
         self.assertEqual(len(s), 103)
         self.assertFalse(set(s) - set("0123456789abcdef"))
-        
+
         s = R.digits(size=103)
         self.assertEqual(len(s), 103)
         self.assertFalse(set(s) - set("0123456789"))
 
         s = R.number(10, 100)
         self.assertIn(s, range(10, 101))
-        
+
     def test_generic_to_bytes(self):
         self.assertEqual(transform.to_bytes("some_string"), b"some_string")
         self.assertEqual(
@@ -410,11 +422,11 @@ user1,user1@user.net,user1passwd
 
     def test_generic_strip(self):
         self.assertEqual(transform.strip("some_string test "), b"some_string test")
-    
+
     def test_generic_xor(self):
-        self.assertEqual(transform.xor('A', 'B'), b'\x03')
-        self.assertEqual(transform.xor('ABCD', 'AB'), b'\x00\x00\x02\x06')
-        self.assertEqual(transform.xor('AB', 'ABCD'), b'\x00\x00')
+        self.assertEqual(transform.xor("A", "B"), b"\x03")
+        self.assertEqual(transform.xor("ABCD", "AB"), b"\x00\x00\x02\x06")
+        self.assertEqual(transform.xor("AB", "ABCD"), b"\x00\x00")
 
     def test_not_empty(self):
         self.assertEqual(

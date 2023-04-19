@@ -13,7 +13,7 @@ from tenlib.struct.proxy import TenDict
 @arg("keep_newline", "If not set, the last newline of the input is removed")
 def transform(*transforms, python=False, keep_newline=False):
     """Applies one or several transforms from the transform module of ten.
-    
+
     Examples:
 
         $ echo -n 'a=3&b=2' | tf qs.parse json.encode
@@ -24,22 +24,21 @@ def transform(*transforms, python=False, keep_newline=False):
         cm9vdDp4OjA6MDpyb290Oi9yb290Oi9iaW4vYmFzaApkYWVtb24...
     """
     data = sys.stdin.buffer.read()
-    if not keep_newline and data.endswith(b'\n'):
+    if not keep_newline and data.endswith(b"\n"):
         data = data[:-1]
-        
 
     for modfunc in transforms:
-        module, func = modfunc.split('.')
+        module, func = modfunc.split(".")
 
         instance = getattr(tf, module, None)
 
         if not instance:
-            return msg_error('Unknown module [red]{module}')
+            return msg_error("Unknown module [red]{module}")
 
         instance = getattr(instance, func, None)
 
         if not instance:
-            return msg_error(f'Unknown transform [red]{module}.{func}')
+            return msg_error(f"Unknown transform [red]{module}.{func}")
 
         data = instance(data)
 
@@ -53,6 +52,7 @@ def transform(*transforms, python=False, keep_newline=False):
         if isinstance(data, TenDict):
             data = dict(data)
         pprint(data, indent=4)
+
 
 PATTERN = """\
 #!/usr/bin/env python3
@@ -68,17 +68,16 @@ def main():
 main()
 """
 
+
 @entry
 @arg("filename", "File to create")
 def ten(filename: str):
-    """Creates a new ten script and opens it.
-    """
+    """Creates a new ten script and opens it."""
     path = Path(filename)
-    
+
     if path.exists():
         msg_info("File exists")
     else:
         path.write(PATTERN)
         path.chmod(0o740)
     shell.background(("code", "--", filename))
-    

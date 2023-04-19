@@ -41,10 +41,20 @@ import functools
 import inspect
 import re
 import types
-from typing import *
+from typing import Callable, Type, Optional, Iterable, Any
 import time
 
-from rich.progress import *
+from rich.text import Text, TextType
+from rich.console import RenderableType
+from rich.progress import (
+    Progress,
+    ProgressColumn,
+    filesize,
+    TextColumn,
+    BarColumn,
+    TimeElapsedColumn,
+    TimeRemainingColumn,
+)
 from rich.prompt import Prompt
 from rich.status import Status
 
@@ -233,10 +243,15 @@ def entry(entrypoint: Callable | Type) -> Callable[[], None]:
     """
     # If we have a class, call TheClass(**args).run()
     if isinstance(entrypoint, type):
-        run_main = lambda *args, **kwargs: entrypoint(*args, **kwargs).run()
+
+        def run_main(*args, **kwargs):
+            return entrypoint(*args, **kwargs).run()
+
     # If we have a function, call main(**args)
     else:
-        run_main = lambda *args, **kwargs: entrypoint(*args, **kwargs)
+
+        def run_main(*args, **kwargs):
+            return entrypoint(*args, **kwargs)
 
     @functools.wraps(entrypoint)
     def cli_main():
@@ -298,6 +313,7 @@ def _prototype_to_args(function):
     """
     from tenlib.fs import Path
     from tenlib.http import ScopedSession
+
     _PROTO_RAW_TYPES = (int, bool, float, bytes, str, Path, ScopedSession)
 
     s = inspect.signature(function)
@@ -451,9 +467,9 @@ def _prototype_to_args(function):
 def arg(name: str, description: str):
     """Provides documentation for the parameter `name` of the `entry` function.
     The documentation is visible when the program is run with the `--help` flag.
-    
+
     Example:
-    
+
     ```python
     @entry
     @arg("name", "The name of the person to greet")
@@ -461,13 +477,15 @@ def arg(name: str, description: str):
         msg_info(f"Hello, {name}!")
     ```
     """
-    def wrapper(entry: Callable)-> Callable:
-        if not hasattr(entry, '__ten_doc__'):
+
+    def wrapper(entry: Callable) -> Callable:
+        if not hasattr(entry, "__ten_doc__"):
             entry.__ten_doc__ = {}
         entry.__ten_doc__[name] = description
         return entry
-    
+
     return wrapper
+
 
 def msg_print(message: str, **kwargs):
     """Displays a message."""
@@ -805,7 +823,7 @@ def ask(
     prompt: TextType = "",
     *,
     password: bool = False,
-    choices: Optional[List[str]] = None,
+    choices: Optional[list[str]] = None,
     show_default: bool = True,
     show_choices: bool = True,
     default: Any = ...,
@@ -856,8 +874,9 @@ def set_random_message_formatter() -> None:
 
 
 def set_message_formatter(
-    message_formatter:
-        messageformatter.MessageFormatter | Type[messageformatter.MessageFormatter] | str
+    message_formatter: messageformatter.MessageFormatter
+    | Type[messageformatter.MessageFormatter]
+    | str,
 ) -> None:
     """Sets given `messageformatter.MessageFormatter` as the message formatter."""
     global __message_formatter

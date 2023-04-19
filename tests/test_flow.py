@@ -94,13 +94,13 @@ class TestFlowPrototype(TenTestCase):
             args, kwargs = self._get_args(f_bool_false)
         except SystemExit:
             self.fail("Should work")
-        
+
         self.assertEqual(args, [])
         self.assertEqual(kwargs, {"a": False})
 
     @unittest.mock.patch("sys.stderr")
     def test_typed_bool_default_true(self, stderr):
-        def f_bool_true(a: bool=True):
+        def f_bool_true(a: bool = True):
             pass
 
         try:
@@ -115,7 +115,7 @@ class TestFlowPrototype(TenTestCase):
             args, kwargs = self._get_args(f_bool_true)
         except SystemExit:
             self.fail("Should work")
-        
+
         self.assertEqual(args, [])
         self.assertEqual(kwargs, {"a": True})
 
@@ -139,7 +139,7 @@ class TestFlowPrototype(TenTestCase):
 
         self.assertEqual(args, [])
         self.assertEqual(kwargs, {"a": ["1234", "5678"]})
-        
+
         try:
             args, kwargs = self._get_args(f_typed_list, "-a")
         except SystemExit:
@@ -147,8 +147,7 @@ class TestFlowPrototype(TenTestCase):
 
         self.assertEqual(args, [])
         self.assertEqual(kwargs, {"a": []})
-        
-        
+
     @unittest.mock.patch("sys.stderr")
     def test_default_list_int(self, stderr):
         def f_typed_list_int(a=[123, 456]):
@@ -169,7 +168,7 @@ class TestFlowPrototype(TenTestCase):
 
         self.assertEqual(args, [])
         self.assertEqual(kwargs, {"a": [1234, 5678]})
-        
+
         try:
             args, kwargs = self._get_args(f_typed_list_int, "-a")
         except SystemExit:
@@ -182,23 +181,29 @@ class TestFlowPrototype(TenTestCase):
     def test_typed_bool_list(self, stderr):
         def f_typed_list_bool(a: list[bool]):
             pass
+
         try:
-            args, kwargs = self._get_args(f_typed_list_bool, "-a", "1", "0", "tRUe", "fALse", "NO", "YES")
+            args, kwargs = self._get_args(
+                f_typed_list_bool, "-a", "1", "0", "tRUe", "fALse", "NO", "YES"
+            )
         except SystemExit:
             self.fail("One list argument")
 
         self.assertEqual(args, [])
         self.assertEqual(kwargs, {"a": [True, False, True, False, False, True]})
-        
+
     @unittest.mock.patch("sys.stderr")
     def test_typed_bool_list_invalid_input(self, stderr):
         def f_typed_list_bool(a: list[bool]):
             pass
-        
+
         with self.assertRaises(SystemExit) as cm:
             args, kwargs = self._get_args(f_typed_list_bool, "-a", "1", "0", "blu")
-        
-        self.assertEqual(str(cm.exception.__context__), "argument -a: invalid str_to_bool value: 'blu'")
+
+        self.assertEqual(
+            str(cm.exception.__context__),
+            "argument -a: invalid str_to_bool value: 'blu'",
+        )
 
     @unittest.mock.patch("sys.stderr")
     def test_typed_int_list(self, stderr):
@@ -220,7 +225,7 @@ class TestFlowPrototype(TenTestCase):
 
         self.assertEqual(args, [])
         self.assertEqual(kwargs, {"a": [1234, 5678]})
-        
+
         try:
             args, kwargs = self._get_args(f_typed_list_int, "-a")
         except SystemExit:
@@ -228,7 +233,7 @@ class TestFlowPrototype(TenTestCase):
 
         self.assertEqual(args, [])
         self.assertEqual(kwargs, {"a": []})
-        
+
     @unittest.mock.patch("sys.stderr")
     def test_untyped_list(self, stderr):
         def f_typed_list(a: list):
@@ -249,7 +254,7 @@ class TestFlowPrototype(TenTestCase):
 
         self.assertEqual(args, [])
         self.assertEqual(kwargs, {"a": ["1234", "5678"]})
-        
+
         try:
             args, kwargs = self._get_args(f_typed_list, "-a")
         except SystemExit:
@@ -267,7 +272,7 @@ class TestFlowPrototype(TenTestCase):
             args, kwargs = self._get_args(main, "a", "-b", "B", "-c", "C")
         except SystemExit:
             self.fail("b and c should be optional args")
-        
+
         self.assertEqual(args, ["a"])
         self.assertEqual(kwargs, {"b": "B", "c": "C"})
 
@@ -305,7 +310,7 @@ class TestFlowPrototype(TenTestCase):
 
         self.assertEqual(args, ["a", "b", "c"])
         self.assertEqual(kwargs, {})
-    
+
     def test_prototype_star_args_int(self):
         def main(a, *args: int):
             pass
@@ -314,7 +319,7 @@ class TestFlowPrototype(TenTestCase):
 
         self.assertEqual(args, ["a", 1, 2])
         self.assertEqual(kwargs, {})
-    
+
     def test_prototype_star_args_and_following_param_is_kw_only(self):
         def main(a, *args: int, b):
             pass
@@ -323,7 +328,7 @@ class TestFlowPrototype(TenTestCase):
 
         self.assertEqual(args, ["a", 1, 2])
         self.assertEqual(kwargs, {"b": "bvalue"})
-        
+
     def test_none_default_does_not_condition_type(self):
         def main(a=None):
             pass
@@ -332,38 +337,39 @@ class TestFlowPrototype(TenTestCase):
 
         self.assertEqual(args, [])
         self.assertEqual(kwargs, {"a": "1"})
-        
+
     def test_none_default_does_not_condition_type_for_int_type(self):
-        def main(a: int=None):
+        def main(a: int = None):
             pass
 
         args, kwargs = self._get_args(main, "-a", "1")
 
         self.assertEqual(args, [])
         self.assertEqual(kwargs, {"a": 1})
-        
+
     def test_default_type_is_not_raw(self):
         class X:
             pass
-        
+
         def main(a: X):
             pass
-        
+
         with self.assertRaises(TypeError) as cm:
             self._get_args(main, "a", "1")
-        
+
         self.assertEqual(str(cm.exception), "Unsupported type X for parameter a")
-        
+
     def test_path_is_valid_type(self):
         @flow.entry
         def main(a: fs.Path):
             self.assertIsInstance(a, fs.Path)
             self.assertEqual(str(a), "/etc/passwd")
-            
+
         args, kwargs = self._get_args(main, "/etc/passwd")
         self.assertIsInstance(args[0], fs.Path)
         self.assertEqual(str(args[0]), "/etc/passwd")
-        
+
+
 class TestFlowArg(TenTestCase):
     def test_arg(self):
         @flow.arg("a", "documentation for a")
@@ -371,14 +377,16 @@ class TestFlowArg(TenTestCase):
             pass
 
         self.assertEqual(func.__ten_doc__["a"], "documentation for a")
-    
+
     @unittest.mock.patch("sys.stdout")
     def test_arg_is_in_help(self, stdout):
         sys.stdout = x = io.StringIO()
+
         @flow.entry
         @flow.arg("a", "documentation for a")
-        def main(a: int=False):
+        def main(a: int = False):
             pass
+
         sys.argv = ["./a", "--help"]
         try:
             main()
@@ -386,7 +394,7 @@ class TestFlowArg(TenTestCase):
             pass
         x.seek(0)
         self.assertIn("documentation for a", x.read())
-        
+
 
 class TestFlowDocToDesc(TenTestCase):
     def test_standard(self):
@@ -518,24 +526,27 @@ class TestFlowMain(TenTestCase):
         self.assertTrue(
             self._read_output(main).startswith("✖ Execution interrupted (Ctrl-C)\n")
         )
-        
+
     def test_completedtotalcolumn_works_with_none(self):
         self.assertEqual(flow._CompletedTotalColumn().get_string_for_nb(None), "0")
-        
+
     def test_completedtotalcolumn_reflects_order(self):
         self.assertEqual(flow._CompletedTotalColumn().get_string_for_nb(123), "123")
         self.assertEqual(flow._CompletedTotalColumn().get_string_for_nb(1200), "1.2K")
-        self.assertEqual(flow._CompletedTotalColumn().get_string_for_nb(1234*1000), "1.2M")
-        self.assertEqual(flow._CompletedTotalColumn().get_string_for_nb(3000 * 1000 * 1000), "3.0G")
-        
+        self.assertEqual(
+            flow._CompletedTotalColumn().get_string_for_nb(1234 * 1000), "1.2M"
+        )
+        self.assertEqual(
+            flow._CompletedTotalColumn().get_string_for_nb(3000 * 1000 * 1000), "3.0G"
+        )
+
     def test_entry_class(self):
         @flow.entry
         class Entry:
             def run(self):
                 flow.msg_print("OK")
-                
+
         self.assertEqual(self._read_output(Entry), "OK\n")
-        
 
 
 class TestFlowInform(TenTestCase):
@@ -609,45 +620,45 @@ class TestFlowOthers(TenTestCase):
         flow.sleep(2)
         self.assertGreaterEqual(time.time(), start + 2)
 
+
 class TestFlowMessageFormatter(TenTestCase):
     def test_set_formatter_with_string_no_formatter_suffix(self):
         flow.set_message_formatter("Oldschool")
         self.assertEqual(
-            self._read_output(flow.msg_success, "Success"),
-            "[+] Success\n"
+            self._read_output(flow.msg_success, "Success"), "[+] Success\n"
         )
-        
+
     def test_set_formatter_with_string_with_formatter_suffix(self):
         flow.set_message_formatter("OldschoolMessageFormatter")
         self.assertEqual(
-            self._read_output(flow.msg_success, "Success"),
-            "[+] Success\n"
+            self._read_output(flow.msg_success, "Success"), "[+] Success\n"
         )
-        
+
     def test_set_formatter_with_class(self):
         flow.set_message_formatter(flow.messageformatter.OldschoolMessageFormatter)
         self.assertEqual(
-            self._read_output(flow.msg_success, "Success"),
-            "[+] Success\n"
+            self._read_output(flow.msg_success, "Success"), "[+] Success\n"
         )
-        
+
     def test_set_formatter_with_class_instance(self):
         flow.set_message_formatter(flow.messageformatter.OldschoolMessageFormatter())
         self.assertEqual(
-            self._read_output(flow.msg_success, "Success"),
-            "[+] Success\n"
+            self._read_output(flow.msg_success, "Success"), "[+] Success\n"
         )
- 
+
     def test_set_formatter_with_invalid_object(self):
         with self.assertRaises(TypeError) as cm:
             flow.set_message_formatter(1.3)
-        self.assertEqual(str(cm.exception), "The object needs to be a MessageFormatter name, class, or instance, not 1.3")
-        
+        self.assertEqual(
+            str(cm.exception),
+            "The object needs to be a MessageFormatter name, class, or instance, not 1.3",
+        )
+
     def test_set_random_formatter(self):
         old_mf = None
-        
+
         flow.set_random_message_formatter()
-        
+
         for i in range(10):
             flow.set_random_message_formatter()
             mf = flow.get_message_formatter()
@@ -656,24 +667,24 @@ class TestFlowMessageFormatter(TenTestCase):
             old_mf = mf
         else:
             self.fail("No new message formatter found")
-            
+
     def test_trace(self):
         with tempfile.NamedTemporaryFile("a+") as f:
             logging.set_file(f)
             logging.set_level(logging.TRACE)
-            
+
             @flow.trace
             def test123(a, b):
                 return 123
 
             test123("smthishere", 2)
-            
+
             f.seek(0)
             data = f.read()
         # Hard to get a better heuristic
         self.assertIn("TestFlowMessageFormatt", data)
         self.assertIn("smthishere", data)
-        
+
     def test_get_message_formatter_sets_default(self):
         flow.__dict__["__message_formatter"] = None
         self.assertIsInstance(flow.get_message_formatter(), MessageFormatter)

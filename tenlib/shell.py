@@ -55,9 +55,9 @@ def get_output(
 
 def escape(cmd: str) -> str:
     """Escapes an argument for a shell command.
-    
+
     Example:
-    
+
         >>> shell.escape("abc'def")
         "'abc'\''def'"
     """

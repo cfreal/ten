@@ -5,6 +5,7 @@ import os
 
 from tenlib import fs
 
+
 # Most of the code is from pathlib, so it's supposed to work fine.
 class TestFS(unittest.TestCase):
     def setUp(self):
@@ -30,14 +31,13 @@ class TestFS(unittest.TestCase):
         with self.assertRaises(FileNotFoundError):
             f.touch()
         self.assertEqual(f.touch(parents=True), f)
-    
+
     def test_ptouch(self):
         f = self.fspath / "new_directory" / "new_file.txt"
 
         with self.assertRaises(FileNotFoundError):
             f.touch()
         self.assertEqual(f.ptouch(), f)
-        
 
     def test_file_not_present(self):
         with self.assertRaises(FileNotFoundError):
@@ -56,20 +56,20 @@ class TestFS(unittest.TestCase):
         f = self.fspath / "new_file.txt"
         pf = pathlib.Path(str(f))
         f.write("buu")
-        
+
         f.append(DATA)
-        
+
         self.assertEqual(pf.read_text(), "buu" + DATA)
         pf.unlink()
-        
+
     def test_write_append_bytes(self):
         DATA = b"string"
         f = self.fspath / "new_file.txt"
         pf = pathlib.Path(str(f))
         f.write(b"buu")
-        
+
         f.append(DATA)
-        
+
         self.assertEqual(pf.read_bytes(), b"buu" + DATA)
         pf.unlink()
 
@@ -115,7 +115,8 @@ class TestFS(unittest.TestCase):
 
     def test_func_read(self):
         self.assertEqual(
-            fs.read_text(self.fspath / "dir1" / "sub_dir" / "file1.txt"), "file 1 contents"
+            fs.read_text(self.fspath / "dir1" / "sub_dir" / "file1.txt"),
+            "file 1 contents",
         )
 
     def test_func_mkdirs(self):

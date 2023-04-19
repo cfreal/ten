@@ -27,7 +27,7 @@ class TenTestCase(unittest.TestCase):
         console.record = False
         console.file = self.__old_console_file
         return super().tearDown()
-    
+
     def _read_output(self, func, *args, **kwargs):
         try:
             func(*args, **kwargs)

@@ -32,7 +32,7 @@ def niter(data: Iterable, n: int) -> Iterator[tuple]:
     elif isinstance(data, str):
         cast = "".join
     else:
-        cast = lambda x: tuple(x)
+        cast = tuple
 
     got = []
     ngot = 0

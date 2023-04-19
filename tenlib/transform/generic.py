@@ -1,7 +1,5 @@
 import inspect
-import sys
 import functools
-import re
 from typing import TypeVar, Callable
 from tenlib.struct.proxy import TenDict, TenList
 

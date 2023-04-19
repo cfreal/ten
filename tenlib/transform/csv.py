@@ -1,7 +1,6 @@
 import csv
 import io
-from io import StringIO
-from tenlib.struct.proxy import *
+from tenlib.struct.proxy import TenList, TenDict
 from tenlib.transform.generic import multiform
 
 

@@ -447,7 +447,7 @@ div.foot { font: 90% monospace; color: #787878; padding-top: 4px;}
                 "message": "contents\n            something",
             },
         )
-        
+
     def test_form_referer(self):
         ns = http.Session()
         r = http.Response(session=ns)
@@ -541,7 +541,7 @@ div.foot { font: 90% monospace; color: #787878; padding-top: 4px;}
         self.assertEqual(url, "http://site.com/login")
         self.assertEqual(kwargs["data"], {})
         self.assertEqual(kwargs["headers"], {"Referer": r.url})
-    
+
     def test_form_does_not_replace_referer_if_given_by_kwargs(self):
         ns = FakeSession()
         r = http.Response(session=ns)
@@ -553,7 +553,7 @@ div.foot { font: 90% monospace; color: #787878; padding-top: 4px;}
         form = r.form(method="POST")
         method, url, kwargs = form.submit(headers={"Referer": "other_referer"})
         self.assertEqual(kwargs["headers"], {"Referer": "other_referer"})
-    
+
     def test_form_referrer_setter_and_getter_work(self):
         ns = FakeSession()
         r = http.Response(session=ns)
@@ -566,7 +566,6 @@ div.foot { font: 90% monospace; color: #787878; padding-top: 4px;}
         form.referrer = "a"
         self.assertEqual(form.referrer, "a")
         self.assertEqual(form.referer, "a")
-
 
     def test_form_setitem(self):
         ns = FakeSession()
@@ -669,6 +668,7 @@ class FakePoolSession(http.Session):
     """Fake session to test pools. Returns a fake response containing the value
     of the "id" GET parameter.
     """
+
     def request(self, method, url, params={}, **kwargs):
         id = params["id"]
         if id == 50:
@@ -680,6 +680,7 @@ class FakeMultiSession(http.Session):
     """Fake session to test multi requests. Returns a fake response containing
     the URL, the params, and the data.
     """
+
     def request(self, method, url, params: dict = {}, **kwargs):
         id = params.get("id")
         if id == 50:
@@ -701,9 +702,9 @@ class TestPool(TenTestCase):
                 i += 1
             self.assertEqual(i, 10)
             self.assertIsNone(pool._progress)
-        
+
         self.assertIsNone(pool._progress)
-            
+
     def test_pool_of_10_reqs_with_progress(self):
         session = FakePoolSession()
 
@@ -716,11 +717,11 @@ class TestPool(TenTestCase):
                 self.assertEqual(response.tag, response)
                 i += 1
             self.assertEqual(i, 10)
-            
+
             self.assertEqual(pool._progress._tasks[0].description, "running")
             self.assertEqual(pool._progress._tasks[0].total, 10)
             self.assertEqual(pool._progress._tasks[0].completed, 10)
-        
+
         self.assertIsNone(pool._progress)
 
     def test_exception_is_raised_if_on_error_is_raise(self):
@@ -829,13 +830,13 @@ class TestPool(TenTestCase):
                         pool.get("/", params={"id": 60 + i}, tag=60 + i)
 
             self.assertEqual(pool.in_order(), list(range(20)) + list(range(60, 70)))
-            
+
     def test_add_requests_while_pool_is_running_and_with_progress(self):
         session = FakePoolSession(1)
         with session.pool(description="running") as pool:
             for i in range(0, 20):
                 pool.get("/", params={"id": i}, tag=i)
-            
+
             self.assertEqual(pool._progress._tasks[0].total, 20)
 
             for r in pool.as_completed():
@@ -880,7 +881,9 @@ class TestMulti(TenTestCase):
         session = FakeMultiSession()
         responses = session.multi().get(Multi([f"/{i}" for i in range(10)]))
         self.assertEqual(responses, [(f"/{i}", {}, None) for i in range(10)])
-        self.assertEqual([r.tag for r in responses], [{("url",): f"/{i}"} for i in range(10)])
+        self.assertEqual(
+            [r.tag for r in responses], [{("url",): f"/{i}"} for i in range(10)]
+        )
 
     def test_get_two_multis(self):
         session = FakeMultiSession()
@@ -899,15 +902,14 @@ class TestMulti(TenTestCase):
                 for m1 in range(5)
             ],
         )
-        
+
     def test_multi_with_multi_in_list(self):
         session = FakeMultiSession()
-        responses = session.multi().post("/", data=(
-            ('k', Multi(range(10))),
-        ))
-        self.assertEqual(responses, [(f"/", {}, [['k', i]]) for i in range(10)])
-        self.assertEqual([r.tag for r in responses], [{("data", 0, 1): i} for i in range(10)])
-        
+        responses = session.multi().post("/", data=(("k", Multi(range(10))),))
+        self.assertEqual(responses, [(f"/", {}, [["k", i]]) for i in range(10)])
+        self.assertEqual(
+            [r.tag for r in responses], [{("data", 0, 1): i} for i in range(10)]
+        )
 
 
 class TestFirst(TenTestCase):

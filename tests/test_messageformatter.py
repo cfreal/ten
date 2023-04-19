@@ -14,7 +14,9 @@ class TestMessageFormatter(TenTestCase):
 
         out.print("Some value with no params {} {} {}")
 
-        self.assertEqual(get_console().export_text(), "Some value with no params {} {} {}\n")
+        self.assertEqual(
+            get_console().export_text(), "Some value with no params {} {} {}\n"
+        )
 
     def test_clear(self):
         out = MessageFormatter()

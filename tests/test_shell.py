@@ -25,7 +25,7 @@ class TestShell(TenTestCase):
         out, err = shell.get_output("echo stdout; echo stderr 1>&2")
         self.assertEqual(out, "stdout\n")
         self.assertEqual(err, "stderr\n")
-        
+
     def test_get_output_as_bytes(self):
         out, err = shell.get_output("echo stdout; echo stderr 1>&2", text=False)
         self.assertEqual(out, b"stdout\n")
@@ -61,10 +61,9 @@ class TestShell(TenTestCase):
         self.assertEqual(TMP_CONTENTS.encode(), p.stdout.read())
         p.stdout.close()
         p.stderr.close()
-        
 
         os.unlink(TMP_FILE)
-        
+
     def test_escape(self):
         self.assertEqual(shell.escape("abc"), "'abc'")
         self.assertEqual(shell.escape("abc'def"), "'abc'\\''def'")

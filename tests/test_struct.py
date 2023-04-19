@@ -10,7 +10,6 @@ from tenlib.struct import TenDict, TenList
 
 
 class TestStruct(unittest.TestCase):
-
     def test_xmldict(self):
         data = """\
 <root>
@@ -68,7 +67,6 @@ class TestStruct(unittest.TestCase):
             f.seek(0)
             data = f.read()
             self.assertEqual(data, b"first,second,third\r\n1,2,3\r\n4,5,6\r\n")
-
 
     def test_map_add(self):
         map1 = struct.Map({"db1": {"table1": {"column1": {}, "column2": {}}}})

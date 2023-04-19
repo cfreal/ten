@@ -202,7 +202,10 @@ class Session(requests.Session):
         return super().delete(url, **kwargs)
 
     def pool(
-        self, workers: int = None, on_error: ErrorHandling = "raise", description: str=None
+        self,
+        workers: int = None,
+        on_error: ErrorHandling = "raise",
+        description: str = None,
     ) -> RequestPool:
         """Creates a request pool.
 
@@ -232,7 +235,10 @@ class Session(requests.Session):
         return RequestPool(self, workers, on_error, description)
 
     def multi(
-        self, workers: int = None, on_error: ErrorHandling = "raise", description: str=None
+        self,
+        workers: int = None,
+        on_error: ErrorHandling = "raise",
+        description: str = None,
     ) -> MultiRequest:
         """Sets up a multi-request object, allowing to run multiple requests
         concurrently.
@@ -255,7 +261,11 @@ class Session(requests.Session):
         return MultiRequest(self, workers, on_error, description)
 
     def first(
-        self, filter: Callable, workers: int = None, on_error: ErrorHandling = "raise", description: str=None
+        self,
+        filter: Callable,
+        workers: int = None,
+        on_error: ErrorHandling = "raise",
+        description: str = None,
     ) -> MultiRequestFirst:
         """Returns the first response that matches the filter.
         Responses are run concurrently.
@@ -416,7 +426,7 @@ class ScopedSession(Session):
             and tu.path.startswith(bu.path)
         )
 
-    def get_absolute_url(self, url: str, base: str=None) -> str:
+    def get_absolute_url(self, url: str, base: str = None) -> str:
         """Merges base URL with the given one.
         If the given URL starts with `http://` or `https://`, it is considered a
         full URL. Otherwise, it is appended to the base
@@ -439,6 +449,7 @@ class ScopedSession(Session):
             return url
 
         return base + url
+
 
 class ResponseRegex:
     """Helper class allowing to perform regex function calls onto the response.
@@ -717,19 +728,25 @@ class Form:
     data: dict
     """Form data."""
 
-    def __init__(self, session: Session, action: str, method: str, data: dict, referer: str=None):
+    def __init__(
+        self,
+        session: Session,
+        action: str,
+        method: str,
+        data: dict,
+        referer: str = None,
+    ):
         self.session = session
         self.action = action
         self.method = method
         self.data = data
         self.referer = referer
-        
-        
+
     @property
     def referrer(self):
         # Referer is actually a misspelling of Referrer
         return self.referer
-    
+
     @referrer.setter
     def referrer(self, value):
         # Referer is actually a misspelling of Referrer
@@ -822,7 +839,13 @@ class RequestPool:
             msg_info(response.text)
     """
 
-    def __init__(self, session: Session, workers: int, on_error: ErrorHandling, description: str=None):
+    def __init__(
+        self,
+        session: Session,
+        workers: int,
+        on_error: ErrorHandling,
+        description: str = None,
+    ):
         self._session: Session = session
         self._executor: ThreadPoolExecutor = ThreadPoolExecutor(max_workers=workers)
         self._queue: list[Future[Response]] = []
@@ -834,7 +857,9 @@ class RequestPool:
         self._executor.__enter__()
         if self._description is not None:
             self._progress = progress(transient=True)
-            self._progress.add_task(description=self._description, total=len(self._queue))
+            self._progress.add_task(
+                description=self._description, total=len(self._queue)
+            )
             self._progress.start()
         return self
 
@@ -851,7 +876,9 @@ class RequestPool:
         self._queue.append(future)
         if self._progress:
             self._progress.update(0, total=len(self._queue))
-            future.add_done_callback(lambda _: self._progress and self._progress.advance(0))
+            future.add_done_callback(
+                lambda _: self._progress and self._progress.advance(0)
+            )
         return future
 
     def get(self, url: str, *args, tag=None, **kwargs) -> Future[Response]:
@@ -960,7 +987,9 @@ class MultiRequest:
         {("data", "username"): "admin", ("data", "password"): "admin123456"}
     """
 
-    def __init__(self, session: Session, workers: int, on_error: ErrorHandling, description: str) -> None:
+    def __init__(
+        self, session: Session, workers: int, on_error: ErrorHandling, description: str
+    ) -> None:
         self._session: Session = session
         self._workers = workers
         self._on_error = on_error
@@ -1080,7 +1109,12 @@ class MultiRequestFirst(MultiRequest):
     """
 
     def __init__(
-        self, session: Session, workers: int, on_error: ErrorHandling, description: str, filter: Callable
+        self,
+        session: Session,
+        workers: int,
+        on_error: ErrorHandling,
+        description: str,
+        filter: Callable,
     ) -> None:
         super().__init__(session, workers, on_error, description)
         self._filter = filter

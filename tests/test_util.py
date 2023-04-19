@@ -83,7 +83,7 @@ class TestMisc(unittest.TestCase):
 
     def test_niter_str(self):
         self.assertEqual(list(misc.niter("abcdefg", 2)), ["ab", "cd", "ef", "g"])
-        
+
 
 if __name__ == "__main__":
     unittest.main()

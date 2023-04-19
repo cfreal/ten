@@ -1,7 +1,4 @@
-import datetime
-
 from tenlib import fs
-from tenlib.config import config
 
 
 class Storable:

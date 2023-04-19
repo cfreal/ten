@@ -3,7 +3,13 @@ from tenlib import fs
 
 
 @multiform
-def split(data: str, separator: str="\n", *separators: str, strip: bool=False, empty: bool=False):
+def split(
+    data: str,
+    separator: str = "\n",
+    *separators: str,
+    strip: bool = False,
+    empty: bool = False,
+) -> list:
     """Splits the `data` with the first `separator`.
     Then, splits every row of the `data` with the second `separator`, and so on.
 
@@ -38,7 +44,7 @@ def split(data: str, separator: str="\n", *separators: str, strip: bool=False, e
     return split(data, *separators, strip=strip)
 
 
-def join(data, separator="\n", *separators):
+def join(data, separator="\n", *separators) -> str:
     """Merges the deepest list with the last `separator`. Then, merges the
     obtained sublist with the second to last `separator`, and so on.
 
@@ -55,7 +61,7 @@ def join(data, separator="\n", *separators):
     return separator.join(join(row, *separators) for row in data)
 
 
-def map(table, **functions):
+def map(table, **functions) -> list:
     """For every column *n* in the table, if the keyword argument `_n` was
     given, apply it to every cell of said column.
 

@@ -60,6 +60,7 @@ __all__ = [
 
 StrOrBytes = bytes | str
 
+
 # TODO Make window compatible
 class Path(pathlib.PosixPath):
     """Wrapper around `pathlib.Path` that provides a few extra functions."""
