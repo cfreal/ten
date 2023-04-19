@@ -42,8 +42,6 @@ import inspect
 import re
 import types
 from typing import *
-from typing import _GenericAlias
-import typing
 import time
 
 from rich.progress import *

@@ -1,5 +1,5 @@
 from colorama import Fore, Back, Style
-import typing
+from typing import Callable
 
 
 COLOR_MAP = {
@@ -15,7 +15,7 @@ COLOR_MAP = {
 }
 
 
-def build_color(spec: str) -> typing.Callable[[str], str]:
+def build_color(spec: str) -> Callable[[str], str]:
     """Converts a format specifier into a function that wraps text with ANSI
     code for colors.
     Format is at most 3 letters as follow:

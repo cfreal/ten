@@ -5,8 +5,7 @@ from __future__ import annotations
 
 from concurrent.futures import Future, ThreadPoolExecutor, as_completed, TimeoutError
 import re
-import typing
-from typing import Callable, Generator, Any
+from typing import Callable, Generator, Any, Literal
 import urllib.parse
 from dataclasses import dataclass
 from rich.progress import Progress
@@ -45,7 +44,7 @@ DEFAULT_ENCODING = "utf-8"
 # Types
 
 BytesOrStr = str | bytes
-ErrorHandling = typing.Literal["skip", "raise", "return"]
+ErrorHandling = Literal["skip", "raise", "return"]
 
 # Classes
 

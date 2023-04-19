@@ -22,8 +22,7 @@ To set the level of logging in this file, use `set_level`. Change the path using
 """
 
 import logging
-import os.path
-import typing
+from typing import IO
 from logging import Handler, Logger
 
 from rich.console import Console
@@ -125,7 +124,7 @@ def set_level(level):
     __file_handler.setLevel(level)
 
 
-def set_file(file: str | typing.IO[str]) -> None:
+def set_file(file: str | IO[str]) -> None:
     """Set the location of the log file.
 
     Example:
