@@ -4,7 +4,7 @@ on: [push]
 
 jobs:
 
-  run-tests:
+  test-format:
     runs-on: ubuntu-latest
 
     steps:
@@ -33,6 +33,9 @@ jobs:
       - name: Install Dependencies
         if: steps.cache-poetry-dependencies.outputs.cache-hit != 'true'
         run: poetry install --no-interaction
+
+      - name: Format code
+        run: poetry run black .
 
       - name: Run tests
         run: poetry run python -m unittest
