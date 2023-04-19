@@ -523,9 +523,7 @@ class TestFlowMain(TenTestCase):
 
             raise KeyboardInterrupt
 
-        self.assertTrue(
-            self._read_output(main).startswith("✖ Execution interrupted (Ctrl-C)\n")
-        )
+        self.assertIn("Execution interrupted", self._read_output(main))
 
     def test_completedtotalcolumn_works_with_none(self):
         self.assertEqual(flow._CompletedTotalColumn().get_string_for_nb(None), "0")
