@@ -125,7 +125,7 @@ def set_level(level):
     __file_handler.setLevel(level)
 
 
-def set_file(file: typing.Union[str, typing.IO[str]]) -> None:
+def set_file(file: str | typing.IO[str]) -> None:
     """Set the location of the log file.
 
     Example:

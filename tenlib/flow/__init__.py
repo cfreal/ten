@@ -94,7 +94,7 @@ else:
     __ARGPARSE_FORMATTER = rich_argparse.RawDescriptionRichHelpFormatter
 
 
-def entry(entrypoint: Union[Callable, Type]) -> Callable[[], None]:
+def entry(entrypoint: Callable | Type) -> Callable[[], None]:
     """Converts the given coroutine or class into the program's entry point.
 
     Additionally, command line arguments are mapped to the parameters of the
@@ -858,9 +858,8 @@ def set_random_message_formatter() -> None:
 
 
 def set_message_formatter(
-    message_formatter: typing.Union[
-        messageformatter.MessageFormatter, Type[messageformatter.MessageFormatter], str
-    ]
+    message_formatter:
+        messageformatter.MessageFormatter | Type[messageformatter.MessageFormatter] | str
 ) -> None:
     """Sets given `messageformatter.MessageFormatter` as the message formatter."""
     global __message_formatter

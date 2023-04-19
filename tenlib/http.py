@@ -44,7 +44,7 @@ DEFAULT_ENCODING = "utf-8"
 
 # Types
 
-BytesOrStr = typing.Union[str, bytes]
+BytesOrStr = str | bytes
 ErrorHandling = typing.Literal["skip", "raise", "return"]
 
 # Classes
@@ -104,7 +104,7 @@ class Session(requests.Session):
     raw_url: bool = True
     """Whether to reparse and url-encode characters in the URL.
     """
-    timeout: typing.Union[int, tuple[int, int]] = None
+    timeout: int | tuple[int, int] = None
     """A global timeout for request and responses. Defaults to no timeout.
     """
     verify: bool = False
