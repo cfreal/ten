@@ -82,8 +82,10 @@ def map(table, **functions) -> list:
     for row in table:
         processed_row = []
         for i, cell in enumerate(row):
-            function = functions.get(f"_{i}", functions.get(i, identity))
-            processed_row.append(function(cell))
+            function = functions.get(f"_{i}") or functions.get(i)
+            if function:
+                cell = function(cell)
+            processed_row.append(cell)
         processed_table.append(processed_row)
     return processed_table
 
