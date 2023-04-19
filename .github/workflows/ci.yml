@@ -35,7 +35,7 @@ jobs:
         run: poetry install --no-interaction
 
       - name: Format code
-        run: poetry run black .
+        run: poetry run black . --check
 
       - name: Run tests
         run: poetry run python -m unittest
