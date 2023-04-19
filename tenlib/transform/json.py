@@ -3,6 +3,16 @@ import json
 from tenlib.transform.generic import multiform
 from tenlib import fs
 
+__all__ = [
+    "encode",
+    "decode",
+    "JSONDecodeError",
+    "read",
+    "write",
+]
+
+JSONDecodeError = json.JSONDecodeError
+
 
 def encode(data, **kwargs) -> str:
     """Wrapper for `json.dumps()`."""

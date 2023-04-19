@@ -523,6 +523,15 @@ class TestFlowMain(TenTestCase):
             self._read_output(main).startswith("✖ Execution interrupted (Ctrl-C)\n")
         )
         
+    def test_completedtotalcolumn_works_with_none(self):
+        self.assertEqual(flow._CompletedTotalColumn().get_string_for_nb(None), "0")
+        
+    def test_completedtotalcolumn_reflects_order(self):
+        self.assertEqual(flow._CompletedTotalColumn().get_string_for_nb(123), "123")
+        self.assertEqual(flow._CompletedTotalColumn().get_string_for_nb(1200), "1.2K")
+        self.assertEqual(flow._CompletedTotalColumn().get_string_for_nb(1234*1000), "1.2M")
+        self.assertEqual(flow._CompletedTotalColumn().get_string_for_nb(3000 * 1000 * 1000), "3.0G")
+        
     def test_entry_class(self):
         @flow.entry
         class Entry:

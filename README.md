@@ -40,7 +40,7 @@ $ git clone https://github.com/cfreal/ten.git
 $ cd ten
 ```
 
-**ten** can be installed from source using *pip* or *poetry*. It requires Python 3.9 or higher.
+**ten** can be installed from source using *pip* or *poetry*. It requires Python 3.10 or higher.
 
 Use *poetry* to create a virtual environment and install the package: 
 

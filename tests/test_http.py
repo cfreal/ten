@@ -46,8 +46,8 @@ class TestHTTPSession(TenTestCase):
         self.assertEqual(http.ScopedSession(url).base_url, self.base)
 
     def test_get_absolute_url(self):
-        with self.assertRaisesRegex(ValueError, "Unable to comprehend URL: toto"):
-            self.ss.get_absolute_url("toto")
+        url = self.ss.get_absolute_url("toto")
+        self.assertEqual(url, self.ss.base_url + "toto")
 
         DOMAIN = "https://domain.fr/page"
         self.assertEqual(self.ss.get_absolute_url(DOMAIN), DOMAIN)
@@ -681,10 +681,10 @@ class FakeMultiSession(http.Session):
     the URL, the params, and the data.
     """
     def request(self, method, url, params: dict = {}, **kwargs):
-        id = params.get("id", None)
+        id = params.get("id")
         if id == 50:
             raise ValueError("Some HTTP error occured")
-        return FakeResponse((url, params, kwargs.get("data", None)))
+        return FakeResponse((url, params, kwargs.get("data")))
 
 
 class TestPool(TenTestCase):

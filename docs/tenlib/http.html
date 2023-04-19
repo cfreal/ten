@@ -448,9 +448,8 @@ class ScopedSession(Session):
 
     def get_absolute_url(self, url: str, base: str=None) -&gt; str:
         &#34;&#34;&#34;Merges base URL with the given one.
-        If the given URL starts with a slash, it is appended to the base URL. If
-        it starts with `http://` or `https://`, it is considered a full URL.
-        Else, an error is raised.
+        If the given URL starts with `http://` or `https://`, it is considered a
+        full URL. Otherwise, it is appended to the base
 
         Using `urllib.parse.urljoin` does not do the job properly, as for
         instance you want specially crafted paths such as
@@ -466,13 +465,10 @@ class ScopedSession(Session):
         if base is None:
             base = self.base_url
 
-        if url.startswith(&#34;/&#34;):
-            return base + url
         if url.startswith(&#34;https://&#34;) or url.startswith(&#34;http://&#34;):
             return url
 
-        raise ValueError(f&#34;Unable to comprehend URL: {url}&#34;)
-
+        return base + url
 
 class ResponseRegex:
     &#34;&#34;&#34;Helper class allowing to perform regex function calls onto the response.
@@ -2043,9 +2039,8 @@ Defaults to 10.</dd>
 
     def get_absolute_url(self, url: str, base: str=None) -&gt; str:
         &#34;&#34;&#34;Merges base URL with the given one.
-        If the given URL starts with a slash, it is appended to the base URL. If
-        it starts with `http://` or `https://`, it is considered a full URL.
-        Else, an error is raised.
+        If the given URL starts with `http://` or `https://`, it is considered a
+        full URL. Otherwise, it is appended to the base
 
         Using `urllib.parse.urljoin` does not do the job properly, as for
         instance you want specially crafted paths such as
@@ -2061,12 +2056,10 @@ Defaults to 10.</dd>
         if base is None:
             base = self.base_url
 
-        if url.startswith(&#34;/&#34;):
-            return base + url
         if url.startswith(&#34;https://&#34;) or url.startswith(&#34;http://&#34;):
             return url
 
-        raise ValueError(f&#34;Unable to comprehend URL: {url}&#34;)</code></pre>
+        return base + url</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -2124,9 +2117,8 @@ encoding function.</p></div>
 </code></dt>
 <dd>
 <div class="desc"><p>Merges base URL with the given one.
-If the given URL starts with a slash, it is appended to the base URL. If
-it starts with <code>http://</code> or <code>https://</code>, it is considered a full URL.
-Else, an error is raised.</p>
+If the given URL starts with <code>http://</code> or <code>https://</code>, it is considered a
+full URL. Otherwise, it is appended to the base</p>
 <p>Using <code>urllib.parse.urljoin</code> does not do the job properly, as for
 instance you want specially crafted paths such as
 <code>/admin/login.php/../dashboard</code>.</p>
@@ -2148,9 +2140,8 @@ instance you want specially crafted paths such as
 </summary>
 <pre><code class="python">def get_absolute_url(self, url: str, base: str=None) -&gt; str:
     &#34;&#34;&#34;Merges base URL with the given one.
-    If the given URL starts with a slash, it is appended to the base URL. If
-    it starts with `http://` or `https://`, it is considered a full URL.
-    Else, an error is raised.
+    If the given URL starts with `http://` or `https://`, it is considered a
+    full URL. Otherwise, it is appended to the base
 
     Using `urllib.parse.urljoin` does not do the job properly, as for
     instance you want specially crafted paths such as
@@ -2166,12 +2157,10 @@ instance you want specially crafted paths such as
     if base is None:
         base = self.base_url
 
-    if url.startswith(&#34;/&#34;):
-        return base + url
     if url.startswith(&#34;https://&#34;) or url.startswith(&#34;http://&#34;):
         return url
 
-    raise ValueError(f&#34;Unable to comprehend URL: {url}&#34;)</code></pre>
+    return base + url</code></pre>
 </details>
 </dd>
 </dl>

@@ -419,9 +419,8 @@ class ScopedSession(Session):
 
     def get_absolute_url(self, url: str, base: str=None) -> str:
         """Merges base URL with the given one.
-        If the given URL starts with a slash, it is appended to the base URL. If
-        it starts with `http://` or `https://`, it is considered a full URL.
-        Else, an error is raised.
+        If the given URL starts with `http://` or `https://`, it is considered a
+        full URL. Otherwise, it is appended to the base
 
         Using `urllib.parse.urljoin` does not do the job properly, as for
         instance you want specially crafted paths such as
@@ -437,13 +436,10 @@ class ScopedSession(Session):
         if base is None:
             base = self.base_url
 
-        if url.startswith("/"):
-            return base + url
         if url.startswith("https://") or url.startswith("http://"):
             return url
 
-        raise ValueError(f"Unable to comprehend URL: {url}")
-
+        return base + url
 
 class ResponseRegex:
     """Helper class allowing to perform regex function calls onto the response.

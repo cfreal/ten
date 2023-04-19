@@ -722,7 +722,9 @@ def trace(function: Callable) -> Callable:
 
 
 class _CompletedTotalColumn(ProgressColumn):
-    def get_string_for_nb(self, nb: int):
+    def get_string_for_nb(self, nb: int) -> str:
+        if nb is None:
+            nb = 0
         nb = int(nb)
         unit, suffix = filesize.pick_unit_and_suffix(
             nb, ["", "K", "M", "G", "T", "P", "E", "Z", "Y"], 1000
@@ -789,6 +791,7 @@ def track(
     progress = Progress(
         *_progress_columns,
         transient=transient,
+        console=get_console(),
     )
 
     with progress:
