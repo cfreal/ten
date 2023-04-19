@@ -31,6 +31,16 @@
 from tenlib.transform.generic import multiform
 from tenlib import fs
 
+__all__ = [
+    &#34;encode&#34;,
+    &#34;decode&#34;,
+    &#34;JSONDecodeError&#34;,
+    &#34;read&#34;,
+    &#34;write&#34;,
+]
+
+JSONDecodeError = json.JSONDecodeError
+
 
 def encode(data, **kwargs) -&gt; str:
     &#34;&#34;&#34;Wrapper for `json.dumps()`.&#34;&#34;&#34;
@@ -115,6 +125,60 @@ def decode(data: str, **kwargs):
 </dl>
 </section>
 <section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="tenlib.transform.json.JSONDecodeError"><code class="flex name class">
+<span>class <span class="ident">JSONDecodeError</span></span>
+<span>(</span><span>msg, doc, pos)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Subclass of ValueError with the following additional properties:</p>
+<p>msg: The unformatted error message
+doc: The JSON document being parsed
+pos: The start index of doc where parsing failed
+lineno: The line corresponding to pos
+colno: The column corresponding to pos</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class JSONDecodeError(ValueError):
+    &#34;&#34;&#34;Subclass of ValueError with the following additional properties:
+
+    msg: The unformatted error message
+    doc: The JSON document being parsed
+    pos: The start index of doc where parsing failed
+    lineno: The line corresponding to pos
+    colno: The column corresponding to pos
+
+    &#34;&#34;&#34;
+    # Note that this exception is used from _json
+    def __init__(self, msg, doc, pos):
+        lineno = doc.count(&#39;\n&#39;, 0, pos) + 1
+        colno = pos - doc.rfind(&#39;\n&#39;, 0, pos)
+        errmsg = &#39;%s: line %d column %d (char %d)&#39; % (msg, lineno, colno, pos)
+        ValueError.__init__(self, errmsg)
+        self.msg = msg
+        self.doc = doc
+        self.pos = pos
+        self.lineno = lineno
+        self.colno = colno
+
+    def __reduce__(self):
+        return self.__class__, (self.msg, self.doc, self.pos)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>builtins.ValueError</li>
+<li>builtins.Exception</li>
+<li>builtins.BaseException</li>
+</ul>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li>requests.exceptions.JSONDecodeError</li>
+</ul>
+</dd>
+</dl>
 </section>
 </article>
 <nav id="sidebar">
@@ -134,6 +198,13 @@ def decode(data: str, **kwargs):
 <li><code><a title="tenlib.transform.json.decode" href="#tenlib.transform.json.decode">decode</a></code></li>
 <li><code><a title="tenlib.transform.json.read" href="#tenlib.transform.json.read">read</a></code></li>
 <li><code><a title="tenlib.transform.json.write" href="#tenlib.transform.json.write">write</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="tenlib.transform.json.JSONDecodeError" href="#tenlib.transform.json.JSONDecodeError">JSONDecodeError</a></code></h4>
+</li>
 </ul>
 </li>
 </ul>
