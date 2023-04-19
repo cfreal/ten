@@ -67,8 +67,8 @@ class TestShell(TenTestCase):
         
     def test_escape(self):
         self.assertEqual(shell.escape("abc"), "'abc'")
-        self.assertEqual(shell.escape("abc'def"), "'abc'\''def'")
-        self.assertEqual(shell.escape("abc'def'ijk"), "'abc'\''def'\''ijk'")
+        self.assertEqual(shell.escape("abc'def"), "'abc'\\''def'")
+        self.assertEqual(shell.escape("abc'def'ijk"), "'abc'\\''def'\\''ijk'")
 
 
 if __name__ == "__main__":
