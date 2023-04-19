@@ -23,18 +23,16 @@ jobs:
           virtualenvs-in-project: false
           virtualenvs-path: ~/.virtualenvs
 
-      - name: Cache Poetry virtualenv
-        uses: actions/cache@v1
-        id: cache
+      - name: Cache poetry virtualenv
+        id: cache-poetry-dependencies
+        uses: actions/cache@v3
         with:
           path: ~/.virtualenvs
-          key: poetry-${{ hashFiles('**/poetry.lock') }}
-          restore-keys: |
-            poetry-${{ hashFiles('**/poetry.lock') }}
+          key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
 
       - name: Install Dependencies
-        run: poetry install
-        if: steps.cache.outputs.cache-hit != 'true'
+        if: steps.cache-poetry-dependencies.outputs.cache-hit != 'true'
+        run: poetry install --no-interaction
 
-      - name: Test with unittest
+      - name: Run tests
         run: poetry run python -m unittest
