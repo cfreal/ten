@@ -43,10 +43,7 @@ class Storable:
         }
 
         for extension, method in methods.items():
-            try:
-                method(f"{path}.{extension}")
-            except:
-                raise
+            method(f"{path}.{extension}")
 
         return str(path)
 
