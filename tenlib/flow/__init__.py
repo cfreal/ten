@@ -553,10 +553,13 @@ def msg_status(
 
     Args:
         status (RenderableType): A status renderable (str or Text typically).
-        spinner (str, optional): Name of spinner animation (see python -m rich.spinner). Defaults to "dots".
-        spinner_style (StyleType, optional): Style of spinner. Defaults to "status.spinner".
+        spinner (str, optional): Name of spinner animation (see python -m rich.spinner).
+            Defaults to "dots".
+        spinner_style (StyleType, optional): Style of spinner. Defaults to
+            "status.spinner".
         speed (float, optional): Speed factor for spinner animation. Defaults to 1.0.
-        refresh_per_second (float, optional): Number of refreshes per second. Defaults to 12.5.
+        refresh_per_second (float, optional): Number of refreshes per second. Defaults
+            to 12.5.
 
     Returns:
         Status: A Status object that may be used as a context manager.
