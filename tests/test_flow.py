@@ -368,6 +368,22 @@ class TestFlowPrototype(TenTestCase):
         args, kwargs = self._get_args(main, "/etc/passwd")
         self.assertIsInstance(args[0], fs.Path)
         self.assertEqual(str(args[0]), "/etc/passwd")
+        
+    def test_string_annotation_is_properly_resolved(self):
+        @flow.entry
+        def main(a: "int"):
+            ...
+            
+        args, kwargs = self._get_args(main, "1")
+        self.assertEqual(args[0], 1)
+        
+    def test_string_annotation_list_is_properly_resolved(self):
+        @flow.entry
+        def main(a: "list[int]"):
+            ...
+            
+        args, kwargs = self._get_args(main, "-a", "1", "2")
+        self.assertEqual(kwargs["a"], [1, 2])
 
 
 class TestFlowArg(TenTestCase):

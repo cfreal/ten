@@ -303,20 +303,21 @@ def _doc_to_description(function):
     return doc
 
 
-def _prototype_to_args(function):
+def _prototype_to_args(function) -> tuple[list, dict]:
     """Creates an argument parser from a function prototype. If a parameter has
     a default value of type _int, bool, float or bytes_, or a `list` of those,
     the value sent from the command line arguments is converted into said type.
     Type annotation can be used to force the type of the command line arguments.
     In addition, parameters that come after the `*` metaparameter, have a
     default value, or are of type boolean or list, are mapped as an option.
+    Then, parses the arguments from the command line and returns the args and kwargs.
     """
     from tenlib.fs import Path
     from tenlib.http import ScopedSession
 
     _PROTO_RAW_TYPES = (int, bool, float, bytes, str, Path, ScopedSession)
 
-    s = inspect.signature(function)
+    s = inspect.signature(function, eval_str=True)
     function.__doc__
     parser = argparse.ArgumentParser(
         description=_doc_to_description(function),
