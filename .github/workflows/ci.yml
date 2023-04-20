@@ -4,7 +4,7 @@ on: [push]
 
 jobs:
 
-  test-format:
+  test:
     runs-on: ubuntu-latest
 
     steps:
@@ -34,8 +34,34 @@ jobs:
         if: steps.cache-poetry-dependencies.outputs.cache-hit != 'true'
         run: poetry install --no-interaction
 
+      - name: Run tests
+        run: poetry run python -m unittest
+
+  format:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1
+        with:
+          fetch-depth: 1
+
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v1
+        with:
+          python-version: "3.10"
+      
+      - name: Cache poetry virtualenv
+        id: cache-poetry-dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.virtualenvs
+          key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
+
+      - name: Install Dependencies
+        if: steps.cache-poetry-dependencies.outputs.cache-hit != 'true'
+        run: poetry install --no-interaction
+
       - name: Format code
         run: poetry run black . --check
 
-      - name: Run tests
-        run: poetry run python -m unittest
+
