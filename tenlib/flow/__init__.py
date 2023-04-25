@@ -104,11 +104,9 @@ else:
 
 def entry(entrypoint: Callable | Type) -> Callable[[], None]:
     """Converts the given coroutine or class into the program's entry point.
-
-    Additionally, command line arguments are mapped to the parameters of the
-    coroutine or the object's `__init__`.
-    Also, `tenlib.exception.TenExit` and `KeyboardInterrupt` exceptions will be
-    caught and displayed nicely.
+    Command line arguments are mapped to the parameters of the function or the object's
+    `__init__`. Also, `tenlib.exception.TenExit` and `KeyboardInterrupt` exceptions will
+    be caught and displayed nicely.
 
     Default values, as well as type hinting, are supported.
 
@@ -136,7 +134,7 @@ def entry(entrypoint: Callable | Type) -> Callable[[], None]:
         def __init__(self, ...):
             ...
 
-        def run():
+        def run(self):
             ...
 
     Program()
