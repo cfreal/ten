@@ -831,9 +831,10 @@ def ask(
     default: Any = ...,
 ) -> Any:
     """Shortcut to construct and run a prompt loop and return the result.
+    Wrapper for `rich.prompt.Prompt`.
 
     Example:
-        >>> filename = Prompt.ask("Enter a filename")
+        >>> filename = ask("Enter a filename")
 
     Args:
         prompt (TextType, optional): Prompt text. Defaults to "".
