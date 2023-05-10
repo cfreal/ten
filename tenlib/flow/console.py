@@ -12,5 +12,5 @@ __console = None
 def get_console():
     global __console
     if not __console:
-        __console = Console(highlight=False)
+        __console = Console(highlight=False, emoji=False, markup=True)
     return __console
