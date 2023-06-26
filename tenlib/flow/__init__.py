@@ -41,7 +41,17 @@ import functools
 import inspect
 import re
 from types import SimpleNamespace, NoneType
-from typing import Callable, Type, Optional, Iterable, Any, Union, get_args, get_origin, get_type_hints
+from typing import (
+    Callable,
+    Type,
+    Optional,
+    Iterable,
+    Any,
+    Union,
+    get_args,
+    get_origin,
+    get_type_hints,
+)
 import time
 
 from rich.text import Text, TextType
@@ -317,7 +327,7 @@ def _prototype_to_args(function) -> tuple[list, dict]:
 
     s = inspect.signature(function)
     type_hints = get_type_hints(function)
-    
+
     parser = argparse.ArgumentParser(
         description=_doc_to_description(function),
         formatter_class=__ARGPARSE_FORMATTER,
@@ -336,19 +346,19 @@ def _prototype_to_args(function) -> tuple[list, dict]:
             arg_desc.default = p.default
         else:
             arg_desc.required = True
-        
+
         # If a type is explicitly specified, use it
         if p.annotation is not inspect._empty:
             annotation = type_hints[k]
             aorigin = get_origin(annotation)
             aargs = get_args(annotation)
-            
+
             # Unwrap Optional[...]
             if aorigin is Union and len(aargs) == 2 and aargs[1] is NoneType:
                 annotation = aargs[0]
                 aorigin = get_origin(annotation)
                 aargs = get_args(annotation)
-                
+
             if isinstance(annotation, type) and issubclass(annotation, list):
                 arg_desc.nargs = "*"
                 arg_desc.type = str
