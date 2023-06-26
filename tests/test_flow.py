@@ -384,7 +384,16 @@ class TestFlowPrototype(TenTestCase):
 
         args, kwargs = self._get_args(main, "-a", "1", "2")
         self.assertEqual(kwargs["a"], [1, 2])
-
+        
+    def test_string_annotation_is_not_used_as_string(self):
+        @flow.entry
+        def main(a: "str", b: "int"):
+            ...
+        
+        try:
+            self._get_args(main, "abc", "123")
+        except:
+            self.fail("Got an exception with a 'str' type")
 
 class TestFlowArg(TenTestCase):
     def test_arg(self):

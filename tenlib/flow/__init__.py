@@ -40,8 +40,8 @@ import argparse
 import functools
 import inspect
 import re
-import types
-from typing import Callable, Type, Optional, Iterable, Any
+from types import SimpleNamespace, NoneType
+from typing import Callable, Type, Optional, Iterable, Any, Union, get_args, get_origin, get_type_hints
 import time
 
 from rich.text import Text, TextType
@@ -315,8 +315,9 @@ def _prototype_to_args(function) -> tuple[list, dict]:
 
     _PROTO_RAW_TYPES = (int, bool, float, bytes, str, Path, ScopedSession)
 
-    s = inspect.signature(function, eval_str=True)
-    function.__doc__
+    s = inspect.signature(function)
+    type_hints = get_type_hints(function)
+    
     parser = argparse.ArgumentParser(
         description=_doc_to_description(function),
         formatter_class=__ARGPARSE_FORMATTER,
@@ -327,7 +328,7 @@ def _prototype_to_args(function) -> tuple[list, dict]:
     star_argument = None
 
     for k, p in s.parameters.items():
-        arg_desc = types.SimpleNamespace()
+        arg_desc = SimpleNamespace()
 
         # Handle defaults and type
         arg_desc.nargs = None
@@ -335,18 +336,27 @@ def _prototype_to_args(function) -> tuple[list, dict]:
             arg_desc.default = p.default
         else:
             arg_desc.required = True
+        
         # If a type is explicitly specified, use it
         if p.annotation is not inspect._empty:
-            if isinstance(p.annotation, types.GenericAlias) and issubclass(
-                p.annotation.__origin__, list
-            ):
-                arg_desc.nargs = "*"
-                arg_desc.type = p.annotation.__args__[0]
-            elif issubclass(p.annotation, list):
+            annotation = type_hints[k]
+            aorigin = get_origin(annotation)
+            aargs = get_args(annotation)
+            
+            # Unwrap Optional[...]
+            if aorigin is Union and len(aargs) == 2 and aargs[1] is NoneType:
+                annotation = aargs[0]
+                aorigin = get_origin(annotation)
+                aargs = get_args(annotation)
+                
+            if isinstance(annotation, type) and issubclass(annotation, list):
                 arg_desc.nargs = "*"
                 arg_desc.type = str
+            elif aorigin is list:
+                arg_desc.nargs = "*"
+                arg_desc.type = aargs[0]
             else:
-                arg_desc.type = p.annotation
+                arg_desc.type = annotation
         # Otherwise, deduce it from the default value
         elif p.default is not inspect._empty and p.default is not None:
             default_type = type(p.default)
