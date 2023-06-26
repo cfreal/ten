@@ -41,6 +41,10 @@ pytest = "^7.3.1"
 [tool.poetry.group.dev.dependencies]
 black = "^23.3.0"
 
+
+[tool.poetry.group.extras.dependencies]
+rich-argparse = "^1.1.1"
+
 [tool.poetry.scripts]
 tf = "tenlib.cli:transform"
 ten = "tenlib.cli:ten"
