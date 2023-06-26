@@ -643,6 +643,38 @@ class TestFlowOthers(TenTestCase):
         flow.sleep(2)
         self.assertGreaterEqual(time.time(), start + 2)
 
+class TestFlowMessages(TenTestCase):
+    def test_set_formatter_with_string_no_formatter_suffix(self):
+        flow.set_message_formatter("Oldschool")
+        tests = [
+            ('success', '[+]'),
+            ('info', '[*]'),
+            ('failure', '[-]'),
+            ('error', '[-]'),
+            ('warning', '[!]'),
+            ('debug', '[D]'),
+        ]
+        for type, prefix in tests:
+            func = getattr(flow, f'msg_{type}')
+            self.assertEqual(
+                self._read_output(func, type), f"{prefix} {type}\n"
+            )
+    
+    def test_bin_print(self):
+        console = flow.get_console()
+        old_file = console.file
+        buffer = io.BytesIO()
+        console.file = io.TextIOWrapper(buffer)
+        try:
+            flow.bin_print(b"ABC")
+            self.assertEqual(buffer.getvalue(), b"ABC")
+        finally:
+            console.file = old_file
+        
+    def test_clear(self):
+        self.assertEqual(
+            self._read_output(flow.msg_clear), f""
+        )
 
 class TestFlowMessageFormatter(TenTestCase):
     def test_set_formatter_with_string_no_formatter_suffix(self):
