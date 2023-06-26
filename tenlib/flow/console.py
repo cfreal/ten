@@ -9,7 +9,8 @@ __all__ = ["get_console"]
 __console = None
 
 
-def get_console():
+def get_console() -> Console:
+    """Returns the underlying rich console."""
     global __console
     if not __console:
         __console = Console(highlight=False, emoji=False, markup=True)
