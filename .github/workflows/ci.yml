@@ -4,7 +4,7 @@ on: [push]
 
 jobs:
 
-  test-3.10:
+  test-python-3-10:
     runs-on: ubuntu-latest
 
     steps:
@@ -37,7 +37,7 @@ jobs:
       - name: Run tests
         run: poetry run python -m unittest
 
-  test-3.11:
+  test-python-3-11:
     runs-on: ubuntu-latest
 
     steps:
