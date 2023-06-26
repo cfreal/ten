@@ -16,7 +16,10 @@ beautifulsoup4 = "^4.12.2"
 colorama = "^0.4.6"
 rich = "^13.3.4"
 requests = "^2.28.2"
-requests-toolbelt = "^0.10.1"
+requests-toolbelt = [
+    {version = ">=1", python = ">=3.11"},
+    {version = ">=0.1.10", python = ">=3"}
+]
 lxml = "^4.9.2"
 
 
