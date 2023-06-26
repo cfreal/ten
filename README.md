@@ -33,6 +33,8 @@ It includes tutorials, quickstart guides, and the Python documentation.
 
 # Installation
 
+First clone the repository and cd into it:
+
 ```
 $ git clone https://github.com/cfreal/ten.git
 $ cd ten
@@ -40,14 +42,14 @@ $ cd ten
 
 **ten** can be installed from source using *pip* or *poetry*. It requires Python 3.10 or higher.
 
-### With poetry
+Use *poetry* to create a virtual environment and install the package: 
 
 ```
 $ poetry install
 $ poetry shell
 ```
 
-### With pip
+If you're feeling adventurous, you can also install it with *pip*. This enables the `ten` and `tf` commands system-wide:
 
 ```
 $ pip install .
