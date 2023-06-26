@@ -28,7 +28,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ~/.virtualenvs
-          key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
+          key: venv-3-10-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
 
       - name: Install Dependencies
         if: steps.cache-poetry-dependencies.outputs.cache-hit != 'true'
@@ -61,7 +61,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ~/.virtualenvs
-          key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
+          key: venv-3-11-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
 
       - name: Install Dependencies
         if: steps.cache-poetry-dependencies.outputs.cache-hit != 'true'
