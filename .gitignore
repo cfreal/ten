@@ -7,3 +7,4 @@ htmlcov/
 .vscode
 TODO.md
 dist/
+poetry.lock
