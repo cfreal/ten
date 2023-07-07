@@ -2,6 +2,8 @@ import io
 import tempfile
 import unittest
 
+from rich.text import Text
+
 from tenlib.flow.console import get_console
 from tenlib.flow.messageformatter import *
 
@@ -11,12 +13,21 @@ from tests.ten_testcases import *
 class TestMessageFormatter(TenTestCase):
     def test_print_no_params(self):
         out = OldschoolMessageFormatter()
+        out.print()
+        self.assertEqual(get_console().export_text(), "\n")
 
-        out.print("Some value with no params {} {} {}")
+    # The two next tests are redundant with TestFlowMessageFormatter, but it does not
+    # hurt
 
-        self.assertEqual(
-            get_console().export_text(), "Some value with no params {} {} {}\n"
-        )
+    def test_text_object_does_not_get_rendered(self):
+        out = OldschoolMessageFormatter()
+        out.success(Text("[b]Markup"))
+        self.assertEqual(get_console().export_text(), "[+] [b]Markup\n")
+
+    def test_print_can_receive_several_positional_arguments(self):
+        out = OldschoolMessageFormatter()
+        out.success("first", "second", 3, "forth")
+        self.assertEqual(get_console().export_text(), "[+] first second 3 forth\n")
 
     def test_clear(self):
         out = OldschoolMessageFormatter()
