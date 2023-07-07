@@ -280,7 +280,7 @@ def entry(entrypoint: Callable | Type) -> Callable[[], None]:
             if e.message:
                 msg_print(e.message)
         except Exception as e:
-            msg_error(f"[b]{type(e).__name__}[/] {e}")
+            msg_error(Text(type(e).__name__, style="bold"), Text(str(e)))
             logger.error(f"{type(e).__name__}: {e}", exc_info=True)
             console.print_exception()
             exit_code = 1
@@ -506,39 +506,39 @@ def arg(name: str, description: str):
     return wrapper
 
 
-def msg_print(message: str, **kwargs):
+def msg_print(*objects, **kwargs):
     """Displays a message."""
-    get_message_formatter().print(message, **kwargs)
+    get_message_formatter().print(*objects, **kwargs)
 
 
-def msg_info(message: str, **kwargs):
+def msg_info(*objects, **kwargs):
     """Displays an info message."""
-    get_message_formatter().info(message, **kwargs)
+    get_message_formatter().info(*objects, **kwargs)
 
 
-def msg_failure(message: str, **kwargs):
+def msg_failure(*objects, **kwargs):
     """Displays a failure message."""
-    get_message_formatter().failure(message, **kwargs)
+    get_message_formatter().failure(*objects, **kwargs)
 
 
-def msg_error(message: str, **kwargs):
+def msg_error(*objects, **kwargs):
     """Displays an error message."""
-    get_message_formatter().failure(message, **kwargs)
+    get_message_formatter().error(*objects, **kwargs)
 
 
-def msg_success(message: str, **kwargs):
+def msg_success(*objects, **kwargs):
     """Displays a success message."""
-    get_message_formatter().success(message, **kwargs)
+    get_message_formatter().success(*objects, **kwargs)
 
 
-def msg_warning(message: str, **kwargs):
+def msg_warning(*objects, **kwargs):
     """Displays a warning message."""
-    get_message_formatter().warning(message, **kwargs)
+    get_message_formatter().warning(*objects, **kwargs)
 
 
-def msg_debug(message: str, **kwargs):
+def msg_debug(*objects, **kwargs):
     """Displays a debug message."""
-    get_message_formatter().debug(message, **kwargs)
+    get_message_formatter().debug(*objects, **kwargs)
 
 
 def msg_clear():

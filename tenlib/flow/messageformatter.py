@@ -4,6 +4,8 @@ See `tenlib.flow.msg_info` to check the display functions, and
 `tenlib.flow.set_message_formatter` to change the display style.
 """
 
+from abc import ABC, abstractmethod
+from enum import Enum
 from tenlib.flow.console import get_console
 from rich.console import Console
 
@@ -17,17 +19,8 @@ __all__ = [
     "BackgroundMessageFormatter",
 ]
 
-
-class MessageFormatter:
+class MessageFormatter(ABC):
     """Wrapper to display information in a pretty way.
-    When displaying a message, a status, a format string and its parameters must
-    be given. A few stati are available: `INFO`, `SUCCESS`, `ERROR`, `WARNING`,
-    `DEBUG`. The status will be prepended to the displayed line, and every
-    parameter of a format string will be colored.
-
-    This message formatter displays a colored character indicating the status at
-    the beginning of every line: `+` for success, `-` for failure, `i` for
-    information, etc.
 
     The list of possible calls is as follows:
 
@@ -39,24 +32,8 @@ class MessageFormatter:
     * `MessageFormatter.debug`
     """
 
-    _INFO = "INFO"
-    _SUCCESS = "SUCCESS"
-    _FAILURE = "FAILURE"
-    _ERROR = "ERROR"
-    _WARNING = "WARNING"
-    _DEBUG = "DEBUG"
-
-    _FORMAT = {
-        "INFO": "[b blue]*[/] {}",
-        "FAILURE": "[b red]-[/] {}",
-        "ERROR": "[b red]x[/] {}",
-        "SUCCESS": "[b green]+[/] {}",
-        "WARNING": "[b yellow]![/] {}",
-        "DEBUG": "[b magenta]D[/] {}",
-    }
-
     CLEAR_LINE = "\r\x1b[K"
-
+    
     def __init__(self, *, console: Console = None):
         """
         Params:
@@ -65,17 +42,17 @@ class MessageFormatter:
         self._console = console
 
     @property
-    def console(self):
+    def console(self) -> Console:
         return self._console or get_console()
 
-    def _output(self, message, **kwargs):
-        self.console.print(message, **kwargs)
+    def _output(self, *objects, **kwargs) -> None:
+        self.console.print(*objects, **kwargs)
 
-    def print(self, message="", **kwargs):
+    def print(self, *objects, **kwargs) -> None:
         """Displays a message."""
-        return self._output(message, **kwargs)
+        return self._output(*objects, **kwargs)
 
-    def bin_print(self, data: bytes):
+    def bin_print(self, data: bytes) -> None:
         """Prints binary `data` and flushes the stream.
 
         Args:
@@ -86,80 +63,139 @@ class MessageFormatter:
         except TypeError:
             raise TypeError("MessageFormatter.bin_print() expects a byte-like object")
         self.console.file.buffer.flush()
+    
+    @abstractmethod
+    def info(self, *objects, **kwargs) -> None:
+        """Displays an information message."""
 
-    def status(self, status, message, **kwargs):
+    @abstractmethod
+    def warning(self, *objects, **kwargs) -> None:
+        """Displays a warning message."""
+
+    @abstractmethod
+    def error(self, message, **kwargs) -> None:
+        """Displays an error message."""
+
+    @abstractmethod
+    def success(self, message, **kwargs) -> None:
+        """Displays a success message."""
+
+    @abstractmethod
+    def failure(self, message, **kwargs) -> None:
+        """Displays a failure message."""
+
+    @abstractmethod
+    def debug(self, message, **kwargs) -> None:
+        """Displays a debug message."""
+
+    def clear(self) -> None:
+        """Clears last line."""
+        self.console.file.write(self.CLEAR_LINE)
+
+
+class Status(Enum):
+    INFO = 1
+    SUCCESS = 2
+    FAILURE = 3
+    ERROR = 4
+    WARNING = 5
+    DEBUG = 6
+
+class PrefixMessageFormatter(MessageFormatter):
+    """Displays a prefix indicating the status of the message.
+    """
+
+    # Prefix to add to the message
+    _PREFIX = {
+        Status.INFO: "[b blue]*[/]",
+        Status.FAILURE: "[b red]-[/]",
+        Status.ERROR: "[b red]x[/]",
+        Status.SUCCESS: "[b green]+[/]",
+        Status.WARNING: "[b yellow]![/]",
+        Status.DEBUG: "[b magenta]D[/]",
+    }
+    # Styles to apply to the whole message
+    _STYLES = {
+        Status.INFO: None,
+        Status.FAILURE: None,
+        Status.ERROR: None,
+        Status.SUCCESS: None,
+        Status.WARNING: None,
+        Status.DEBUG: None,
+    }
+
+    def _status(self, status: Status, *objects, **kwargs):
         """Displays a message along with a status.
         Arguments of the format string will be colored in a color indicating the
         status. For instance, arguments for the success function will be in
         green, and failure in red.
         """
-        return self._output(self._FORMAT[status].format(message), **kwargs)
+        return self._output(self._PREFIX[status], *objects, style=self._STYLES[status], **kwargs)
 
-    def info(self, message, **kwargs):
-        self.status(self._INFO, message, **kwargs)
+    def info(self, *objects, **kwargs):
+        self._status(Status.INFO, *objects, **kwargs)
 
-    def warning(self, message, **kwargs):
-        self.status(self._WARNING, message, **kwargs)
+    def warning(self, *objects, **kwargs):
+        self._status(Status.WARNING, *objects, **kwargs)
 
-    def error(self, message, **kwargs):
-        self.status(self._ERROR, message, **kwargs)
+    def error(self, *objects, **kwargs):
+        self._status(Status.ERROR, *objects, **kwargs)
 
-    def success(self, message, **kwargs):
-        self.status(self._SUCCESS, message, **kwargs)
+    def success(self, *objects, **kwargs):
+        self._status(Status.SUCCESS, *objects, **kwargs)
 
-    def failure(self, message, **kwargs):
-        self.status(self._FAILURE, message, **kwargs)
+    def failure(self, *objects, **kwargs):
+        self._status(Status.FAILURE, *objects, **kwargs)
 
-    def debug(self, message, **kwargs):
-        self.status(self._DEBUG, message, **kwargs)
+    def debug(self, *objects, **kwargs):
+        self._status(Status.DEBUG, *objects, **kwargs)
 
     def clear(self):
         """Clears last line."""
         self.console.file.write(self.CLEAR_LINE)
 
 
-class SlickMessageFormatter(MessageFormatter):
+class SlickMessageFormatter(PrefixMessageFormatter):
     """Status is indicated as a colored pipe at the beginning of every line.
 
     Examples:
-        >>> o = SlickOutput()
+        >>> o = SlickMessageFormatter()
         >>> o.info('Something')
         | Something
     """
-
-    _FORMAT = {
-        "INFO": "[b blue]|[/] {}",
-        "FAILURE": "[b red]|[/] {}",
-        "ERROR": "[b red]|[/] {}",
-        "SUCCESS": "[b green]|[/] {}",
-        "WARNING": "[b yellow]|[/] {}",
-        "DEBUG": "[b magenta]|[/] {}",
+    _PREFIX = {
+        Status.INFO: "[b blue]|[/]",
+        Status.FAILURE: "[b red]|[/]",
+        Status.ERROR: "[b red]|[/]",
+        Status.SUCCESS: "[b green]|[/]",
+        Status.WARNING: "[b yellow]|[/]",
+        Status.DEBUG: "[b magenta]|[/]",
     }
 
 
-class OldschoolMessageFormatter(MessageFormatter):
+class OldschoolMessageFormatter(PrefixMessageFormatter):
     """Status is indicated as `[+]`, `[-]`, `[i]`, etc. at the beginning of
     every line.
 
     Examples:
-        >>> o = OldSchoolOutput()
+        >>> o = OldschoolMessageFormatter()
         >>> o.info('Something')
         [i] Something
         >>> o.success('Something else')
         [+] Something else
     """
 
-    _FORMAT = {
-        "INFO": "[[blue]*[/]] {}",
-        "FAILURE": "[[red]-[/]] {}",
-        "ERROR": "[[red]x[/]] {}",
-        "SUCCESS": "[[green]+[/]] {}",
-        "WARNING": "[[yellow]![/]] {}",
-        "DEBUG": "[[magenta]D[/]] {}",
+    _PREFIX = {
+        Status.INFO: "[[blue]*[/]]",
+        Status.FAILURE: "[[red]-[/]]",
+        Status.ERROR: "[[red]x[/]]",
+        Status.SUCCESS: "[[green]+[/]]",
+        Status.WARNING: "[[yellow]![/]]",
+        Status.DEBUG: "[[magenta]D[/]]",
     }
 
 
-class NewschoolMessageFormatter(MessageFormatter):
+class NewschoolMessageFormatter(PrefixMessageFormatter):
     """Status is be indicated as a colored symbol at the beginning of every
     line. Requires UTF-8.
 
@@ -175,13 +211,13 @@ class NewschoolMessageFormatter(MessageFormatter):
          test
     """
 
-    _FORMAT = {
-        "INFO": "[b blue]·[/] {}",
-        "FAILURE": "[b red]✖[/] {}",
-        "ERROR": "[b red]✖[/] {}",
-        "SUCCESS": "[b green]✔[/] {}",
-        "WARNING": "[b yellow]▲[/] {}",
-        "DEBUG": "[b magenta]⊙[/] {}",
+    _PREFIX = {
+        Status.INFO: "[b blue]·[/]",
+        Status.FAILURE: "[b red]✖[/]",
+        Status.ERROR: "[b red]✖[/]",
+        Status.SUCCESS: "[b green]✔[/]",
+        Status.WARNING: "[b yellow]▲[/]",
+        Status.DEBUG: "[b magenta]⊙[/]",
     }
 
 
@@ -190,13 +226,13 @@ class CircleMessageFormatter(MessageFormatter):
     line. Requires UTF-8.
     """
 
-    _FORMAT = {
-        "INFO": "[b blue]·[/] {}",
-        "FAILURE": "[b red]·[/] {}",
-        "ERROR": "[b red]·[/] {}",
-        "SUCCESS": "[b green]·[/] {}",
-        "WARNING": "[b yellow]·[/] {}",
-        "DEBUG": "[b magenta]·[/] {}",
+    _PREFIX = {
+        Status.INFO: "[b blue]·[/]",
+        Status.FAILURE: "[b red]·[/]",
+        Status.ERROR: "[b red]·[/]",
+        Status.SUCCESS: "[b green]·[/]",
+        Status.WARNING: "[b yellow]·[/]",
+        Status.DEBUG: "[b magenta]·[/]",
     }
 
 
@@ -206,10 +242,19 @@ class BackgroundMessageFormatter(MessageFormatter):
     """
 
     _FORMAT = {
-        "INFO": "[on blue]· {}[/]",
-        "FAILURE": "[on red]✖ {}[/]",
-        "ERROR": "[on red]✖ {}[/]",
-        "SUCCESS": "[on green]✔ {}[/]",
-        "WARNING": "[on yellow]▲ {}[/]",
-        "DEBUG": "[on magenta]⊙ {}[/]",
+        Status.INFO: "·",
+        Status.FAILURE: "✖",
+        Status.ERROR: "✖",
+        Status.SUCCESS: "✔",
+        Status.WARNING: "▲",
+        Status.DEBUG: "⊙",
+    }
+    
+    _STYLES = {
+        Status.INFO: "on blue",
+        Status.FAILURE: "on red",
+        Status.ERROR: "on red",
+        Status.SUCCESS: "on green",
+        Status.WARNING: "on yellow",
+        Status.DEBUG: "on magenta",
     }

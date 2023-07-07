@@ -4,6 +4,7 @@ from tests.ten_testcases import TenTestCase
 import unittest
 import tempfile
 import time
+from rich.text import Text
 import io
 
 from unittest import mock
@@ -652,7 +653,7 @@ class TestFlowMessages(TenTestCase):
             ("success", "[+]"),
             ("info", "[*]"),
             ("failure", "[-]"),
-            ("error", "[-]"),
+            ("error", "[x]"),
             ("warning", "[!]"),
             ("debug", "[D]"),
         ]
@@ -742,6 +743,19 @@ class TestFlowMessageFormatter(TenTestCase):
     def test_get_message_formatter_sets_default(self):
         flow.__dict__["__message_formatter"] = None
         self.assertIsInstance(flow.get_message_formatter(), MessageFormatter)
+        
+    def test_text_object_does_not_get_rendered(self):
+        flow.set_message_formatter("Oldschool")
+        self.assertEqual(
+            self._read_output(flow.msg_success, Text("[b]Markup")), "[+] [b]Markup\n"
+        )
+        
+    def test_print_can_receive_several_positional_arguments(self):
+        flow.set_message_formatter("Oldschool")
+        self.assertEqual(
+            self._read_output(flow.msg_success, "first", "second", 3, "forth"), "[+] first second 3 forth\n"
+        )
+        
 
 
 class TestFlowPrompt(TenTestCase):
