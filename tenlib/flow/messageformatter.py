@@ -19,6 +19,7 @@ __all__ = [
     "BackgroundMessageFormatter",
 ]
 
+
 class MessageFormatter(ABC):
     """Wrapper to display information in a pretty way.
 
@@ -33,7 +34,7 @@ class MessageFormatter(ABC):
     """
 
     CLEAR_LINE = "\r\x1b[K"
-    
+
     def __init__(self, *, console: Console = None):
         """
         Params:
@@ -63,7 +64,7 @@ class MessageFormatter(ABC):
         except TypeError:
             raise TypeError("MessageFormatter.bin_print() expects a byte-like object")
         self.console.file.buffer.flush()
-    
+
     @abstractmethod
     def info(self, *objects, **kwargs) -> None:
         """Displays an information message."""
@@ -101,9 +102,9 @@ class Status(Enum):
     WARNING = 5
     DEBUG = 6
 
+
 class PrefixMessageFormatter(MessageFormatter):
-    """Displays a prefix indicating the status of the message.
-    """
+    """Displays a prefix indicating the status of the message."""
 
     # Prefix to add to the message
     _PREFIX = {
@@ -130,7 +131,9 @@ class PrefixMessageFormatter(MessageFormatter):
         status. For instance, arguments for the success function will be in
         green, and failure in red.
         """
-        return self._output(self._PREFIX[status], *objects, style=self._STYLES[status], **kwargs)
+        return self._output(
+            self._PREFIX[status], *objects, style=self._STYLES[status], **kwargs
+        )
 
     def info(self, *objects, **kwargs):
         self._status(Status.INFO, *objects, **kwargs)
@@ -163,6 +166,7 @@ class SlickMessageFormatter(PrefixMessageFormatter):
         >>> o.info('Something')
         | Something
     """
+
     _PREFIX = {
         Status.INFO: "[b blue]|[/]",
         Status.FAILURE: "[b red]|[/]",
@@ -249,7 +253,7 @@ class BackgroundMessageFormatter(MessageFormatter):
         Status.WARNING: "▲",
         Status.DEBUG: "⊙",
     }
-    
+
     _STYLES = {
         Status.INFO: "on blue",
         Status.FAILURE: "on red",
