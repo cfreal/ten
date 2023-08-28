@@ -413,6 +413,18 @@ div.foot { font: 90% monospace; color: #787878; padding-top: 4px;}
         self.assertIsNotNone(r.form(action="/login"))
         self.assertIsNotNone(r.form(method="POST"))
 
+    def test_form_update_with_kwargs(self):
+        ns = http.Session()
+        r = http.Response(session=ns)
+        r.url = "http://site.com/"
+        r._content = b"""
+        <form action="/login" method="POST"></form>
+        """
+
+        form = r.form(action="/login")
+        form.update(a="3", b="4")
+        self.assertEqual(form.data, {"a": "3", "b": "4"})
+
     def test_first(self):
         ns = http.Session()
         r = http.Response(session=ns)

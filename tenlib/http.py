@@ -785,7 +785,7 @@ class Form:
             f"data={self.data})"
         )
 
-    def update(self, data: dict = None, **kwargs) -> Form:
+    def update(self, data: dict = {}, **kwargs) -> Form:
         """Updates the form's data."""
         self.data.update(data, **kwargs)
         return self
