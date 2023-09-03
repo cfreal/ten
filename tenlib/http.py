@@ -144,7 +144,7 @@ class Session(requests.Session):
         kwargs.setdefault("allow_redirects", self.allow_redirects)
         return super().get(url, **kwargs)
 
-    def post(self, url: str, data=None, json=None, **kwargs):
+    def post(self, url: str, data=None, json=None, **kwargs) -> Response:
         """Sends a POST request. Returns a `Response` object.
 
         Args:
