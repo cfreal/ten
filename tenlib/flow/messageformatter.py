@@ -16,6 +16,7 @@ __all__ = [
     "OldschoolMessageFormatter",
     "SlickMessageFormatter",
     "CircleMessageFormatter",
+    "IconMessageFormatter",
     "BackgroundMessageFormatter",
 ]
 
@@ -206,7 +207,7 @@ class NewschoolMessageFormatter(PrefixMessageFormatter):
     Examples:
         >>> o = NewschoolOutput()
         >>> o.info('Something')
-        » Something
+        · Something
         >>> o.success('Success')
         ✔ Success
         >>> o.failure('Failure')
@@ -223,6 +224,33 @@ class NewschoolMessageFormatter(PrefixMessageFormatter):
         Status.WARNING: "[b yellow]▲[/]",
         Status.DEBUG: "[b magenta]⊙[/]",
     }
+
+
+class IconMessageFormatter(PrefixMessageFormatter):
+    """Status is be indicated as a colored symbol at the beginning of every
+    line. Requires UTF-8.
+
+    Examples:
+        >>> o = NewschoolOutput()
+        >>> o.info('Something')
+         ·  Something
+        >>> o.success('Success')
+         ✔  Success
+        >>> o.failure('Failure')
+         ✖  Failure
+        >>> o.print('test')
+        test
+    """
+
+    _PREFIX = {
+        Status.INFO: "[b blue on black] · [/]",
+        Status.FAILURE: "[b red on black] ✖ [/]",
+        Status.ERROR: "[b red on black] ✖ [/]",
+        Status.SUCCESS: "[b green on black] ✔ [/]",
+        Status.WARNING: "[b yellow on black] ▲ [/]",
+        Status.DEBUG: "[b magenta on black] ⊙ [/]",
+    }
+
 
 
 class CircleMessageFormatter(MessageFormatter):
