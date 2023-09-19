@@ -303,7 +303,7 @@ class TestFlowPrototype(TenTestCase):
 
         self.assertEqual(args, [])
         self.assertEqual(kwargs, {"param1": "1", "param2": "2", "param3": "3"})
-        
+
     @unittest.mock.patch("sys.stderr")
     def test_shortcut_letter_taken_already_by_help(self, stderr):
         def main(*, host):
@@ -316,7 +316,7 @@ class TestFlowPrototype(TenTestCase):
 
         self.assertEqual(args, [])
         self.assertEqual(kwargs, {"host": "hostname"})
-        
+
     @unittest.mock.patch("sys.stderr")
     def test_cannot_have_a_help_parameter(self, stderr):
         def main(*, help):
@@ -324,9 +324,10 @@ class TestFlowPrototype(TenTestCase):
 
         with self.assertRaises(argparse.ArgumentError) as cm:
             args, kwargs = self._get_args(main)
-        
 
-        self.assertEqual(str(cm.exception), "Cannot use 'help' as an entry parameter name")
+        self.assertEqual(
+            str(cm.exception), "Cannot use 'help' as an entry parameter name"
+        )
 
     def test_prototype_star_args_free(self):
         def main(a, *args):

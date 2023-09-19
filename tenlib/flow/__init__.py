@@ -428,7 +428,9 @@ def _prototype_to_args(function) -> tuple[list, dict]:
             # Help is already handled by argparse, so we cannot use it...
             # raise an exception
             if longcut == "--help":
-                raise argparse.ArgumentError(None, "Cannot use 'help' as an entry parameter name")
+                raise argparse.ArgumentError(
+                    None, "Cannot use 'help' as an entry parameter name"
+                )
             # If the shortcut is already used, map only the longcut
             elif shortcut in shortcuts:
                 arg_names = (longcut,)

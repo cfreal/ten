@@ -252,7 +252,6 @@ class IconMessageFormatter(PrefixMessageFormatter):
     }
 
 
-
 class CircleMessageFormatter(MessageFormatter):
     """Status is be indicated as a colored circle at the beginning of every
     line. Requires UTF-8.
