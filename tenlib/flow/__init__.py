@@ -332,7 +332,8 @@ def _prototype_to_args(function) -> tuple[list, dict]:
         description=_doc_to_description(function),
         formatter_class=__ARGPARSE_FORMATTER,
     )
-    shortcuts = set()
+    # -h is already used by --help, so skip it
+    shortcuts = {"-h"}
 
     function_arguments = []
     star_argument = None
@@ -424,10 +425,14 @@ def _prototype_to_args(function) -> tuple[list, dict]:
                 shortcut = "-" + k[0].upper()
 
             longcut = "--" + k.replace("_", "-")
+            # Help is already handled by argparse, so we cannot use it...
+            # raise an exception
+            if longcut == "--help":
+                raise argparse.ArgumentError(None, "Cannot use 'help' as an entry parameter name")
             # If the shortcut is already used, map only the longcut
-            if shortcut in shortcuts:
+            elif shortcut in shortcuts:
                 arg_names = (longcut,)
-            # If the parameter is only one letter long, map it as a shortcut
+            # If the parameter is only one letter long, map it only as a shortcut
             elif len(k) == 1:
                 arg_names = (shortcut,)
             # Otherwise, map both
