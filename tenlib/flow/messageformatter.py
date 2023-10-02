@@ -14,6 +14,7 @@ __all__ = [
     "MessageFormatter",
     "NewschoolMessageFormatter",
     "OldschoolMessageFormatter",
+    "OtherOldschoolMessageFormatter",
     "SlickMessageFormatter",
     "CircleMessageFormatter",
     "IconMessageFormatter",
@@ -179,13 +180,13 @@ class SlickMessageFormatter(PrefixMessageFormatter):
 
 
 class OldschoolMessageFormatter(PrefixMessageFormatter):
-    """Status is indicated as `[+]`, `[-]`, `[i]`, etc. at the beginning of
-    every line.
+    """Status is indicated as `[+]`, `[-]`, `[*]`, etc. at the beginning of
+    every line, with the icon colored.
 
     Examples:
-        >>> o = OldschoolMessageFormatter()
+        >>> o = OtherOldschoolMessageFormatter()
         >>> o.info('Something')
-        [i] Something
+        [*] Something
         >>> o.success('Something else')
         [+] Something else
     """
@@ -199,6 +200,27 @@ class OldschoolMessageFormatter(PrefixMessageFormatter):
         Status.DEBUG: "[[magenta]D[/]]",
     }
 
+
+class OtherOldschoolMessageFormatter(PrefixMessageFormatter):
+    """Status is indicated as `[+]`, `[-]`, `[*]`, etc. at the beginning of
+    every line, colored and bold.
+
+    Examples:
+        >>> o = OldschoolMessageFormatter()
+        >>> o.info('Something')
+        [i] Something
+        >>> o.success('Something else')
+        [+] Something else
+    """
+
+    _PREFIX = {
+        Status.INFO: "[b blue]\[*][/]",
+        Status.FAILURE: "[b red]\[-][/]",
+        Status.ERROR: "[b red]\[x][/]",
+        Status.SUCCESS: "[b green]\[+][/]",
+        Status.WARNING: "[b yellow]\[!][/]",
+        Status.DEBUG: "[b magenta]\[D][/]",
+    }
 
 class NewschoolMessageFormatter(PrefixMessageFormatter):
     """Status is be indicated as a colored symbol at the beginning of every

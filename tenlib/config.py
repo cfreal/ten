@@ -13,7 +13,7 @@ __all__ = [
 
 class Configuration:
     burp_proxy: str = "http://localhost:8080"
-    message_formatter: str = "OldschoolMessageFormatter"
+    message_formatter: str = "OtherOldschoolMessageFormatter"
     log_file: str = os.path.expanduser("~/ten.log")
 
     def __setattribute__(self):

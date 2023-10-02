@@ -715,6 +715,12 @@ class TestFlowMessageFormatter(TenTestCase):
             self._read_output(flow.msg_success, "Success"), "[+] Success\n"
         )
 
+    def test_set_formatter_with_string_with_formatter_suffix(self):
+        flow.set_message_formatter("OtherOldschoolMessageFormatter")
+        self.assertEqual(
+            self._read_output(flow.msg_success, "Success"), "[+] Success\n"
+        )
+
     def test_set_formatter_with_class(self):
         flow.set_message_formatter(flow.messageformatter.OldschoolMessageFormatter)
         self.assertEqual(

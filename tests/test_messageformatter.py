@@ -92,6 +92,13 @@ class TestMessageFormatter(TenTestCase):
             "[\x1b[32m+\x1b[0m] OUTput\n[\x1b[34m*\x1b[0m] OUTput\n[\x1b[31m-\x1b[0m] OUTput\n[\x1b[31mx\x1b[0m] OUTput\n[\x1b[33m!\x1b[0m] OUTput\n[\x1b[35mD\x1b[0m] OUTput\nOUTput\n",
         )
 
+    def test_otheroldschooloutput_status(self):
+        data = self._test_all_status_for_cls(OtherOldschoolMessageFormatter)
+        self.assertEqual(
+            data,
+            "\x1b[1;32m[+]\x1b[0m OUTput\n\x1b[1;34m[*]\x1b[0m OUTput\n\x1b[1;31m[-]\x1b[0m OUTput\n\x1b[1;31m[x]\x1b[0m OUTput\n\x1b[1;33m[!]\x1b[0m OUTput\n\x1b[1;35m[D]\x1b[0m OUTput\nOUTput\n",
+        )
+
     def test_iconoutput_status(self):
         data = self._test_all_status_for_cls(IconMessageFormatter)
         self.assertEqual(
