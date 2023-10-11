@@ -311,7 +311,7 @@ def _doc_to_description(function):
     return doc
 
 
-def _prototype_to_args(function) -> tuple[list, dict]:
+def _prototype_to_args(function: type | Callable) -> tuple[list, dict]:
     """Creates an argument parser from a function prototype. If a parameter has
     a default value of type _int, bool, float or bytes_, or a `list` of those,
     the value sent from the command line arguments is converted into said type.
@@ -326,7 +326,9 @@ def _prototype_to_args(function) -> tuple[list, dict]:
     _PROTO_RAW_TYPES = (int, bool, float, bytes, str, Path, ScopedSession)
 
     s = inspect.signature(function)
-    type_hints = get_type_hints(function)
+    # If the function is actually a class, we want the hints from the constructor
+    underlying_function = function.__init__ if isinstance(function, type) else function
+    type_hints = get_type_hints(underlying_function)
 
     parser = argparse.ArgumentParser(
         description=_doc_to_description(function),
