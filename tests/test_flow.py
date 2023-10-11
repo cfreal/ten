@@ -387,7 +387,6 @@ class TestFlowPrototype(TenTestCase):
         self.assertEqual(str(cm.exception), "Unsupported type X for parameter a")
 
     def test_path_is_valid_type(self):
-        @flow.entry
         def main(a: fs.Path):
             self.assertIsInstance(a, fs.Path)
             self.assertEqual(str(a), "/etc/passwd")
@@ -397,7 +396,6 @@ class TestFlowPrototype(TenTestCase):
         self.assertEqual(str(args[0]), "/etc/passwd")
 
     def test_string_annotation_is_properly_resolved(self):
-        @flow.entry
         def main(a: "int"):
             ...
 
@@ -405,7 +403,6 @@ class TestFlowPrototype(TenTestCase):
         self.assertEqual(args[0], 1)
 
     def test_string_annotation_list_is_properly_resolved(self):
-        @flow.entry
         def main(a: "list[int]"):
             ...
 
@@ -413,7 +410,6 @@ class TestFlowPrototype(TenTestCase):
         self.assertEqual(kwargs["a"], [1, 2])
 
     def test_string_annotation_is_not_used_as_string(self):
-        @flow.entry
         def main(a: "str", b: "int"):
             ...
 
