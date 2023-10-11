@@ -260,9 +260,9 @@ def entry(entrypoint: Callable | Type) -> Callable[[], None]:
 
         def run_main(*args, **kwargs):
             return entrypoint(*args, **kwargs)
-
+    
     @functools.wraps(entrypoint)
-    def cli_main():
+    def cli_main():        
         args, kwargs = _prototype_to_args(entrypoint)
         logger = logging.logger(entrypoint.__module__)
         console = get_console()
@@ -324,10 +324,9 @@ def _prototype_to_args(function: type | Callable) -> tuple[list, dict]:
     from tenlib.http import ScopedSession
 
     _PROTO_RAW_TYPES = (int, bool, float, bytes, str, Path, ScopedSession)
-
     s = inspect.signature(function)
     # If the function is actually a class, we want the hints from the constructor
-    underlying_function = function.__init__ if isinstance(function, type) else function
+    underlying_function = function.__init__ if inspect.isclass(function) else function
     type_hints = get_type_hints(underlying_function)
 
     parser = argparse.ArgumentParser(
