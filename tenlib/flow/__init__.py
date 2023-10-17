@@ -260,9 +260,9 @@ def entry(entrypoint: Callable | Type) -> Callable[[], None]:
 
         def run_main(*args, **kwargs):
             return entrypoint(*args, **kwargs)
-    
+
     @functools.wraps(entrypoint)
-    def cli_main():        
+    def cli_main():
         args, kwargs = _prototype_to_args(entrypoint)
         logger = logging.logger(entrypoint.__module__)
         console = get_console()

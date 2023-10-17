@@ -222,6 +222,7 @@ class OtherOldschoolMessageFormatter(PrefixMessageFormatter):
         Status.DEBUG: "[b magenta]\[D][/]",
     }
 
+
 class NewschoolMessageFormatter(PrefixMessageFormatter):
     """Status is be indicated as a colored symbol at the beginning of every
     line. Requires UTF-8.

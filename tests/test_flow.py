@@ -417,21 +417,19 @@ class TestFlowPrototype(TenTestCase):
             self._get_args(main, "abc", "123")
         except:
             self.fail("Got an exception with a 'str' type")
-            
+
     def test_entry_with_class_takes_hints_from_init(self):
         class Exploit:
             abc: str
-            
-            def __init__(self, abc: int=3):
+
+            def __init__(self, abc: int = 3):
                 pass
-            
+
             def run(self):
                 pass
 
         args, kwargs = self._get_args(Exploit, "-a", "1")
         self.assertEqual(kwargs["abc"], 1)
-            
-        
 
 
 class TestFlowArg(TenTestCase):
