@@ -18,6 +18,9 @@ def decode(data: str):
     """Wrapper for `urllib.parse.unquote_plus`."""
     return urllib.parse.unquote_plus(data)
 
+def decode_bytes(data: str) -> bytes:
+    """Wrapper for `urllib.parse.unquote_to_bytes`."""
+    return urllib.parse.unquote_to_bytes(data)
 
 # IIS Specific: %u00XX
 
