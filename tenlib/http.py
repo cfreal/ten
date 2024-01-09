@@ -106,7 +106,7 @@ class Session(requests.Session):
     timeout: int | tuple[int, int] = None
     """A global timeout for request and responses. Defaults to no timeout.
     """
-    verify: bool = False
+    verify: bool
     """Verify the SSL certificate of the server. Defaults to False."""
     allow_redirects: bool = False
     """Automatically follow HTTP redirects. Defaults to False."""
@@ -129,7 +129,7 @@ class Session(requests.Session):
         self._raw_requote_uri = lambda url: url
         self.hooks = {"response": self._response_hook}
         self.max_connections = max_connections
-        self.verify = verify
+        self.verify = False
         self._build_adapters()
 
     def _build_adapters(self):
