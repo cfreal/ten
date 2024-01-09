@@ -32,7 +32,7 @@ def main(*transforms, python=False, keep_newline=False):
         instance = getattr(tf, module, None)
 
         if not instance:
-            return msg_error("Unknown module [red]{module}")
+            return msg_error(f"Unknown module [red]{module}")
 
         instance = getattr(instance, func, None)
 
