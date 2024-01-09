@@ -41,6 +41,10 @@ class TestHTTPSession(TenTestCase):
         self.ss = http.ScopedSession(self.base)
         super().setUp()
 
+    def test_verify_set_to_false_by_default(self):
+        self.assertFalse(self.ns.verify)
+        self.assertFalse(self.ss.verify)
+
     def test_remove_trailing_slash(self):
         url = self.base + "/"
         self.assertEqual(http.ScopedSession(url).base_url, self.base)
