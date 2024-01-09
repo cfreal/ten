@@ -129,6 +129,7 @@ class Session(requests.Session):
         self._raw_requote_uri = lambda url: url
         self.hooks = {"response": self._response_hook}
         self.max_connections = max_connections
+        self.verify = verify
         self._build_adapters()
 
     def _build_adapters(self):
