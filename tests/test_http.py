@@ -402,6 +402,28 @@ div.foot { font: 90% monospace; color: #787878; padding-top: 4px;}
                 b"  HTTP/1.1\r\nHost: \r\n\r\n\r\nHTTP/? OK \r\na: b\r\nc: d\r\n\r\nsome content",
             )
 
+    def test_from_response(self):
+        r = requests.Response()
+        ns = FakeSession()
+        r._content = b"test"
+        r2 = http.Response._from_response(ns, r)
+        self.assertIsInstance(r2, http.Response)
+        self.assertGreaterEqual(r2.__dict__.items(), r.__dict__.items())
+
+    def test_response_hook(self):
+        ns = http.Session()
+        r = requests.Response()
+        r._content = b"test"
+        r.encoding = None
+        r2 = ns._response_hook(r)
+        self.assertIsInstance(r2, http.Response)
+        self.assertEqual(r2.encoding, "utf-8")
+        # Make the test ignore "utf-8"
+        r.encoding = "utf-8"
+        self.assertGreaterEqual(r2.__dict__.items(), r.__dict__.items())
+
+
+class TestForm(TenTestCase):
     def test_form(self):
         ns = http.Session()
         r = http.Response(session=ns)
@@ -416,6 +438,16 @@ div.foot { font: 90% monospace; color: #787878; padding-top: 4px;}
 
         self.assertIsNotNone(r.form(action="/login"))
         self.assertIsNotNone(r.form(method="POST"))
+
+    def test_form_with_empty_textarea_gives_empty_values(self):
+        ns = http.Session()
+        r = http.Response(session=ns)
+        r.url = "http://site.com/"
+        r._content = b"""
+        <form action="/login" method="POST"><textarea name="test1"></textarea><textarea name="test2"/></form>
+        """
+        form = r.form(action="/login")
+        self.assertEqual(form.data, {"test1": "", "test2": ""})
 
     def test_form_update_with_kwargs(self):
         ns = http.Session()
@@ -543,6 +575,30 @@ div.foot { font: 90% monospace; color: #787878; padding-top: 4px;}
         form = r.form(method="POST")
         self.assertEqual(form.action, "http://site.com/sub/login")
 
+    def test_form_with_input_with_no_name_works(self):
+        ns = http.Session()
+        r = http.Response(session=ns)
+        r.url = "http://site.com/sub/dir"
+        r._content = b"""
+        <form action="login" method="POST">
+        <input value="test"/>
+        </form>
+        """
+        form = r.form(method="POST")
+        self.assertEqual(form.data, {"": "test"})
+
+    def test_form_with_textarea_with_no_name_works(self):
+        ns = http.Session()
+        r = http.Response(session=ns)
+        r.url = "http://site.com/sub/dir"
+        r._content = b"""
+        <form action="login" method="POST">
+        <textarea>test</textarea>
+        </form>
+        """
+        form = r.form(method="POST")
+        self.assertEqual(form.data, {"": "test"})
+
     def test_form_submit(self):
         ns = FakeSession()
         r = http.Response(session=ns)
@@ -636,26 +692,6 @@ div.foot { font: 90% monospace; color: #787878; padding-top: 4px;}
         self.assertEqual(method, "POST")
         self.assertEqual(url, "http://site.com/login")
         self.assertEqual(kwargs["data"], {"test": "hello"})
-
-    def test_from_response(self):
-        r = requests.Response()
-        ns = FakeSession()
-        r._content = b"test"
-        r2 = http.Response._from_response(ns, r)
-        self.assertIsInstance(r2, http.Response)
-        self.assertGreaterEqual(r2.__dict__.items(), r.__dict__.items())
-
-    def test_response_hook(self):
-        ns = http.Session()
-        r = requests.Response()
-        r._content = b"test"
-        r.encoding = None
-        r2 = ns._response_hook(r)
-        self.assertIsInstance(r2, http.Response)
-        self.assertEqual(r2.encoding, "utf-8")
-        # Make the test ignore "utf-8"
-        r.encoding = "utf-8"
-        self.assertGreaterEqual(r2.__dict__.items(), r.__dict__.items())
 
 
 class FakeResponse:

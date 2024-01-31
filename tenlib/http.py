@@ -622,22 +622,18 @@ class Response(requests.Response, struct.Storable):
         method = form.attrs.get("method", "GET")
         data = {}
 
-        # TODO If inputs are malformed (for instance, no "name" attribute) it'll
-        # crash
         inputs = form.select("input")
         data.update(
             {
-                input.attrs["name"]: input.attrs.get("value", "")
+                input.attrs.get("name", ""): input.attrs.get("value", "")
                 for input in inputs
-                if "name" in input.attrs
             }
         )
         inputs = form.select("textarea")
         data.update(
             {
-                input.attrs["name"]: input.contents[0]
+                input.attrs.get("name", ""): input.contents[0] if input.contents else ""
                 for input in inputs
-                if "name" in input.attrs
             }
         )
 
