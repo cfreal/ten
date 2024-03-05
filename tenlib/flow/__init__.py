@@ -46,6 +46,7 @@ from typing import (
     Type,
     Optional,
     Iterable,
+    NoReturn,
     Any,
     Union,
     get_args,
@@ -600,7 +601,7 @@ def msg_status(
     )
 
 
-def leave(message=None, *args, **kwargs) -> None:
+def leave(message=None, *args, **kwargs) -> NoReturn:
     """Displays a message if given, and exits.
 
     Raises:
@@ -609,7 +610,7 @@ def leave(message=None, *args, **kwargs) -> None:
     raise TenExit(message, *args, **kwargs)
 
 
-def failure(message: str = None) -> None:
+def failure(message: str = None) -> NoReturn:
     """Displays a failure message if given, and exits.
 
     Raises:
@@ -618,7 +619,7 @@ def failure(message: str = None) -> None:
     raise TenFailure(message)
 
 
-def error(message: str = None) -> None:
+def error(message: str = None) -> NoReturn:
     """Displays an error message if given, displays the stack trace, and exits.
 
     Raises:
