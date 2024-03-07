@@ -813,7 +813,7 @@ def track(
     sequence: Iterable,
     description: str = "Working...",
     total: Optional[float] = None,
-    transient: bool = False,
+    transient: bool = True,
 ) -> Iterable:
     """Track progress when iterating over a sequence. This is a wrapper for
     [rich's `track`](https://rich.readthedocs.io/en/stable/reference/progress.html#rich.progress.Progress.track).
@@ -830,7 +830,7 @@ def track(
         sequence (Iterable): A sequence (must support `len()`) you wish to iterate over.
         description (str, optional): Description of task show next to progress bar. Defaults to "Working".
         total (float, optional): Total number of steps. Default is len(sequence).
-        transient (bool, optional): Clear the progress on exit. Defaults to False.
+        transient (bool, optional): Clear the progress on exit. Defaults to True.
 
     Returns:
         Iterable: An iterable of the values in the sequence.
