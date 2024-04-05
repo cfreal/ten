@@ -394,7 +394,7 @@ user1,user1@user.net,user1passwd
         self.assertEqual(len(s), 100)
         self.assertFalse(set(s) - set(string.ascii_letters + string.digits))
 
-        s = R.alpha(size=101)
+        s = R.alphanumeric(size=101)
         self.assertEqual(len(s), 101)
         self.assertFalse(set(s) - set(string.ascii_letters))
 

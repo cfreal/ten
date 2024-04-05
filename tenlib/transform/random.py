@@ -22,7 +22,7 @@ def string(size: int = 8, charset: str = _string.ascii_letters + _string.digits)
     return "".join(random.choice(charset) for _ in range(size))
 
 
-def alpha(size: int = 8) -> str:
+def alphanumeric(size: int = 8) -> str:
     """Generates a random alphanumeric string.
 
     Example:
