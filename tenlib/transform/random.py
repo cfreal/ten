@@ -21,6 +21,7 @@ def string(size: int = 8, charset: str = _string.ascii_letters + _string.digits)
     """
     return "".join(random.choice(charset) for _ in range(size))
 
+
 def alpha(size: int = 8) -> str:
     """Generates a random string of lowercase and uppercase letters.
 
@@ -36,6 +37,7 @@ def alpha(size: int = 8) -> str:
         str: Random string of lowercase and uppercase letters
     """
     return string(size, charset=_string.ascii_letters)
+
 
 def alphanumeric(size: int = 8) -> str:
     """Generates a random alphanumeric string.

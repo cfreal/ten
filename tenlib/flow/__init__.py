@@ -491,6 +491,7 @@ def _str_to_bool(value) -> bool:
         return False
     raise ValueError(f"Invalid argument for type bool: {value!r}")
 
+
 def arg(name: str, description: str):
     """Provides documentation for the parameter `name` of the `entry` function.
     The documentation is visible when the program is run with the `--help` flag.
