@@ -1,8 +1,8 @@
 [tool.poetry]
 name = "ten"
-version = "0.1.0"
+version = "0.1.1"
 description = "A (small) web exploit framework"
-authors = ["Charles Fol <folcharles@gmail.com>"]
+authors = ["Charles \"cfreal\" Fol <folcharles@gmail.com>"]
 readme = "README.md"
 packages = [
     { include = "ten" },
