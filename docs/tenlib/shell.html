@@ -6,7 +6,7 @@
 <meta name="generator" content="pdoc 0.10.0" />
 <title>tenlib.shell API documentation</title>
 <meta name="description" content="This module allows you to run commands. The functions are simple wrappers for
-`subprocess.Popen`." />
+`subprocess.Popen` …" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -25,70 +25,135 @@
 <section id="section-intro">
 <p>This module allows you to run commands. The functions are simple wrappers for
 <code>subprocess.Popen</code>.</p>
+<p>If you want to obtain the output of a command, use <code><a title="tenlib.shell.output" href="#tenlib.shell.output">output()</a></code>:</p>
+<pre><code>&gt;&gt;&gt; stdout, stderr = shell.output(&quot;ls -alh&quot;)
+</code></pre>
+<p>If you're not interested in the output and just want to run a command, use <code><a title="tenlib.shell.call" href="#tenlib.shell.call">call()</a></code>:</p>
+<pre><code>&gt;&gt;&gt; process = shell.call(&quot;sleep 3&quot;)
+</code></pre>
+<p>Finally, to get a <code><a title="tenlib.shell.Popen" href="#tenlib.shell.Popen">Popen</a></code> object and have the process run in the background, use
+<code><a title="tenlib.shell.process" href="#tenlib.shell.process">process()</a></code>:</p>
+<pre><code>&gt;&gt;&gt; process = shell.process(&quot;/bin/process&quot;)
+&gt;&gt;&gt; process.stdin.write(b&quot;hi\n&quot;)
+&gt;&gt;&gt; process.stdout.read()
+b&quot;hello!\n&quot;
+&gt;&gt;&gt; process.stdin.close()
+&gt;&gt;&gt; process.wait()
+</code></pre>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">&#34;&#34;&#34;This module allows you to run commands. The functions are simple wrappers for 
 `subprocess.Popen`.
+
+
+If you want to obtain the output of a command, use `output`:
+
+```
+&gt;&gt;&gt; stdout, stderr = shell.output(&#34;ls -alh&#34;)
+```
+
+If you&#39;re not interested in the output and just want to run a command, use `call`:
+
+```
+&gt;&gt;&gt; process = shell.call(&#34;sleep 3&#34;)
+```
+
+Finally, to get a `Popen` object and have the process run in the background, use
+`process`:
+
+```
+&gt;&gt;&gt; process = shell.process(&#34;/bin/process&#34;)
+&gt;&gt;&gt; process.stdin.write(b&#34;hi\\n&#34;)
+&gt;&gt;&gt; process.stdout.read()
+b&#34;hello!\\n&#34;
+&gt;&gt;&gt; process.stdin.close()
+&gt;&gt;&gt; process.wait()
+```
+
 &#34;&#34;&#34;
 
-from subprocess import PIPE, STDOUT, Popen
+from subprocess import PIPE, STDOUT, Popen, TimeoutExpired
 
-__all__ = [&#34;background&#34;, &#34;call&#34;, &#34;get_output&#34;, &#34;PIPE&#34;, &#34;STDOUT&#34;, &#34;Popen&#34;]
-
-
-def _cmd_as_argv(cmd: list[str] | str) -&gt; list[str]:
-    if isinstance(cmd, str):
-        return [&#34;/bin/sh&#34;, &#34;-c&#34;, cmd]
-    return cmd
+__all__ = [&#34;process&#34;, &#34;call&#34;, &#34;output&#34;, &#34;PIPE&#34;, &#34;STDOUT&#34;, &#34;Popen&#34;]
 
 
-def background(cmd: str | list[str], **kwargs) -&gt; Popen:
-    &#34;&#34;&#34;Runs process in the background.&#34;&#34;&#34;
-    return Popen(_cmd_as_argv(cmd), **kwargs)
+def _is_shell(cmd: list[str] | str) -&gt; bool:
+    return isinstance(cmd, str)
 
 
-def call(cmd: str | list[str], **kwargs) -&gt; Popen:
-    &#34;&#34;&#34;Runs process to completion. Stores the output (stdout, stderr).
+def _pipe_maybe(kwargs) -&gt; None:
+    for key in [&#34;stdin&#34;, &#34;stdout&#34;, &#34;stderr&#34;]:
+        kwargs.setdefault(key, PIPE)
+
+
+def process(command: str | list[str], **kwargs) -&gt; Popen:
+    &#34;&#34;&#34;Runs process in the background.
+
+    Args:
+        command: Command to execute
+        kwargs: extra arguments for `subprocess.Popen`
+    &#34;&#34;&#34;
+    _pipe_maybe(kwargs)
+    return Popen(command, shell=_is_shell(command), **kwargs)
+
+
+def _execute_process(
+    command: str | list[str], timeout: int, **kwargs
+) -&gt; tuple[Popen, str | bytes, str | bytes]:
+    &#34;&#34;&#34;Creates a process and waits for it to finish, or a timeout to occur.
+    &#34;&#34;&#34;
+    p = process(command, **kwargs)
+    try:
+        stdout, stderr = p.communicate(timeout=timeout)
+    except TimeoutExpired:
+        process.kill()
+        raise
+
+    return p, stdout, stderr
+
+
+def call(command: str | list[str], timeout: int = None, **kwargs) -&gt; Popen:
+    &#34;&#34;&#34;Runs process to completion. The output (stdout and stderr) is discarded.
+
+    Args:
+        command: Command to execute
+        timeout: If the process does not terminate after timeout seconds, raises a
+            `TimeoutExpired` exception.
+        kwargs: extra arguments for `subprocess.Popen`
 
     &gt;&gt;&gt; p = shell.call(&#34;ls -alh&#34;)
     &gt;&gt;&gt; stdout = p.stdout.read()
     &#34;&#34;&#34;
-    kwargs[&#34;stdout&#34;] = PIPE
-    kwargs[&#34;stderr&#34;] = PIPE
-    process = Popen(_cmd_as_argv(cmd), **kwargs)
-    process.wait()
+    process, _, _ = _execute_process(command, **kwargs, timeout=timeout)
     return process
 
 
-def get_output(
-    cmd: str | list[str], text: bool = True, **kwargs
+def output(
+    command: str | list[str], text: bool = True, timeout: int = None, **kwargs
 ) -&gt; tuple[str | bytes, str | bytes]:
     &#34;&#34;&#34;Returns the output of the process.
 
     Args:
-        cmd: Command to execute
+        command: Command to execute
         text: If True (default), return result as `str`. Otherwise, `bytes`.
+        timeout: If the process does not terminate after timeout seconds, raises a
+            `TimeoutExpired` exception.
         kwargs: extra arguments for `subprocess.Popen`
 
     Returns:
         tuple[str | bytes, str | bytes]: stdout and stderr, as str or bytes.
     &#34;&#34;&#34;
-    kwargs[&#34;text&#34;] = text
-    process = call(cmd, **kwargs)
-    stdout = process.stdout.read()
-    stderr = process.stderr.read()
-    process.stdout.close()
-    process.stderr.close()
+    _, stdout, stderr = _execute_process(command, **kwargs, timeout=timeout, text=text)
     return stdout, stderr
 
 
 def escape(cmd: str) -&gt; str:
-    &#34;&#34;&#34;Escapes an argument for a shell command.
-    
+    &#34;&#34;&#34;Escapes an argument for a shell command. This is only compatible with linux.
+
     Example:
-    
+
         &gt;&gt;&gt; shell.escape(&#34;abc&#39;def&#34;)
         &#34;&#39;abc&#39;\&#39;&#39;def&#39;&#34;
     &#34;&#34;&#34;
@@ -102,25 +167,48 @@ def escape(cmd: str) -&gt; str:
 <section>
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
-<dt id="tenlib.shell.background"><code class="name flex">
-<span>def <span class="ident">background</span></span>(<span>cmd: str | list[str], **kwargs) ‑> subprocess.Popen</span>
+<dt id="tenlib.shell.process"><code class="name flex">
+<span>def <span class="ident">process</span></span>(<span>command: str | list[str], **kwargs) ‑> subprocess.Popen</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Runs process in the background.</p></div>
+<div class="desc"><p>Runs process in the background.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>command</code></strong></dt>
+<dd>Command to execute</dd>
+<dt><strong><code>kwargs</code></strong></dt>
+<dd>extra arguments for <code>subprocess.Popen</code></dd>
+</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def background(cmd: str | list[str], **kwargs) -&gt; Popen:
-    &#34;&#34;&#34;Runs process in the background.&#34;&#34;&#34;
-    return Popen(_cmd_as_argv(cmd), **kwargs)</code></pre>
+<pre><code class="python">def process(command: str | list[str], **kwargs) -&gt; Popen:
+    &#34;&#34;&#34;Runs process in the background.
+
+    Args:
+        command: Command to execute
+        kwargs: extra arguments for `subprocess.Popen`
+    &#34;&#34;&#34;
+    _pipe_maybe(kwargs)
+    return Popen(command, shell=_is_shell(command), **kwargs)</code></pre>
 </details>
 </dd>
 <dt id="tenlib.shell.call"><code class="name flex">
-<span>def <span class="ident">call</span></span>(<span>cmd: str | list[str], **kwargs) ‑> subprocess.Popen</span>
+<span>def <span class="ident">call</span></span>(<span>command: str | list[str], timeout: int = None, **kwargs) ‑> subprocess.Popen</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Runs process to completion. Stores the output (stdout, stderr).</p>
+<div class="desc"><p>Runs process to completion. The output (stdout and stderr) is discarded.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>command</code></strong></dt>
+<dd>Command to execute</dd>
+<dt><strong><code>timeout</code></strong></dt>
+<dd>If the process does not terminate after timeout seconds, raises a
+<code>TimeoutExpired</code> exception.</dd>
+<dt><strong><code>kwargs</code></strong></dt>
+<dd>extra arguments for <code>subprocess.Popen</code></dd>
+</dl>
 <pre><code class="language-python-repl">&gt;&gt;&gt; p = shell.call(&quot;ls -alh&quot;)
 &gt;&gt;&gt; stdout = p.stdout.read()
 </code></pre></div>
@@ -128,30 +216,36 @@ def escape(cmd: str) -&gt; str:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def call(cmd: str | list[str], **kwargs) -&gt; Popen:
-    &#34;&#34;&#34;Runs process to completion. Stores the output (stdout, stderr).
+<pre><code class="python">def call(command: str | list[str], timeout: int = None, **kwargs) -&gt; Popen:
+    &#34;&#34;&#34;Runs process to completion. The output (stdout and stderr) is discarded.
+
+    Args:
+        command: Command to execute
+        timeout: If the process does not terminate after timeout seconds, raises a
+            `TimeoutExpired` exception.
+        kwargs: extra arguments for `subprocess.Popen`
 
     &gt;&gt;&gt; p = shell.call(&#34;ls -alh&#34;)
     &gt;&gt;&gt; stdout = p.stdout.read()
     &#34;&#34;&#34;
-    kwargs[&#34;stdout&#34;] = PIPE
-    kwargs[&#34;stderr&#34;] = PIPE
-    process = Popen(_cmd_as_argv(cmd), **kwargs)
-    process.wait()
+    process, _, _ = _execute_process(command, **kwargs, timeout=timeout)
     return process</code></pre>
 </details>
 </dd>
-<dt id="tenlib.shell.get_output"><code class="name flex">
-<span>def <span class="ident">get_output</span></span>(<span>cmd: str | list[str], text: bool = True, **kwargs) ‑> tuple[str | bytes, str | bytes]</span>
+<dt id="tenlib.shell.output"><code class="name flex">
+<span>def <span class="ident">output</span></span>(<span>command: str | list[str], text: bool = True, timeout: int = None, **kwargs) ‑> tuple[str | bytes, str | bytes]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Returns the output of the process.</p>
 <h2 id="args">Args</h2>
 <dl>
-<dt><strong><code>cmd</code></strong></dt>
+<dt><strong><code>command</code></strong></dt>
 <dd>Command to execute</dd>
 <dt><strong><code>text</code></strong></dt>
 <dd>If True (default), return result as <code>str</code>. Otherwise, <code>bytes</code>.</dd>
+<dt><strong><code>timeout</code></strong></dt>
+<dd>If the process does not terminate after timeout seconds, raises a
+<code>TimeoutExpired</code> exception.</dd>
 <dt><strong><code>kwargs</code></strong></dt>
 <dd>extra arguments for <code>subprocess.Popen</code></dd>
 </dl>
@@ -161,25 +255,22 @@ def escape(cmd: str) -&gt; str:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_output(
-    cmd: str | list[str], text: bool = True, **kwargs
+<pre><code class="python">def output(
+    command: str | list[str], text: bool = True, timeout: int = None, **kwargs
 ) -&gt; tuple[str | bytes, str | bytes]:
     &#34;&#34;&#34;Returns the output of the process.
 
     Args:
-        cmd: Command to execute
+        command: Command to execute
         text: If True (default), return result as `str`. Otherwise, `bytes`.
+        timeout: If the process does not terminate after timeout seconds, raises a
+            `TimeoutExpired` exception.
         kwargs: extra arguments for `subprocess.Popen`
 
     Returns:
         tuple[str | bytes, str | bytes]: stdout and stderr, as str or bytes.
     &#34;&#34;&#34;
-    kwargs[&#34;text&#34;] = text
-    process = call(cmd, **kwargs)
-    stdout = process.stdout.read()
-    stderr = process.stderr.read()
-    process.stdout.close()
-    process.stderr.close()
+    _, stdout, stderr = _execute_process(command, **kwargs, timeout=timeout, text=text)
     return stdout, stderr</code></pre>
 </details>
 </dd>
@@ -956,7 +1047,23 @@ Create new Popen instance.</p></div>
             if shell:
                 startupinfo.dwFlags |= _winapi.STARTF_USESHOWWINDOW
                 startupinfo.wShowWindow = _winapi.SW_HIDE
-                comspec = os.environ.get(&#34;COMSPEC&#34;, &#34;cmd.exe&#34;)
+                if not executable:
+                    # gh-101283: without a fully-qualified path, before Windows
+                    # checks the system directories, it first looks in the
+                    # application directory, and also the current directory if
+                    # NeedCurrentDirectoryForExePathW(ExeName) is true, so try
+                    # to avoid executing unqualified &#34;cmd.exe&#34;.
+                    comspec = os.environ.get(&#39;ComSpec&#39;)
+                    if not comspec:
+                        system_root = os.environ.get(&#39;SystemRoot&#39;, &#39;&#39;)
+                        comspec = os.path.join(system_root, &#39;System32&#39;, &#39;cmd.exe&#39;)
+                        if not os.path.isabs(comspec):
+                            raise FileNotFoundError(&#39;shell not found: neither %ComSpec% nor %SystemRoot% is set&#39;)
+                    if os.path.isabs(comspec):
+                        executable = comspec
+                else:
+                    comspec = executable
+
                 args = &#39;{} /c &#34;{}&#34;&#39;.format (comspec, args)
 
             if cwd is not None:
@@ -1882,9 +1989,9 @@ attribute.</p></div>
 </li>
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
-<li><code><a title="tenlib.shell.background" href="#tenlib.shell.background">background</a></code></li>
+<li><code><a title="tenlib.shell.process" href="#tenlib.shell.process">process</a></code></li>
 <li><code><a title="tenlib.shell.call" href="#tenlib.shell.call">call</a></code></li>
-<li><code><a title="tenlib.shell.get_output" href="#tenlib.shell.get_output">get_output</a></code></li>
+<li><code><a title="tenlib.shell.output" href="#tenlib.shell.output">output</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>

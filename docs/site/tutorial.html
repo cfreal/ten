@@ -8,7 +8,7 @@
     <title>Tutorials and examples - ten's documentation</title>
     <link rel="stylesheet" href="css/theme.css" />
     <link rel="stylesheet" href="css/theme_extra.css" />
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
     
       <script>
         // Current page data
@@ -17,12 +17,11 @@
         var mkdocs_page_url = "/tutorial.html";
       </script>
     
-    <script src="js/jquery-3.6.0.min.js" defer></script>
     <!--[if lt IE 9]>
       <script src="js/html5shiv.min.js"></script>
     <![endif]-->
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
-      <script>hljs.initHighlightingOnLoad();</script> 
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
 </head>
 
 <body class="wy-body-for-nav" role="document">
@@ -34,7 +33,7 @@
           <a href="index.html" class="icon icon-home"> ten's documentation
         </a><div role="search">
   <form id ="rtd-search-form" class="wy-form" action="./search.html" method="get">
-      <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
   </form>
 </div>
       </div>
@@ -103,8 +102,8 @@
       <div class="wy-nav-content">
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
-    <li><a href="index.html" class="icon icon-home" alt="Docs"></a> &raquo;</li>
-      <li>Tutorials and examples</li>
+    <li><a href="index.html" class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Tutorials and examples</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -118,7 +117,7 @@
 <ul>
 <li>Concerns: flow, http</li>
 </ul>
-<p>Although enumerating wordpress users isn't the most interesting part of a pentest, and it can be done by hundred of scripts, it's an interesting way to learn how to to build a simple script with ten, and then gradually improve it to make it more efficient, cleaner, and well-documented.</p>
+<p>Although enumerating wordpress users isn't the most interesting part of a pentest, and it can be done by hundred of scripts, it's an interesting way to learn how to to build a simple script with <strong>ten</strong>, and then gradually improve it to make it more efficient, cleaner, and well-documented.</p>
 <p>The goal is to list wordpress users (name and slug) using the well-known technique consisting in iterating over the <code>author</code> parameter: <code>/?author=1</code>, <code>/?author=2</code>, etc.</p>
 <p>First, we'll do the most simple implementation possible.</p>
 <h3 id="first-script">First script</h3>
@@ -391,14 +390,15 @@ main()
     
   </span>
 </div>
-    <script>var base_url = '.';</script>
-    <script src="js/theme_extra.js" defer></script>
-    <script src="js/theme.js" defer></script>
-      <script src="search/main.js" defer></script>
-    <script defer>
-        window.onload = function () {
+    <script src="js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = ".";</script>
+    <script src="js/theme_extra.js"></script>
+    <script src="js/theme.js"></script>
+      <script src="search/main.js"></script>
+    <script>
+        jQuery(function () {
             SphinxRtdTheme.Navigation.enable(true);
-        };
+        });
     </script>
 
 </body>

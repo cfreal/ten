@@ -38,10 +38,11 @@ __all__ = [&#34;get_console&#34;]
 __console = None
 
 
-def get_console():
+def get_console() -&gt; Console:
+    &#34;&#34;&#34;Returns the underlying rich console.&#34;&#34;&#34;
     global __console
     if not __console:
-        __console = Console(highlight=False)
+        __console = Console(highlight=False, emoji=False, markup=True)
     return __console</code></pre>
 </details>
 </section>
@@ -53,18 +54,19 @@ def get_console():
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="tenlib.flow.console.get_console"><code class="name flex">
-<span>def <span class="ident">get_console</span></span>(<span>)</span>
+<span>def <span class="ident">get_console</span></span>(<span>) ‑> rich.console.Console</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Returns the underlying rich console.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_console():
+<pre><code class="python">def get_console() -&gt; Console:
+    &#34;&#34;&#34;Returns the underlying rich console.&#34;&#34;&#34;
     global __console
     if not __console:
-        __console = Console(highlight=False)
+        __console = Console(highlight=False, emoji=False, markup=True)
     return __console</code></pre>
 </details>
 </dd>

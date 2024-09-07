@@ -80,4 +80,4 @@ def ten(filename: str):
     else:
         path.write(PATTERN)
         path.chmod(0o740)
-    shell.background(("code", "--", filename))
+    shell.process(("code", "--", filename))

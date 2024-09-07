@@ -5,7 +5,7 @@ DIRECTORY=$(dirname -- "$0")
 cd "$DIRECTORY"
 
 rm -rf ./pdoc
-pdoc3 --html -c sort_identifiers=False --force ../tenlib --output-dir .
+pdoc3 --html -c sort_identifiers=False --force ../tenlib --output-dir . --skip-errors
 mkdocs build
 
 echo

@@ -34,8 +34,7 @@ from __future__ import annotations
 
 from concurrent.futures import Future, ThreadPoolExecutor, as_completed, TimeoutError
 import re
-import typing
-from typing import Callable, Generator, Any
+from typing import Callable, Generator, Any, Literal
 import urllib.parse
 from dataclasses import dataclass
 from rich.progress import Progress
@@ -73,8 +72,8 @@ DEFAULT_ENCODING = &#34;utf-8&#34;
 
 # Types
 
-BytesOrStr = typing.Union[str, bytes]
-ErrorHandling = typing.Literal[&#34;skip&#34;, &#34;raise&#34;, &#34;return&#34;]
+BytesOrStr = str | bytes
+ErrorHandling = Literal[&#34;skip&#34;, &#34;raise&#34;, &#34;return&#34;]
 
 # Classes
 
@@ -133,7 +132,7 @@ class Session(requests.Session):
     raw_url: bool = True
     &#34;&#34;&#34;Whether to reparse and url-encode characters in the URL.
     &#34;&#34;&#34;
-    timeout: typing.Union[int, tuple[int, int]] = None
+    timeout: int | tuple[int, int] = None
     &#34;&#34;&#34;A global timeout for request and responses. Defaults to no timeout.
     &#34;&#34;&#34;
     verify: bool = False
@@ -174,7 +173,7 @@ class Session(requests.Session):
         kwargs.setdefault(&#34;allow_redirects&#34;, self.allow_redirects)
         return super().get(url, **kwargs)
 
-    def post(self, url: str, data=None, json=None, **kwargs):
+    def post(self, url: str, data=None, json=None, **kwargs) -&gt; Response:
         &#34;&#34;&#34;Sends a POST request. Returns a `Response` object.
 
         Args:
@@ -232,7 +231,10 @@ class Session(requests.Session):
         return super().delete(url, **kwargs)
 
     def pool(
-        self, workers: int = None, on_error: ErrorHandling = &#34;raise&#34;, description: str=None
+        self,
+        workers: int = None,
+        on_error: ErrorHandling = &#34;raise&#34;,
+        description: str = None,
     ) -&gt; RequestPool:
         &#34;&#34;&#34;Creates a request pool.
 
@@ -262,7 +264,10 @@ class Session(requests.Session):
         return RequestPool(self, workers, on_error, description)
 
     def multi(
-        self, workers: int = None, on_error: ErrorHandling = &#34;raise&#34;, description: str=None
+        self,
+        workers: int = None,
+        on_error: ErrorHandling = &#34;raise&#34;,
+        description: str = None,
     ) -&gt; MultiRequest:
         &#34;&#34;&#34;Sets up a multi-request object, allowing to run multiple requests
         concurrently.
@@ -285,7 +290,11 @@ class Session(requests.Session):
         return MultiRequest(self, workers, on_error, description)
 
     def first(
-        self, filter: Callable, workers: int = None, on_error: ErrorHandling = &#34;raise&#34;, description: str=None
+        self,
+        filter: Callable,
+        workers: int = None,
+        on_error: ErrorHandling = &#34;raise&#34;,
+        description: str = None,
     ) -&gt; MultiRequestFirst:
         &#34;&#34;&#34;Returns the first response that matches the filter.
         Responses are run concurrently.
@@ -446,7 +455,7 @@ class ScopedSession(Session):
             and tu.path.startswith(bu.path)
         )
 
-    def get_absolute_url(self, url: str, base: str=None) -&gt; str:
+    def get_absolute_url(self, url: str, base: str = None) -&gt; str:
         &#34;&#34;&#34;Merges base URL with the given one.
         If the given URL starts with `http://` or `https://`, it is considered a
         full URL. Otherwise, it is appended to the base
@@ -469,6 +478,7 @@ class ScopedSession(Session):
             return url
 
         return base + url
+
 
 class ResponseRegex:
     &#34;&#34;&#34;Helper class allowing to perform regex function calls onto the response.
@@ -561,12 +571,12 @@ class Response(requests.Response, struct.Storable):
     tag: Any
     &#34;&#34;&#34;A tag that can be used to identify the response.&#34;&#34;&#34;
 
-    def __init__(self, session: Session):
+    def __init__(self, session: Session) -&gt; None:
         self.session = session
         super().__init__()
 
     @classmethod
-    def _from_response(cls, session: Session, response: requests.Response):
+    def _from_response(cls, session: Session, response: requests.Response) -&gt; Response:
         new_response = cls(session)
         new_response.__dict__.update(response.__dict__)
         return new_response
@@ -611,7 +621,7 @@ class Response(requests.Response, struct.Storable):
         &#34;&#34;&#34;A `BeautifulSoup` object built from this response.&#34;&#34;&#34;
         return BeautifulSoup(self.content, &#34;lxml&#34;)
 
-    def form(self, selector: str = None, **attributes) -&gt; Form:
+    def form(self, selector: str = None, **attributes: dict[str, str]) -&gt; Form:
         &#34;&#34;&#34;Finds a `&lt;form&gt;` tag with given CSS selector and extracts its action,
         method and input/textarea fields to build a `Form` object.
 
@@ -628,6 +638,7 @@ class Response(requests.Response, struct.Storable):
             &gt;&gt;&gt; response.form(action=&#39;/login&#39;)
             ...
         &#34;&#34;&#34;
+        attributes = {k: v.replace(&#39;&#34;&#39;, &#39;\\&#34;&#39;) for k, v in attributes.items()}
         selector = selector or &#34;&#34;
         selector = &#34;form&#34; + selector
         selector += &#34;&#34;.join(f&#39;[{k}=&#34;{v}&#34;]&#39; for k, v in attributes.items())
@@ -640,22 +651,18 @@ class Response(requests.Response, struct.Storable):
         method = form.attrs.get(&#34;method&#34;, &#34;GET&#34;)
         data = {}
 
-        # TODO If inputs are malformed (for instance, no &#34;name&#34; attribute) it&#39;ll
-        # crash
         inputs = form.select(&#34;input&#34;)
         data.update(
             {
-                input.attrs[&#34;name&#34;]: input.attrs.get(&#34;value&#34;, &#34;&#34;)
+                input.attrs.get(&#34;name&#34;, &#34;&#34;): input.attrs.get(&#34;value&#34;, &#34;&#34;)
                 for input in inputs
-                if &#34;name&#34; in input.attrs
             }
         )
         inputs = form.select(&#34;textarea&#34;)
         data.update(
             {
-                input.attrs[&#34;name&#34;]: input.contents[0]
+                input.attrs.get(&#34;name&#34;, &#34;&#34;): input.contents[0] if input.contents else &#34;&#34;
                 for input in inputs
-                if &#34;name&#34; in input.attrs
             }
         )
 
@@ -694,7 +701,7 @@ class Response(requests.Response, struct.Storable):
         &#34;&#34;&#34;Builds a dict representation of the XML response.&#34;&#34;&#34;
         return struct.XMLDict.build(self.text)
 
-    def store_as_txt(self, path):
+    def store_as_txt(self, path: str) -&gt; None:
         &#34;&#34;&#34;Saves both the HTTP request and the HTTP response in a file.&#34;&#34;&#34;
         dump = requests_toolbelt.utils.dump
         data = dump.dump_all(self, request_prefix=&#34;&#34;, response_prefix=&#34;&#34;)
@@ -747,21 +754,27 @@ class Form:
     data: dict
     &#34;&#34;&#34;Form data.&#34;&#34;&#34;
 
-    def __init__(self, session: Session, action: str, method: str, data: dict, referer: str=None):
+    def __init__(
+        self,
+        session: Session,
+        action: str,
+        method: str,
+        data: dict,
+        referer: str = None,
+    ):
         self.session = session
         self.action = action
         self.method = method
         self.data = data
         self.referer = referer
-        
-        
+
     @property
-    def referrer(self):
+    def referrer(self) -&gt; str:
         # Referer is actually a misspelling of Referrer
         return self.referer
-    
+
     @referrer.setter
-    def referrer(self, value):
+    def referrer(self, value) -&gt; None:
         # Referer is actually a misspelling of Referrer
         self.referer = value
 
@@ -798,15 +811,15 @@ class Form:
             f&#34;data={self.data})&#34;
         )
 
-    def update(self, data: dict = None, **kwargs) -&gt; Form:
+    def update(self, data: dict = {}, **kwargs) -&gt; Form:
         &#34;&#34;&#34;Updates the form&#39;s data.&#34;&#34;&#34;
         self.data.update(data, **kwargs)
         return self
 
-    def __getitem__(self, key):
+    def __getitem__(self, key) -&gt; Any:
         return self.data[key]
 
-    def __setitem__(self, key, value):
+    def __setitem__(self, key, value) -&gt; None:
         self.data[key] = value
 
 
@@ -852,7 +865,13 @@ class RequestPool:
             msg_info(response.text)
     &#34;&#34;&#34;
 
-    def __init__(self, session: Session, workers: int, on_error: ErrorHandling, description: str=None):
+    def __init__(
+        self,
+        session: Session,
+        workers: int,
+        on_error: ErrorHandling,
+        description: str = None,
+    ):
         self._session: Session = session
         self._executor: ThreadPoolExecutor = ThreadPoolExecutor(max_workers=workers)
         self._queue: list[Future[Response]] = []
@@ -864,7 +883,9 @@ class RequestPool:
         self._executor.__enter__()
         if self._description is not None:
             self._progress = progress(transient=True)
-            self._progress.add_task(description=self._description, total=len(self._queue))
+            self._progress.add_task(
+                description=self._description, total=len(self._queue)
+            )
             self._progress.start()
         return self
 
@@ -881,7 +902,9 @@ class RequestPool:
         self._queue.append(future)
         if self._progress:
             self._progress.update(0, total=len(self._queue))
-            future.add_done_callback(lambda _: self._progress and self._progress.advance(0))
+            future.add_done_callback(
+                lambda _: self._progress and self._progress.advance(0)
+            )
         return future
 
     def get(self, url: str, *args, tag=None, **kwargs) -&gt; Future[Response]:
@@ -990,7 +1013,9 @@ class MultiRequest:
         {(&#34;data&#34;, &#34;username&#34;): &#34;admin&#34;, (&#34;data&#34;, &#34;password&#34;): &#34;admin123456&#34;}
     &#34;&#34;&#34;
 
-    def __init__(self, session: Session, workers: int, on_error: ErrorHandling, description: str) -&gt; None:
+    def __init__(
+        self, session: Session, workers: int, on_error: ErrorHandling, description: str
+    ) -&gt; None:
         self._session: Session = session
         self._workers = workers
         self._on_error = on_error
@@ -1000,7 +1025,7 @@ class MultiRequest:
         &#34;&#34;&#34;Sends GET requests. Returns a list of `Response`s.&#34;&#34;&#34;
         return self._run_requests(&#34;get&#34;, url=url, **kwargs)
 
-    def post(self, url: str, data=None, json=None, **kwargs) -&gt; list[Response]:
+    def post(self, url: str, data: dict=None, json: Any=None, **kwargs) -&gt; list[Response]:
         &#34;&#34;&#34;Sends POST requests. Returns a list of `Response`s.
 
         Args:
@@ -1041,7 +1066,7 @@ class MultiRequest:
             self._iter_set_path(method, arguments, list(paths_items.items()), {})
             return self._get_results(pool)
 
-    def _get_results(self, pool: RequestPool):
+    def _get_results(self, pool: RequestPool) -&gt; list[Response | BaseException]:
         return pool.in_order()
 
     def _find_multis_in_value(self, paths: dict, path: tuple, value: Any) -&gt; None:
@@ -1063,7 +1088,7 @@ class MultiRequest:
             return &#34;X&#34;
         return arguments
 
-    def _replace_at_path(self, arguments, path, value) -&gt; None:
+    def _replace_at_path(self, arguments: dict | list, path: list, value: Any) -&gt; None:
         deep = arguments
         *path, last = path
         for stop in path:
@@ -1105,17 +1130,22 @@ class MultiRequest:
 
 
 class MultiRequestFirst(MultiRequest):
-    &#34;&#34;&#34;Runs several requests concurrently and return the first successful
+    &#34;&#34;&#34;Runs several requests concurrently and returns the first successful
     response.
     &#34;&#34;&#34;
 
     def __init__(
-        self, session: Session, workers: int, on_error: ErrorHandling, description: str, filter: Callable
+        self,
+        session: Session,
+        workers: int,
+        on_error: ErrorHandling,
+        description: str,
+        filter: Callable,
     ) -&gt; None:
         super().__init__(session, workers, on_error, description)
         self._filter = filter
 
-    def _get_results(self, pool: RequestPool):
+    def _get_results(self, pool: RequestPool) -&gt; Response | BaseException | None:
         for response in pool.as_completed():
             if self._filter(response):
                 return response
@@ -1207,7 +1237,7 @@ Defaults to 10.</dd>
     raw_url: bool = True
     &#34;&#34;&#34;Whether to reparse and url-encode characters in the URL.
     &#34;&#34;&#34;
-    timeout: typing.Union[int, tuple[int, int]] = None
+    timeout: int | tuple[int, int] = None
     &#34;&#34;&#34;A global timeout for request and responses. Defaults to no timeout.
     &#34;&#34;&#34;
     verify: bool = False
@@ -1248,7 +1278,7 @@ Defaults to 10.</dd>
         kwargs.setdefault(&#34;allow_redirects&#34;, self.allow_redirects)
         return super().get(url, **kwargs)
 
-    def post(self, url: str, data=None, json=None, **kwargs):
+    def post(self, url: str, data=None, json=None, **kwargs) -&gt; Response:
         &#34;&#34;&#34;Sends a POST request. Returns a `Response` object.
 
         Args:
@@ -1306,7 +1336,10 @@ Defaults to 10.</dd>
         return super().delete(url, **kwargs)
 
     def pool(
-        self, workers: int = None, on_error: ErrorHandling = &#34;raise&#34;, description: str=None
+        self,
+        workers: int = None,
+        on_error: ErrorHandling = &#34;raise&#34;,
+        description: str = None,
     ) -&gt; RequestPool:
         &#34;&#34;&#34;Creates a request pool.
 
@@ -1336,7 +1369,10 @@ Defaults to 10.</dd>
         return RequestPool(self, workers, on_error, description)
 
     def multi(
-        self, workers: int = None, on_error: ErrorHandling = &#34;raise&#34;, description: str=None
+        self,
+        workers: int = None,
+        on_error: ErrorHandling = &#34;raise&#34;,
+        description: str = None,
     ) -&gt; MultiRequest:
         &#34;&#34;&#34;Sets up a multi-request object, allowing to run multiple requests
         concurrently.
@@ -1359,7 +1395,11 @@ Defaults to 10.</dd>
         return MultiRequest(self, workers, on_error, description)
 
     def first(
-        self, filter: Callable, workers: int = None, on_error: ErrorHandling = &#34;raise&#34;, description: str=None
+        self,
+        filter: Callable,
+        workers: int = None,
+        on_error: ErrorHandling = &#34;raise&#34;,
+        description: str = None,
     ) -&gt; MultiRequestFirst:
         &#34;&#34;&#34;Returns the first response that matches the filter.
         Responses are run concurrently.
@@ -1480,7 +1520,7 @@ Defaults to 10.</dd>
 <dd>
 <div class="desc"><p>Whether to reparse and url-encode characters in the URL.</p></div>
 </dd>
-<dt id="tenlib.http.Session.timeout"><code class="name">var <span class="ident">timeout</span> : Union[int, tuple[int, int]]</code></dt>
+<dt id="tenlib.http.Session.timeout"><code class="name">var <span class="ident">timeout</span> : int | tuple[int, int]</code></dt>
 <dd>
 <div class="desc"><p>A global timeout for request and responses. Defaults to no timeout.</p></div>
 </dd>
@@ -1552,7 +1592,7 @@ def proxies(self) -&gt; dict:
 </details>
 </dd>
 <dt id="tenlib.http.Session.post"><code class="name flex">
-<span>def <span class="ident">post</span></span>(<span>self, url: str, data=None, json=None, **kwargs)</span>
+<span>def <span class="ident">post</span></span>(<span>self, url: str, data=None, json=None, **kwargs) ‑> <a title="tenlib.http.Response" href="#tenlib.http.Response">Response</a></span>
 </code></dt>
 <dd>
 <div class="desc"><p>Sends a POST request. Returns a <code><a title="tenlib.http.Response" href="#tenlib.http.Response">Response</a></code> object.</p>
@@ -1574,7 +1614,7 @@ object to send in the body of the <code>Request</code>.</dd>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def post(self, url: str, data=None, json=None, **kwargs):
+<pre><code class="python">def post(self, url: str, data=None, json=None, **kwargs) -&gt; Response:
     &#34;&#34;&#34;Sends a POST request. Returns a `Response` object.
 
     Args:
@@ -1739,7 +1779,10 @@ or <code>skip</code>. Defaults to <code>raise</code>.</dd>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def pool(
-    self, workers: int = None, on_error: ErrorHandling = &#34;raise&#34;, description: str=None
+    self,
+    workers: int = None,
+    on_error: ErrorHandling = &#34;raise&#34;,
+    description: str = None,
 ) -&gt; RequestPool:
     &#34;&#34;&#34;Creates a request pool.
 
@@ -1798,7 +1841,10 @@ concurrently.</dd>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def multi(
-    self, workers: int = None, on_error: ErrorHandling = &#34;raise&#34;, description: str=None
+    self,
+    workers: int = None,
+    on_error: ErrorHandling = &#34;raise&#34;,
+    description: str = None,
 ) -&gt; MultiRequest:
     &#34;&#34;&#34;Sets up a multi-request object, allowing to run multiple requests
     concurrently.
@@ -1842,7 +1888,11 @@ Responses are run concurrently.</p>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def first(
-    self, filter: Callable, workers: int = None, on_error: ErrorHandling = &#34;raise&#34;, description: str=None
+    self,
+    filter: Callable,
+    workers: int = None,
+    on_error: ErrorHandling = &#34;raise&#34;,
+    description: str = None,
 ) -&gt; MultiRequestFirst:
     &#34;&#34;&#34;Returns the first response that matches the filter.
     Responses are run concurrently.
@@ -2037,7 +2087,7 @@ Defaults to 10.</dd>
             and tu.path.startswith(bu.path)
         )
 
-    def get_absolute_url(self, url: str, base: str=None) -&gt; str:
+    def get_absolute_url(self, url: str, base: str = None) -&gt; str:
         &#34;&#34;&#34;Merges base URL with the given one.
         If the given URL starts with `http://` or `https://`, it is considered a
         full URL. Otherwise, it is appended to the base
@@ -2138,7 +2188,7 @@ instance you want specially crafted paths such as
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_absolute_url(self, url: str, base: str=None) -&gt; str:
+<pre><code class="python">def get_absolute_url(self, url: str, base: str = None) -&gt; str:
     &#34;&#34;&#34;Merges base URL with the given one.
     If the given URL starts with `http://` or `https://`, it is considered a
     full URL. Otherwise, it is appended to the base
@@ -2252,12 +2302,12 @@ instance you want specially crafted paths such as
     tag: Any
     &#34;&#34;&#34;A tag that can be used to identify the response.&#34;&#34;&#34;
 
-    def __init__(self, session: Session):
+    def __init__(self, session: Session) -&gt; None:
         self.session = session
         super().__init__()
 
     @classmethod
-    def _from_response(cls, session: Session, response: requests.Response):
+    def _from_response(cls, session: Session, response: requests.Response) -&gt; Response:
         new_response = cls(session)
         new_response.__dict__.update(response.__dict__)
         return new_response
@@ -2302,7 +2352,7 @@ instance you want specially crafted paths such as
         &#34;&#34;&#34;A `BeautifulSoup` object built from this response.&#34;&#34;&#34;
         return BeautifulSoup(self.content, &#34;lxml&#34;)
 
-    def form(self, selector: str = None, **attributes) -&gt; Form:
+    def form(self, selector: str = None, **attributes: dict[str, str]) -&gt; Form:
         &#34;&#34;&#34;Finds a `&lt;form&gt;` tag with given CSS selector and extracts its action,
         method and input/textarea fields to build a `Form` object.
 
@@ -2319,6 +2369,7 @@ instance you want specially crafted paths such as
             &gt;&gt;&gt; response.form(action=&#39;/login&#39;)
             ...
         &#34;&#34;&#34;
+        attributes = {k: v.replace(&#39;&#34;&#39;, &#39;\\&#34;&#39;) for k, v in attributes.items()}
         selector = selector or &#34;&#34;
         selector = &#34;form&#34; + selector
         selector += &#34;&#34;.join(f&#39;[{k}=&#34;{v}&#34;]&#39; for k, v in attributes.items())
@@ -2331,22 +2382,18 @@ instance you want specially crafted paths such as
         method = form.attrs.get(&#34;method&#34;, &#34;GET&#34;)
         data = {}
 
-        # TODO If inputs are malformed (for instance, no &#34;name&#34; attribute) it&#39;ll
-        # crash
         inputs = form.select(&#34;input&#34;)
         data.update(
             {
-                input.attrs[&#34;name&#34;]: input.attrs.get(&#34;value&#34;, &#34;&#34;)
+                input.attrs.get(&#34;name&#34;, &#34;&#34;): input.attrs.get(&#34;value&#34;, &#34;&#34;)
                 for input in inputs
-                if &#34;name&#34; in input.attrs
             }
         )
         inputs = form.select(&#34;textarea&#34;)
         data.update(
             {
-                input.attrs[&#34;name&#34;]: input.contents[0]
+                input.attrs.get(&#34;name&#34;, &#34;&#34;): input.contents[0] if input.contents else &#34;&#34;
                 for input in inputs
-                if &#34;name&#34; in input.attrs
             }
         )
 
@@ -2385,7 +2432,7 @@ instance you want specially crafted paths such as
         &#34;&#34;&#34;Builds a dict representation of the XML response.&#34;&#34;&#34;
         return struct.XMLDict.build(self.text)
 
-    def store_as_txt(self, path):
+    def store_as_txt(self, path: str) -&gt; None:
         &#34;&#34;&#34;Saves both the HTTP request and the HTTP response in a file.&#34;&#34;&#34;
         dump = requests_toolbelt.utils.dump
         data = dump.dump_all(self, request_prefix=&#34;&#34;, response_prefix=&#34;&#34;)
@@ -2565,7 +2612,7 @@ found.</p></div>
 </details>
 </dd>
 <dt id="tenlib.http.Response.form"><code class="name flex">
-<span>def <span class="ident">form</span></span>(<span>self, selector: str = None, **attributes) ‑> <a title="tenlib.http.Form" href="#tenlib.http.Form">Form</a></span>
+<span>def <span class="ident">form</span></span>(<span>self, selector: str = None, **attributes: dict[str, str]) ‑> <a title="tenlib.http.Form" href="#tenlib.http.Form">Form</a></span>
 </code></dt>
 <dd>
 <div class="desc"><p>Finds a <code>&lt;form&gt;</code> tag with given CSS selector and extracts its action,
@@ -2592,7 +2639,7 @@ method and input/textarea fields to build a <code><a title="tenlib.http.Form" hr
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def form(self, selector: str = None, **attributes) -&gt; Form:
+<pre><code class="python">def form(self, selector: str = None, **attributes: dict[str, str]) -&gt; Form:
     &#34;&#34;&#34;Finds a `&lt;form&gt;` tag with given CSS selector and extracts its action,
     method and input/textarea fields to build a `Form` object.
 
@@ -2609,6 +2656,7 @@ method and input/textarea fields to build a <code><a title="tenlib.http.Form" hr
         &gt;&gt;&gt; response.form(action=&#39;/login&#39;)
         ...
     &#34;&#34;&#34;
+    attributes = {k: v.replace(&#39;&#34;&#39;, &#39;\\&#34;&#39;) for k, v in attributes.items()}
     selector = selector or &#34;&#34;
     selector = &#34;form&#34; + selector
     selector += &#34;&#34;.join(f&#39;[{k}=&#34;{v}&#34;]&#39; for k, v in attributes.items())
@@ -2621,22 +2669,18 @@ method and input/textarea fields to build a <code><a title="tenlib.http.Form" hr
     method = form.attrs.get(&#34;method&#34;, &#34;GET&#34;)
     data = {}
 
-    # TODO If inputs are malformed (for instance, no &#34;name&#34; attribute) it&#39;ll
-    # crash
     inputs = form.select(&#34;input&#34;)
     data.update(
         {
-            input.attrs[&#34;name&#34;]: input.attrs.get(&#34;value&#34;, &#34;&#34;)
+            input.attrs.get(&#34;name&#34;, &#34;&#34;): input.attrs.get(&#34;value&#34;, &#34;&#34;)
             for input in inputs
-            if &#34;name&#34; in input.attrs
         }
     )
     inputs = form.select(&#34;textarea&#34;)
     data.update(
         {
-            input.attrs[&#34;name&#34;]: input.contents[0]
+            input.attrs.get(&#34;name&#34;, &#34;&#34;): input.contents[0] if input.contents else &#34;&#34;
             for input in inputs
-            if &#34;name&#34; in input.attrs
         }
     )
 
@@ -2736,7 +2780,7 @@ UnexpectedHTTPStatusCodeError: Status code 500 is not one of (200, 302)
 </details>
 </dd>
 <dt id="tenlib.http.Response.store_as_txt"><code class="name flex">
-<span>def <span class="ident">store_as_txt</span></span>(<span>self, path)</span>
+<span>def <span class="ident">store_as_txt</span></span>(<span>self, path: str) ‑> None</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Saves both the HTTP request and the HTTP response in a file.</p></div>
@@ -2744,7 +2788,7 @@ UnexpectedHTTPStatusCodeError: Status code 500 is not one of (200, 302)
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def store_as_txt(self, path):
+<pre><code class="python">def store_as_txt(self, path: str) -&gt; None:
     &#34;&#34;&#34;Saves both the HTTP request and the HTTP response in a file.&#34;&#34;&#34;
     dump = requests_toolbelt.utils.dump
     data = dump.dump_all(self, request_prefix=&#34;&#34;, response_prefix=&#34;&#34;)
@@ -2915,7 +2959,7 @@ it is <code>bytes</code>, it will be matched against <code>Response.content</cod
 </details>
 </dd>
 <dt id="tenlib.http.ResponseRegex.sub"><code class="name flex">
-<span>def <span class="ident">sub</span></span>(<span>self, pattern: BytesOrStr, replacement: BytesOrStr, *args, **kwargs) ‑> Union[str, bytes]</span>
+<span>def <span class="ident">sub</span></span>(<span>self, pattern: BytesOrStr, replacement: BytesOrStr, *args, **kwargs) ‑> str | bytes</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Calls <code>re.sub</code> onto the HTTP response.</p></div>
@@ -3023,21 +3067,27 @@ Form(
     data: dict
     &#34;&#34;&#34;Form data.&#34;&#34;&#34;
 
-    def __init__(self, session: Session, action: str, method: str, data: dict, referer: str=None):
+    def __init__(
+        self,
+        session: Session,
+        action: str,
+        method: str,
+        data: dict,
+        referer: str = None,
+    ):
         self.session = session
         self.action = action
         self.method = method
         self.data = data
         self.referer = referer
-        
-        
+
     @property
-    def referrer(self):
+    def referrer(self) -&gt; str:
         # Referer is actually a misspelling of Referrer
         return self.referer
-    
+
     @referrer.setter
-    def referrer(self, value):
+    def referrer(self, value) -&gt; None:
         # Referer is actually a misspelling of Referrer
         self.referer = value
 
@@ -3074,15 +3124,15 @@ Form(
             f&#34;data={self.data})&#34;
         )
 
-    def update(self, data: dict = None, **kwargs) -&gt; Form:
+    def update(self, data: dict = {}, **kwargs) -&gt; Form:
         &#34;&#34;&#34;Updates the form&#39;s data.&#34;&#34;&#34;
         self.data.update(data, **kwargs)
         return self
 
-    def __getitem__(self, key):
+    def __getitem__(self, key) -&gt; Any:
         return self.data[key]
 
-    def __setitem__(self, key, value):
+    def __setitem__(self, key, value) -&gt; None:
         self.data[key] = value</code></pre>
 </details>
 <h3>Class variables</h3>
@@ -3106,7 +3156,7 @@ Form(
 </dl>
 <h3>Instance variables</h3>
 <dl>
-<dt id="tenlib.http.Form.referrer"><code class="name">var <span class="ident">referrer</span></code></dt>
+<dt id="tenlib.http.Form.referrer"><code class="name">var <span class="ident">referrer</span> : str</code></dt>
 <dd>
 <div class="desc"></div>
 <details class="source">
@@ -3114,7 +3164,7 @@ Form(
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-def referrer(self):
+def referrer(self) -&gt; str:
     # Referer is actually a misspelling of Referrer
     return self.referer</code></pre>
 </details>
@@ -3174,7 +3224,7 @@ If not set, the form's method will be used</dd>
 </details>
 </dd>
 <dt id="tenlib.http.Form.update"><code class="name flex">
-<span>def <span class="ident">update</span></span>(<span>self, data: dict = None, **kwargs) ‑> <a title="tenlib.http.Form" href="#tenlib.http.Form">Form</a></span>
+<span>def <span class="ident">update</span></span>(<span>self, data: dict = {}, **kwargs) ‑> <a title="tenlib.http.Form" href="#tenlib.http.Form">Form</a></span>
 </code></dt>
 <dd>
 <div class="desc"><p>Updates the form's data.</p></div>
@@ -3182,7 +3232,7 @@ If not set, the form's method will be used</dd>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def update(self, data: dict = None, **kwargs) -&gt; Form:
+<pre><code class="python">def update(self, data: dict = {}, **kwargs) -&gt; Form:
     &#34;&#34;&#34;Updates the form&#39;s data.&#34;&#34;&#34;
     self.data.update(data, **kwargs)
     return self</code></pre>
@@ -3301,7 +3351,13 @@ msg_info(response.text)
             msg_info(response.text)
     &#34;&#34;&#34;
 
-    def __init__(self, session: Session, workers: int, on_error: ErrorHandling, description: str=None):
+    def __init__(
+        self,
+        session: Session,
+        workers: int,
+        on_error: ErrorHandling,
+        description: str = None,
+    ):
         self._session: Session = session
         self._executor: ThreadPoolExecutor = ThreadPoolExecutor(max_workers=workers)
         self._queue: list[Future[Response]] = []
@@ -3313,7 +3369,9 @@ msg_info(response.text)
         self._executor.__enter__()
         if self._description is not None:
             self._progress = progress(transient=True)
-            self._progress.add_task(description=self._description, total=len(self._queue))
+            self._progress.add_task(
+                description=self._description, total=len(self._queue)
+            )
             self._progress.start()
         return self
 
@@ -3330,7 +3388,9 @@ msg_info(response.text)
         self._queue.append(future)
         if self._progress:
             self._progress.update(0, total=len(self._queue))
-            future.add_done_callback(lambda _: self._progress and self._progress.advance(0))
+            future.add_done_callback(
+                lambda _: self._progress and self._progress.advance(0)
+            )
         return future
 
     def get(self, url: str, *args, tag=None, **kwargs) -&gt; Future[Response]:
@@ -3528,7 +3588,9 @@ to it and its value. For example:</p>
         {(&#34;data&#34;, &#34;username&#34;): &#34;admin&#34;, (&#34;data&#34;, &#34;password&#34;): &#34;admin123456&#34;}
     &#34;&#34;&#34;
 
-    def __init__(self, session: Session, workers: int, on_error: ErrorHandling, description: str) -&gt; None:
+    def __init__(
+        self, session: Session, workers: int, on_error: ErrorHandling, description: str
+    ) -&gt; None:
         self._session: Session = session
         self._workers = workers
         self._on_error = on_error
@@ -3538,7 +3600,7 @@ to it and its value. For example:</p>
         &#34;&#34;&#34;Sends GET requests. Returns a list of `Response`s.&#34;&#34;&#34;
         return self._run_requests(&#34;get&#34;, url=url, **kwargs)
 
-    def post(self, url: str, data=None, json=None, **kwargs) -&gt; list[Response]:
+    def post(self, url: str, data: dict=None, json: Any=None, **kwargs) -&gt; list[Response]:
         &#34;&#34;&#34;Sends POST requests. Returns a list of `Response`s.
 
         Args:
@@ -3579,7 +3641,7 @@ to it and its value. For example:</p>
             self._iter_set_path(method, arguments, list(paths_items.items()), {})
             return self._get_results(pool)
 
-    def _get_results(self, pool: RequestPool):
+    def _get_results(self, pool: RequestPool) -&gt; list[Response | BaseException]:
         return pool.in_order()
 
     def _find_multis_in_value(self, paths: dict, path: tuple, value: Any) -&gt; None:
@@ -3601,7 +3663,7 @@ to it and its value. For example:</p>
             return &#34;X&#34;
         return arguments
 
-    def _replace_at_path(self, arguments, path, value) -&gt; None:
+    def _replace_at_path(self, arguments: dict | list, path: list, value: Any) -&gt; None:
         deep = arguments
         *path, last = path
         for stop in path:
@@ -3662,7 +3724,7 @@ to it and its value. For example:</p>
 </details>
 </dd>
 <dt id="tenlib.http.MultiRequest.post"><code class="name flex">
-<span>def <span class="ident">post</span></span>(<span>self, url: str, data=None, json=None, **kwargs) ‑> list[<a title="tenlib.http.Response" href="#tenlib.http.Response">Response</a>]</span>
+<span>def <span class="ident">post</span></span>(<span>self, url: str, data: dict = None, json: Any = None, **kwargs) ‑> list[<a title="tenlib.http.Response" href="#tenlib.http.Response">Response</a>]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Sends POST requests. Returns a list of <code><a title="tenlib.http.Response" href="#tenlib.http.Response">Response</a></code>s.</p>
@@ -3687,7 +3749,7 @@ object to send in the body of the <code>Request</code>.</dd>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def post(self, url: str, data=None, json=None, **kwargs) -&gt; list[Response]:
+<pre><code class="python">def post(self, url: str, data: dict=None, json: Any=None, **kwargs) -&gt; list[Response]:
     &#34;&#34;&#34;Sends POST requests. Returns a list of `Response`s.
 
     Args:

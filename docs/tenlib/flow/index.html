@@ -94,13 +94,32 @@ import argparse
 import functools
 import inspect
 import re
-import types
-from typing import *
-from typing import _GenericAlias
-import typing
+from types import SimpleNamespace, NoneType
+from typing import (
+    Callable,
+    Type,
+    Optional,
+    Iterable,
+    NoReturn,
+    Any,
+    Union,
+    get_args,
+    get_origin,
+    get_type_hints,
+)
 import time
 
-from rich.progress import *
+from rich.text import Text, TextType
+from rich.console import RenderableType
+from rich.progress import (
+    Progress,
+    ProgressColumn,
+    filesize,
+    TextColumn,
+    BarColumn,
+    TimeElapsedColumn,
+    TimeRemainingColumn,
+)
 from rich.prompt import Prompt
 from rich.status import Status
 
@@ -148,13 +167,11 @@ else:
     __ARGPARSE_FORMATTER = rich_argparse.RawDescriptionRichHelpFormatter
 
 
-def entry(entrypoint: Union[Callable, Type]) -&gt; Callable[[], None]:
+def entry(entrypoint: Callable | Type) -&gt; Callable[[], None]:
     &#34;&#34;&#34;Converts the given coroutine or class into the program&#39;s entry point.
-
-    Additionally, command line arguments are mapped to the parameters of the
-    coroutine or the object&#39;s `__init__`.
-    Also, `tenlib.exception.TenExit` and `KeyboardInterrupt` exceptions will be
-    caught and displayed nicely.
+    Command line arguments are mapped to the parameters of the function or the object&#39;s
+    `__init__`. Also, `tenlib.exception.TenExit` and `KeyboardInterrupt` exceptions will
+    be caught and displayed nicely.
 
     Default values, as well as type hinting, are supported.
 
@@ -182,7 +199,7 @@ def entry(entrypoint: Union[Callable, Type]) -&gt; Callable[[], None]:
         def __init__(self, ...):
             ...
 
-        def run():
+        def run(self):
             ...
 
     Program()
@@ -289,10 +306,15 @@ def entry(entrypoint: Union[Callable, Type]) -&gt; Callable[[], None]:
     &#34;&#34;&#34;
     # If we have a class, call TheClass(**args).run()
     if isinstance(entrypoint, type):
-        run_main = lambda *args, **kwargs: entrypoint(*args, **kwargs).run()
+
+        def run_main(*args, **kwargs):
+            return entrypoint(*args, **kwargs).run()
+
     # If we have a function, call main(**args)
     else:
-        run_main = lambda *args, **kwargs: entrypoint(*args, **kwargs)
+
+        def run_main(*args, **kwargs):
+            return entrypoint(*args, **kwargs)
 
     @functools.wraps(entrypoint)
     def cli_main():
@@ -313,7 +335,7 @@ def entry(entrypoint: Union[Callable, Type]) -&gt; Callable[[], None]:
             if e.message:
                 msg_print(e.message)
         except Exception as e:
-            msg_error(f&#34;[b]{type(e).__name__}[/] {e}&#34;)
+            msg_error(Text(type(e).__name__, style=&#34;bold&#34;), Text(str(e)))
             logger.error(f&#34;{type(e).__name__}: {e}&#34;, exc_info=True)
             console.print_exception()
             exit_code = 1
@@ -344,31 +366,36 @@ def _doc_to_description(function):
     return doc
 
 
-def _prototype_to_args(function):
+def _prototype_to_args(function: type | Callable) -&gt; tuple[list, dict]:
     &#34;&#34;&#34;Creates an argument parser from a function prototype. If a parameter has
     a default value of type _int, bool, float or bytes_, or a `list` of those,
     the value sent from the command line arguments is converted into said type.
     Type annotation can be used to force the type of the command line arguments.
     In addition, parameters that come after the `*` metaparameter, have a
     default value, or are of type boolean or list, are mapped as an option.
+    Then, parses the arguments from the command line and returns the args and kwargs.
     &#34;&#34;&#34;
     from tenlib.fs import Path
     from tenlib.http import ScopedSession
-    _PROTO_RAW_TYPES = (int, bool, float, bytes, str, Path, ScopedSession)
 
+    _PROTO_RAW_TYPES = (int, bool, float, bytes, str, Path, ScopedSession)
     s = inspect.signature(function)
-    function.__doc__
+    # If the function is actually a class, we want the hints from the constructor
+    underlying_function = function.__init__ if inspect.isclass(function) else function
+    type_hints = get_type_hints(underlying_function)
+
     parser = argparse.ArgumentParser(
         description=_doc_to_description(function),
         formatter_class=__ARGPARSE_FORMATTER,
     )
-    shortcuts = set()
+    # -h is already used by --help, so skip it
+    shortcuts = {&#34;-h&#34;}
 
     function_arguments = []
     star_argument = None
 
     for k, p in s.parameters.items():
-        arg_desc = types.SimpleNamespace()
+        arg_desc = SimpleNamespace()
 
         # Handle defaults and type
         arg_desc.nargs = None
@@ -376,18 +403,27 @@ def _prototype_to_args(function):
             arg_desc.default = p.default
         else:
             arg_desc.required = True
+
         # If a type is explicitly specified, use it
         if p.annotation is not inspect._empty:
-            if isinstance(p.annotation, types.GenericAlias) and issubclass(
-                p.annotation.__origin__, list
-            ):
-                arg_desc.nargs = &#34;*&#34;
-                arg_desc.type = p.annotation.__args__[0]
-            elif issubclass(p.annotation, list):
+            annotation = type_hints[k]
+            aorigin = get_origin(annotation)
+            aargs = get_args(annotation)
+
+            # Unwrap Optional[...]
+            if aorigin is Union and len(aargs) == 2 and aargs[1] is NoneType:
+                annotation = aargs[0]
+                aorigin = get_origin(annotation)
+                aargs = get_args(annotation)
+
+            if isinstance(annotation, type) and issubclass(annotation, list):
                 arg_desc.nargs = &#34;*&#34;
                 arg_desc.type = str
+            elif aorigin is list:
+                arg_desc.nargs = &#34;*&#34;
+                arg_desc.type = aargs[0]
             else:
-                arg_desc.type = p.annotation
+                arg_desc.type = annotation
         # Otherwise, deduce it from the default value
         elif p.default is not inspect._empty and p.default is not None:
             default_type = type(p.default)
@@ -445,10 +481,16 @@ def _prototype_to_args(function):
                 shortcut = &#34;-&#34; + k[0].upper()
 
             longcut = &#34;--&#34; + k.replace(&#34;_&#34;, &#34;-&#34;)
+            # Help is already handled by argparse, so we cannot use it...
+            # raise an exception
+            if longcut == &#34;--help&#34;:
+                raise argparse.ArgumentError(
+                    None, &#34;Cannot use &#39;help&#39; as an entry parameter name&#34;
+                )
             # If the shortcut is already used, map only the longcut
-            if shortcut in shortcuts:
+            elif shortcut in shortcuts:
                 arg_names = (longcut,)
-            # If the parameter is only one letter long, map it as a shortcut
+            # If the parameter is only one letter long, map it only as a shortcut
             elif len(k) == 1:
                 arg_names = (shortcut,)
             # Otherwise, map both
@@ -477,15 +519,7 @@ def _prototype_to_args(function):
             )
         # Last annoying case: casting booleans from strings
         if getattr(arg_desc, &#34;nargs&#34;, None) == &#34;*&#34; and arg_desc.type is bool:
-
-            def str_to_bool(value):
-                if value.lower() in (&#34;1&#34;, &#34;true&#34;, &#34;yes&#34;):
-                    return True
-                if value.lower() in (&#34;0&#34;, &#34;false&#34;, &#34;no&#34;):
-                    return False
-                raise ValueError(f&#34;Invalid argument for type bool: {value!r}&#34;)
-
-            arg_desc.type = str_to_bool
+            arg_desc.type = _str_to_bool
 
         try:
             arg_desc.help = function.__ten_doc__[k]
@@ -504,12 +538,20 @@ def _prototype_to_args(function):
     return args, arg_desc
 
 
+def _str_to_bool(value) -&gt; bool:
+    if value.lower() in (&#34;1&#34;, &#34;true&#34;, &#34;yes&#34;):
+        return True
+    if value.lower() in (&#34;0&#34;, &#34;false&#34;, &#34;no&#34;):
+        return False
+    raise ValueError(f&#34;Invalid argument for type bool: {value!r}&#34;)
+
+
 def arg(name: str, description: str):
     &#34;&#34;&#34;Provides documentation for the parameter `name` of the `entry` function.
     The documentation is visible when the program is run with the `--help` flag.
-    
+
     Example:
-    
+
     ```python
     @entry
     @arg(&#34;name&#34;, &#34;The name of the person to greet&#34;)
@@ -517,47 +559,49 @@ def arg(name: str, description: str):
         msg_info(f&#34;Hello, {name}!&#34;)
     ```
     &#34;&#34;&#34;
-    def wrapper(entry: Callable)-&gt; Callable:
-        if not hasattr(entry, &#39;__ten_doc__&#39;):
+
+    def wrapper(entry: Callable) -&gt; Callable:
+        if not hasattr(entry, &#34;__ten_doc__&#34;):
             entry.__ten_doc__ = {}
         entry.__ten_doc__[name] = description
         return entry
-    
+
     return wrapper
 
-def msg_print(message: str, **kwargs):
+
+def msg_print(*objects, **kwargs):
     &#34;&#34;&#34;Displays a message.&#34;&#34;&#34;
-    get_message_formatter().print(message, **kwargs)
+    get_message_formatter().print(*objects, **kwargs)
 
 
-def msg_info(message: str, **kwargs):
+def msg_info(*objects, **kwargs):
     &#34;&#34;&#34;Displays an info message.&#34;&#34;&#34;
-    get_message_formatter().info(message, **kwargs)
+    get_message_formatter().info(*objects, **kwargs)
 
 
-def msg_failure(message: str, **kwargs):
+def msg_failure(*objects, **kwargs):
     &#34;&#34;&#34;Displays a failure message.&#34;&#34;&#34;
-    get_message_formatter().failure(message, **kwargs)
+    get_message_formatter().failure(*objects, **kwargs)
 
 
-def msg_error(message: str, **kwargs):
+def msg_error(*objects, **kwargs):
     &#34;&#34;&#34;Displays an error message.&#34;&#34;&#34;
-    get_message_formatter().failure(message, **kwargs)
+    get_message_formatter().error(*objects, **kwargs)
 
 
-def msg_success(message: str, **kwargs):
+def msg_success(*objects, **kwargs):
     &#34;&#34;&#34;Displays a success message.&#34;&#34;&#34;
-    get_message_formatter().success(message, **kwargs)
+    get_message_formatter().success(*objects, **kwargs)
 
 
-def msg_warning(message: str, **kwargs):
+def msg_warning(*objects, **kwargs):
     &#34;&#34;&#34;Displays a warning message.&#34;&#34;&#34;
-    get_message_formatter().warning(message, **kwargs)
+    get_message_formatter().warning(*objects, **kwargs)
 
 
-def msg_debug(message: str, **kwargs):
+def msg_debug(*objects, **kwargs):
     &#34;&#34;&#34;Displays a debug message.&#34;&#34;&#34;
-    get_message_formatter().debug(message, **kwargs)
+    get_message_formatter().debug(*objects, **kwargs)
 
 
 def msg_clear():
@@ -591,10 +635,13 @@ def msg_status(
 
     Args:
         status (RenderableType): A status renderable (str or Text typically).
-        spinner (str, optional): Name of spinner animation (see python -m rich.spinner). Defaults to &#34;dots&#34;.
-        spinner_style (StyleType, optional): Style of spinner. Defaults to &#34;status.spinner&#34;.
+        spinner (str, optional): Name of spinner animation (see python -m rich.spinner).
+            Defaults to &#34;dots&#34;.
+        spinner_style (StyleType, optional): Style of spinner. Defaults to
+            &#34;status.spinner&#34;.
         speed (float, optional): Speed factor for spinner animation. Defaults to 1.0.
-        refresh_per_second (float, optional): Number of refreshes per second. Defaults to 12.5.
+        refresh_per_second (float, optional): Number of refreshes per second. Defaults
+            to 12.5.
 
     Returns:
         Status: A Status object that may be used as a context manager.
@@ -608,7 +655,7 @@ def msg_status(
     )
 
 
-def leave(message=None, *args, **kwargs) -&gt; None:
+def leave(message=None, *args, **kwargs) -&gt; NoReturn:
     &#34;&#34;&#34;Displays a message if given, and exits.
 
     Raises:
@@ -617,7 +664,7 @@ def leave(message=None, *args, **kwargs) -&gt; None:
     raise TenExit(message, *args, **kwargs)
 
 
-def failure(message: str = None) -&gt; None:
+def failure(message: str = None) -&gt; NoReturn:
     &#34;&#34;&#34;Displays a failure message if given, and exits.
 
     Raises:
@@ -626,7 +673,7 @@ def failure(message: str = None) -&gt; None:
     raise TenFailure(message)
 
 
-def error(message: str = None) -&gt; None:
+def error(message: str = None) -&gt; NoReturn:
     &#34;&#34;&#34;Displays an error message if given, displays the stack trace, and exits.
 
     Raises:
@@ -820,7 +867,7 @@ def track(
     sequence: Iterable,
     description: str = &#34;Working...&#34;,
     total: Optional[float] = None,
-    transient: bool = False,
+    transient: bool = True,
 ) -&gt; Iterable:
     &#34;&#34;&#34;Track progress when iterating over a sequence. This is a wrapper for
     [rich&#39;s `track`](https://rich.readthedocs.io/en/stable/reference/progress.html#rich.progress.Progress.track).
@@ -837,7 +884,7 @@ def track(
         sequence (Iterable): A sequence (must support `len()`) you wish to iterate over.
         description (str, optional): Description of task show next to progress bar. Defaults to &#34;Working&#34;.
         total (float, optional): Total number of steps. Default is len(sequence).
-        transient (bool, optional): Clear the progress on exit. Defaults to False.
+        transient (bool, optional): Clear the progress on exit. Defaults to True.
 
     Returns:
         Iterable: An iterable of the values in the sequence.
@@ -861,15 +908,16 @@ def ask(
     prompt: TextType = &#34;&#34;,
     *,
     password: bool = False,
-    choices: Optional[List[str]] = None,
+    choices: Optional[list[str]] = None,
     show_default: bool = True,
     show_choices: bool = True,
     default: Any = ...,
 ) -&gt; Any:
     &#34;&#34;&#34;Shortcut to construct and run a prompt loop and return the result.
+    Wrapper for `rich.prompt.Prompt`.
 
     Example:
-        &gt;&gt;&gt; filename = Prompt.ask(&#34;Enter a filename&#34;)
+        &gt;&gt;&gt; filename = ask(&#34;Enter a filename&#34;)
 
     Args:
         prompt (TextType, optional): Prompt text. Defaults to &#34;&#34;.
@@ -912,9 +960,9 @@ def set_random_message_formatter() -&gt; None:
 
 
 def set_message_formatter(
-    message_formatter: typing.Union[
-        messageformatter.MessageFormatter, Type[messageformatter.MessageFormatter], str
-    ]
+    message_formatter: messageformatter.MessageFormatter
+    | Type[messageformatter.MessageFormatter]
+    | str,
 ) -&gt; None:
     &#34;&#34;&#34;Sets given `messageformatter.MessageFormatter` as the message formatter.&#34;&#34;&#34;
     global __message_formatter
@@ -960,11 +1008,10 @@ def set_message_formatter(
 <span>def <span class="ident">entry</span></span>(<span>entrypoint: Union[Callable, Type]) ‑> Callable[[], None]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Converts the given coroutine or class into the program's entry point.</p>
-<p>Additionally, command line arguments are mapped to the parameters of the
-coroutine or the object's <code>__init__</code>.
-Also, <code><a title="tenlib.exception.TenExit" href="../exception.html#tenlib.exception.TenExit">TenExit</a></code> and <code>KeyboardInterrupt</code> exceptions will be
-caught and displayed nicely.</p>
+<div class="desc"><p>Converts the given coroutine or class into the program's entry point.
+Command line arguments are mapped to the parameters of the function or the object's
+<code>__init__</code>. Also, <code><a title="tenlib.exception.TenExit" href="../exception.html#tenlib.exception.TenExit">TenExit</a></code> and <code>KeyboardInterrupt</code> exceptions will
+be caught and displayed nicely.</p>
 <p>Default values, as well as type hinting, are supported.</p>
 <p>The generic look of the program with a coroutine is:</p>
 <pre><code class="language-python">#!/usr/bin/env python3
@@ -985,7 +1032,7 @@ class Program:
     def __init__(self, ...):
         ...
 
-    def run():
+    def run(self):
         ...
 
 Program()
@@ -1086,13 +1133,11 @@ def force_opts(a, *, b, c):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def entry(entrypoint: Union[Callable, Type]) -&gt; Callable[[], None]:
+<pre><code class="python">def entry(entrypoint: Callable | Type) -&gt; Callable[[], None]:
     &#34;&#34;&#34;Converts the given coroutine or class into the program&#39;s entry point.
-
-    Additionally, command line arguments are mapped to the parameters of the
-    coroutine or the object&#39;s `__init__`.
-    Also, `tenlib.exception.TenExit` and `KeyboardInterrupt` exceptions will be
-    caught and displayed nicely.
+    Command line arguments are mapped to the parameters of the function or the object&#39;s
+    `__init__`. Also, `tenlib.exception.TenExit` and `KeyboardInterrupt` exceptions will
+    be caught and displayed nicely.
 
     Default values, as well as type hinting, are supported.
 
@@ -1120,7 +1165,7 @@ def force_opts(a, *, b, c):
         def __init__(self, ...):
             ...
 
-        def run():
+        def run(self):
             ...
 
     Program()
@@ -1227,10 +1272,15 @@ def force_opts(a, *, b, c):
     &#34;&#34;&#34;
     # If we have a class, call TheClass(**args).run()
     if isinstance(entrypoint, type):
-        run_main = lambda *args, **kwargs: entrypoint(*args, **kwargs).run()
+
+        def run_main(*args, **kwargs):
+            return entrypoint(*args, **kwargs).run()
+
     # If we have a function, call main(**args)
     else:
-        run_main = lambda *args, **kwargs: entrypoint(*args, **kwargs)
+
+        def run_main(*args, **kwargs):
+            return entrypoint(*args, **kwargs)
 
     @functools.wraps(entrypoint)
     def cli_main():
@@ -1251,7 +1301,7 @@ def force_opts(a, *, b, c):
             if e.message:
                 msg_print(e.message)
         except Exception as e:
-            msg_error(f&#34;[b]{type(e).__name__}[/] {e}&#34;)
+            msg_error(Text(type(e).__name__, style=&#34;bold&#34;), Text(str(e)))
             logger.error(f&#34;{type(e).__name__}: {e}&#34;, exc_info=True)
             console.print_exception()
             exit_code = 1
@@ -1285,9 +1335,9 @@ def hello(name: str):
 <pre><code class="python">def arg(name: str, description: str):
     &#34;&#34;&#34;Provides documentation for the parameter `name` of the `entry` function.
     The documentation is visible when the program is run with the `--help` flag.
-    
+
     Example:
-    
+
     ```python
     @entry
     @arg(&#34;name&#34;, &#34;The name of the person to greet&#34;)
@@ -1295,17 +1345,18 @@ def hello(name: str):
         msg_info(f&#34;Hello, {name}!&#34;)
     ```
     &#34;&#34;&#34;
-    def wrapper(entry: Callable)-&gt; Callable:
-        if not hasattr(entry, &#39;__ten_doc__&#39;):
+
+    def wrapper(entry: Callable) -&gt; Callable:
+        if not hasattr(entry, &#34;__ten_doc__&#34;):
             entry.__ten_doc__ = {}
         entry.__ten_doc__[name] = description
         return entry
-    
+
     return wrapper</code></pre>
 </details>
 </dd>
 <dt id="tenlib.flow.msg_info"><code class="name flex">
-<span>def <span class="ident">msg_info</span></span>(<span>message: str, **kwargs)</span>
+<span>def <span class="ident">msg_info</span></span>(<span>*objects, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Displays an info message.</p></div>
@@ -1313,13 +1364,13 @@ def hello(name: str):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def msg_info(message: str, **kwargs):
+<pre><code class="python">def msg_info(*objects, **kwargs):
     &#34;&#34;&#34;Displays an info message.&#34;&#34;&#34;
-    get_message_formatter().info(message, **kwargs)</code></pre>
+    get_message_formatter().info(*objects, **kwargs)</code></pre>
 </details>
 </dd>
 <dt id="tenlib.flow.msg_failure"><code class="name flex">
-<span>def <span class="ident">msg_failure</span></span>(<span>message: str, **kwargs)</span>
+<span>def <span class="ident">msg_failure</span></span>(<span>*objects, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Displays a failure message.</p></div>
@@ -1327,13 +1378,13 @@ def hello(name: str):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def msg_failure(message: str, **kwargs):
+<pre><code class="python">def msg_failure(*objects, **kwargs):
     &#34;&#34;&#34;Displays a failure message.&#34;&#34;&#34;
-    get_message_formatter().failure(message, **kwargs)</code></pre>
+    get_message_formatter().failure(*objects, **kwargs)</code></pre>
 </details>
 </dd>
 <dt id="tenlib.flow.msg_error"><code class="name flex">
-<span>def <span class="ident">msg_error</span></span>(<span>message: str, **kwargs)</span>
+<span>def <span class="ident">msg_error</span></span>(<span>*objects, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Displays an error message.</p></div>
@@ -1341,13 +1392,13 @@ def hello(name: str):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def msg_error(message: str, **kwargs):
+<pre><code class="python">def msg_error(*objects, **kwargs):
     &#34;&#34;&#34;Displays an error message.&#34;&#34;&#34;
-    get_message_formatter().failure(message, **kwargs)</code></pre>
+    get_message_formatter().error(*objects, **kwargs)</code></pre>
 </details>
 </dd>
 <dt id="tenlib.flow.msg_success"><code class="name flex">
-<span>def <span class="ident">msg_success</span></span>(<span>message: str, **kwargs)</span>
+<span>def <span class="ident">msg_success</span></span>(<span>*objects, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Displays a success message.</p></div>
@@ -1355,13 +1406,13 @@ def hello(name: str):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def msg_success(message: str, **kwargs):
+<pre><code class="python">def msg_success(*objects, **kwargs):
     &#34;&#34;&#34;Displays a success message.&#34;&#34;&#34;
-    get_message_formatter().success(message, **kwargs)</code></pre>
+    get_message_formatter().success(*objects, **kwargs)</code></pre>
 </details>
 </dd>
 <dt id="tenlib.flow.msg_warning"><code class="name flex">
-<span>def <span class="ident">msg_warning</span></span>(<span>message: str, **kwargs)</span>
+<span>def <span class="ident">msg_warning</span></span>(<span>*objects, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Displays a warning message.</p></div>
@@ -1369,13 +1420,13 @@ def hello(name: str):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def msg_warning(message: str, **kwargs):
+<pre><code class="python">def msg_warning(*objects, **kwargs):
     &#34;&#34;&#34;Displays a warning message.&#34;&#34;&#34;
-    get_message_formatter().warning(message, **kwargs)</code></pre>
+    get_message_formatter().warning(*objects, **kwargs)</code></pre>
 </details>
 </dd>
 <dt id="tenlib.flow.msg_print"><code class="name flex">
-<span>def <span class="ident">msg_print</span></span>(<span>message: str, **kwargs)</span>
+<span>def <span class="ident">msg_print</span></span>(<span>*objects, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Displays a message.</p></div>
@@ -1383,13 +1434,13 @@ def hello(name: str):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def msg_print(message: str, **kwargs):
+<pre><code class="python">def msg_print(*objects, **kwargs):
     &#34;&#34;&#34;Displays a message.&#34;&#34;&#34;
-    get_message_formatter().print(message, **kwargs)</code></pre>
+    get_message_formatter().print(*objects, **kwargs)</code></pre>
 </details>
 </dd>
 <dt id="tenlib.flow.msg_debug"><code class="name flex">
-<span>def <span class="ident">msg_debug</span></span>(<span>message: str, **kwargs)</span>
+<span>def <span class="ident">msg_debug</span></span>(<span>*objects, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Displays a debug message.</p></div>
@@ -1397,9 +1448,9 @@ def hello(name: str):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def msg_debug(message: str, **kwargs):
+<pre><code class="python">def msg_debug(*objects, **kwargs):
     &#34;&#34;&#34;Displays a debug message.&#34;&#34;&#34;
-    get_message_formatter().debug(message, **kwargs)</code></pre>
+    get_message_formatter().debug(*objects, **kwargs)</code></pre>
 </details>
 </dd>
 <dt id="tenlib.flow.msg_clear"><code class="name flex">
@@ -1432,13 +1483,16 @@ See rich's <a href="https://rich.readthedocs.io/en/stable/reference/console.html
 <dt><strong><code>status</code></strong> :&ensp;<code>RenderableType</code></dt>
 <dd>A status renderable (str or Text typically).</dd>
 <dt><strong><code>spinner</code></strong> :&ensp;<code>str</code>, optional</dt>
-<dd>Name of spinner animation (see python -m rich.spinner). Defaults to "dots".</dd>
+<dd>Name of spinner animation (see python -m rich.spinner).
+Defaults to "dots".</dd>
 <dt><strong><code>spinner_style</code></strong> :&ensp;<code>StyleType</code>, optional</dt>
-<dd>Style of spinner. Defaults to "status.spinner".</dd>
+<dd>Style of spinner. Defaults to
+"status.spinner".</dd>
 <dt><strong><code>speed</code></strong> :&ensp;<code>float</code>, optional</dt>
 <dd>Speed factor for spinner animation. Defaults to 1.0.</dd>
 <dt><strong><code>refresh_per_second</code></strong> :&ensp;<code>float</code>, optional</dt>
-<dd>Number of refreshes per second. Defaults to 12.5.</dd>
+<dd>Number of refreshes per second. Defaults
+to 12.5.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
 <dl>
@@ -1470,10 +1524,13 @@ See rich's <a href="https://rich.readthedocs.io/en/stable/reference/console.html
 
     Args:
         status (RenderableType): A status renderable (str or Text typically).
-        spinner (str, optional): Name of spinner animation (see python -m rich.spinner). Defaults to &#34;dots&#34;.
-        spinner_style (StyleType, optional): Style of spinner. Defaults to &#34;status.spinner&#34;.
+        spinner (str, optional): Name of spinner animation (see python -m rich.spinner).
+            Defaults to &#34;dots&#34;.
+        spinner_style (StyleType, optional): Style of spinner. Defaults to
+            &#34;status.spinner&#34;.
         speed (float, optional): Speed factor for spinner animation. Defaults to 1.0.
-        refresh_per_second (float, optional): Number of refreshes per second. Defaults to 12.5.
+        refresh_per_second (float, optional): Number of refreshes per second. Defaults
+            to 12.5.
 
     Returns:
         Status: A Status object that may be used as a context manager.
@@ -1502,7 +1559,7 @@ See rich's <a href="https://rich.readthedocs.io/en/stable/reference/console.html
 </details>
 </dd>
 <dt id="tenlib.flow.leave"><code class="name flex">
-<span>def <span class="ident">leave</span></span>(<span>message=None, *args, **kwargs) ‑> None</span>
+<span>def <span class="ident">leave</span></span>(<span>message=None, *args, **kwargs) ‑> NoReturn</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Displays a message if given, and exits.</p>
@@ -1515,7 +1572,7 @@ See rich's <a href="https://rich.readthedocs.io/en/stable/reference/console.html
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def leave(message=None, *args, **kwargs) -&gt; None:
+<pre><code class="python">def leave(message=None, *args, **kwargs) -&gt; NoReturn:
     &#34;&#34;&#34;Displays a message if given, and exits.
 
     Raises:
@@ -1525,7 +1582,7 @@ See rich's <a href="https://rich.readthedocs.io/en/stable/reference/console.html
 </details>
 </dd>
 <dt id="tenlib.flow.failure"><code class="name flex">
-<span>def <span class="ident">failure</span></span>(<span>message: str = None) ‑> None</span>
+<span>def <span class="ident">failure</span></span>(<span>message: str = None) ‑> NoReturn</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Displays a failure message if given, and exits.</p>
@@ -1538,7 +1595,7 @@ See rich's <a href="https://rich.readthedocs.io/en/stable/reference/console.html
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def failure(message: str = None) -&gt; None:
+<pre><code class="python">def failure(message: str = None) -&gt; NoReturn:
     &#34;&#34;&#34;Displays a failure message if given, and exits.
 
     Raises:
@@ -1548,7 +1605,7 @@ See rich's <a href="https://rich.readthedocs.io/en/stable/reference/console.html
 </details>
 </dd>
 <dt id="tenlib.flow.error"><code class="name flex">
-<span>def <span class="ident">error</span></span>(<span>message: str = None) ‑> None</span>
+<span>def <span class="ident">error</span></span>(<span>message: str = None) ‑> NoReturn</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Displays an error message if given, displays the stack trace, and exits.</p>
@@ -1561,7 +1618,7 @@ See rich's <a href="https://rich.readthedocs.io/en/stable/reference/console.html
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def error(message: str = None) -&gt; None:
+<pre><code class="python">def error(message: str = None) -&gt; NoReturn:
     &#34;&#34;&#34;Displays an error message if given, displays the stack trace, and exits.
 
     Raises:
@@ -1822,7 +1879,7 @@ def login(session, user, password):
 </details>
 </dd>
 <dt id="tenlib.flow.track"><code class="name flex">
-<span>def <span class="ident">track</span></span>(<span>sequence: Iterable, description: str = 'Working...', total: Optional[float] = None, transient: bool = False) ‑> Iterable</span>
+<span>def <span class="ident">track</span></span>(<span>sequence: Iterable, description: str = 'Working...', total: Optional[float] = None, transient: bool = True) ‑> Iterable</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Track progress when iterating over a sequence. This is a wrapper for
@@ -1841,7 +1898,7 @@ def login(session, user, password):
 <dt><strong><code>total</code></strong> :&ensp;<code>float</code>, optional</dt>
 <dd>Total number of steps. Default is len(sequence).</dd>
 <dt><strong><code>transient</code></strong> :&ensp;<code>bool</code>, optional</dt>
-<dd>Clear the progress on exit. Defaults to False.</dd>
+<dd>Clear the progress on exit. Defaults to True.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
 <dl>
@@ -1856,7 +1913,7 @@ def login(session, user, password):
     sequence: Iterable,
     description: str = &#34;Working...&#34;,
     total: Optional[float] = None,
-    transient: bool = False,
+    transient: bool = True,
 ) -&gt; Iterable:
     &#34;&#34;&#34;Track progress when iterating over a sequence. This is a wrapper for
     [rich&#39;s `track`](https://rich.readthedocs.io/en/stable/reference/progress.html#rich.progress.Progress.track).
@@ -1873,7 +1930,7 @@ def login(session, user, password):
         sequence (Iterable): A sequence (must support `len()`) you wish to iterate over.
         description (str, optional): Description of task show next to progress bar. Defaults to &#34;Working&#34;.
         total (float, optional): Total number of steps. Default is len(sequence).
-        transient (bool, optional): Clear the progress on exit. Defaults to False.
+        transient (bool, optional): Clear the progress on exit. Defaults to True.
 
     Returns:
         Iterable: An iterable of the values in the sequence.
@@ -1889,12 +1946,13 @@ def login(session, user, password):
 </details>
 </dd>
 <dt id="tenlib.flow.ask"><code class="name flex">
-<span>def <span class="ident">ask</span></span>(<span>prompt: Union[str, ForwardRef('Text')] = '', *, password: bool = False, choices: Optional[List[str]] = None, show_default: bool = True, show_choices: bool = True, default: Any = Ellipsis) ‑> Any</span>
+<span>def <span class="ident">ask</span></span>(<span>prompt: Union[str, ForwardRef('Text')] = '', *, password: bool = False, choices: Optional[list[str]] = None, show_default: bool = True, show_choices: bool = True, default: Any = Ellipsis) ‑> Any</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Shortcut to construct and run a prompt loop and return the result.</p>
+<div class="desc"><p>Shortcut to construct and run a prompt loop and return the result.
+Wrapper for <code>rich.prompt.Prompt</code>.</p>
 <h2 id="example">Example</h2>
-<pre><code class="language-python-repl">&gt;&gt;&gt; filename = Prompt.ask(&quot;Enter a filename&quot;)
+<pre><code class="language-python-repl">&gt;&gt;&gt; filename = ask(&quot;Enter a filename&quot;)
 </code></pre>
 <h2 id="args">Args</h2>
 <dl>
@@ -1917,15 +1975,16 @@ def login(session, user, password):
     prompt: TextType = &#34;&#34;,
     *,
     password: bool = False,
-    choices: Optional[List[str]] = None,
+    choices: Optional[list[str]] = None,
     show_default: bool = True,
     show_choices: bool = True,
     default: Any = ...,
 ) -&gt; Any:
     &#34;&#34;&#34;Shortcut to construct and run a prompt loop and return the result.
+    Wrapper for `rich.prompt.Prompt`.
 
     Example:
-        &gt;&gt;&gt; filename = Prompt.ask(&#34;Enter a filename&#34;)
+        &gt;&gt;&gt; filename = ask(&#34;Enter a filename&#34;)
 
     Args:
         prompt (TextType, optional): Prompt text. Defaults to &#34;&#34;.
@@ -1989,9 +2048,9 @@ its parameters and the value returned.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def set_message_formatter(
-    message_formatter: typing.Union[
-        messageformatter.MessageFormatter, Type[messageformatter.MessageFormatter], str
-    ]
+    message_formatter: messageformatter.MessageFormatter
+    | Type[messageformatter.MessageFormatter]
+    | str,
 ) -&gt; None:
     &#34;&#34;&#34;Sets given `messageformatter.MessageFormatter` as the message formatter.&#34;&#34;&#34;
     global __message_formatter

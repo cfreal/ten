@@ -64,8 +64,7 @@ To set the level of logging in this file, use `set_level`. Change the path using
 &#34;&#34;&#34;
 
 import logging
-import os.path
-import typing
+from typing import IO
 from logging import Handler, Logger
 
 from rich.console import Console
@@ -167,7 +166,7 @@ def set_level(level):
     __file_handler.setLevel(level)
 
 
-def set_file(file: typing.Union[str, typing.IO[str]]) -&gt; None:
+def set_file(file: str | IO[str]) -&gt; None:
     &#34;&#34;&#34;Set the location of the log file.
 
     Example:
@@ -337,7 +336,7 @@ logger which is the root logger of the hierarchy.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def set_file(file: typing.Union[str, typing.IO[str]]) -&gt; None:
+<pre><code class="python">def set_file(file: str | IO[str]) -&gt; None:
     &#34;&#34;&#34;Set the location of the log file.
 
     Example:

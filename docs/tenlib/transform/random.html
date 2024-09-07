@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
 <title>tenlib.transform.random API documentation</title>
-<meta name="description" content="" />
+<meta name="description" content="Generates random data." />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -22,11 +22,14 @@
 <h1 class="title">Module <code>tenlib.transform.random</code></h1>
 </header>
 <section id="section-intro">
+<p>Generates random data.</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">import random
+<pre><code class="python">&#34;&#34;&#34;Generates random data.&#34;&#34;&#34;
+
+import random
 import string as _string
 
 
@@ -39,7 +42,7 @@ def string(size: int = 8, charset: str = _string.ascii_letters + _string.digits)
         &#39;VVclsHsC2H&#39;
         &gt;&gt;&gt; string(charset=&#34;abc&#34;)
         &#39;bcacbbcc&#39;
-    
+
     Args:
         size (int): Size of the string
         charset (str): Charset to extract characters from
@@ -51,8 +54,8 @@ def string(size: int = 8, charset: str = _string.ascii_letters + _string.digits)
 
 
 def alpha(size: int = 8) -&gt; str:
-    &#34;&#34;&#34;Generates a random alphanumeric string.
-    
+    &#34;&#34;&#34;Generates a random string of lowercase and uppercase letters.
+
     Example:
 
         &gt;&gt;&gt; alpha(10)
@@ -62,16 +65,33 @@ def alpha(size: int = 8) -&gt; str:
         size (int): Size of the string
 
     Returns:
-        str: Random alphanumeric string
+        str: Random string of lowercase and uppercase letters
     &#34;&#34;&#34;
     return string(size, charset=_string.ascii_letters)
 
 
+def alphanumeric(size: int = 8) -&gt; str:
+    &#34;&#34;&#34;Generates a random alphanumeric string.
+
+    Example:
+
+        &gt;&gt;&gt; alphanumeric(10)
+        &#39;erMR12LuA3&#39;
+
+    Args:
+        size (int): Size of the string
+
+    Returns:
+        str: Random alphanumeric string
+    &#34;&#34;&#34;
+    return string(size, charset=_string.ascii_letters + _string.digits)
+
+
 def lower(size: int = 8) -&gt; str:
     &#34;&#34;&#34;Generates a random lowercase string.
-    
+
     Example:
-    
+
         &gt;&gt;&gt; lower(10)
         &#39;mkswzvglno&#39;
 
@@ -85,10 +105,10 @@ def lower(size: int = 8) -&gt; str:
 
 
 def hexa(size: int = 40) -&gt; str:
-    &#34;&#34;&#34;Generates a random hexadecimal string.
-    
+    &#34;&#34;&#34;Generates a random hexadecimal string. Letters a-f are lowercase.
+
     Example:
-    
+
         &gt;&gt;&gt; hexa(10)
         &#39;7f33d853ef&#39;
 
@@ -98,14 +118,14 @@ def hexa(size: int = 40) -&gt; str:
     Returns:
         str: Random hexadecimal string
     &#34;&#34;&#34;
-    return string(size, charset=&#34;0123456789abcdef&#34;)
+    return string(size, charset=_string.hexdigits.lower())
 
 
 def digits(size: int = 8) -&gt; str:
     &#34;&#34;&#34;Generates a random digit string.
-    
+
     Example:
-    
+
         &gt;&gt;&gt; digits(10)
         &#39;3030278136&#39;
 
@@ -117,11 +137,12 @@ def digits(size: int = 8) -&gt; str:
     &#34;&#34;&#34;
     return string(size, charset=_string.digits)
 
+
 def number(min: int = 0, max: int = 100000) -&gt; int:
     &#34;&#34;&#34;Generates a random integer between `min` and `max`, included.
-    
+
     Example:
-    
+
         &gt;&gt;&gt; number(1, 10)
         8
 
@@ -178,7 +199,7 @@ def number(min: int = 0, max: int = 100000) -&gt; int:
         &#39;VVclsHsC2H&#39;
         &gt;&gt;&gt; string(charset=&#34;abc&#34;)
         &#39;bcacbbcc&#39;
-    
+
     Args:
         size (int): Size of the string
         charset (str): Charset to extract characters from
@@ -193,10 +214,50 @@ def number(min: int = 0, max: int = 100000) -&gt; int:
 <span>def <span class="ident">alpha</span></span>(<span>size: int = 8) ‑> str</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Generates a random alphanumeric string.</p>
+<div class="desc"><p>Generates a random string of lowercase and uppercase letters.</p>
 <h2 id="example">Example</h2>
 <pre><code class="language-python-repl">&gt;&gt;&gt; alpha(10)
 'DerMRLuAyy'
+</code></pre>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>size</code></strong> :&ensp;<code>int</code></dt>
+<dd>Size of the string</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>str</code></dt>
+<dd>Random string of lowercase and uppercase letters</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def alpha(size: int = 8) -&gt; str:
+    &#34;&#34;&#34;Generates a random string of lowercase and uppercase letters.
+
+    Example:
+
+        &gt;&gt;&gt; alpha(10)
+        &#39;DerMRLuAyy&#39;
+
+    Args:
+        size (int): Size of the string
+
+    Returns:
+        str: Random string of lowercase and uppercase letters
+    &#34;&#34;&#34;
+    return string(size, charset=_string.ascii_letters)</code></pre>
+</details>
+</dd>
+<dt id="tenlib.transform.random.alphanumeric"><code class="name flex">
+<span>def <span class="ident">alphanumeric</span></span>(<span>size: int = 8) ‑> str</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Generates a random alphanumeric string.</p>
+<h2 id="example">Example</h2>
+<pre><code class="language-python-repl">&gt;&gt;&gt; alphanumeric(10)
+'erMR12LuA3'
 </code></pre>
 <h2 id="args">Args</h2>
 <dl>
@@ -212,13 +273,13 @@ def number(min: int = 0, max: int = 100000) -&gt; int:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def alpha(size: int = 8) -&gt; str:
+<pre><code class="python">def alphanumeric(size: int = 8) -&gt; str:
     &#34;&#34;&#34;Generates a random alphanumeric string.
-    
+
     Example:
 
-        &gt;&gt;&gt; alpha(10)
-        &#39;DerMRLuAyy&#39;
+        &gt;&gt;&gt; alphanumeric(10)
+        &#39;erMR12LuA3&#39;
 
     Args:
         size (int): Size of the string
@@ -226,7 +287,7 @@ def number(min: int = 0, max: int = 100000) -&gt; int:
     Returns:
         str: Random alphanumeric string
     &#34;&#34;&#34;
-    return string(size, charset=_string.ascii_letters)</code></pre>
+    return string(size, charset=_string.ascii_letters + _string.digits)</code></pre>
 </details>
 </dd>
 <dt id="tenlib.transform.random.lower"><code class="name flex">
@@ -254,9 +315,9 @@ def number(min: int = 0, max: int = 100000) -&gt; int:
 </summary>
 <pre><code class="python">def lower(size: int = 8) -&gt; str:
     &#34;&#34;&#34;Generates a random lowercase string.
-    
+
     Example:
-    
+
         &gt;&gt;&gt; lower(10)
         &#39;mkswzvglno&#39;
 
@@ -273,7 +334,7 @@ def number(min: int = 0, max: int = 100000) -&gt; int:
 <span>def <span class="ident">hexa</span></span>(<span>size: int = 40) ‑> str</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Generates a random hexadecimal string.</p>
+<div class="desc"><p>Generates a random hexadecimal string. Letters a-f are lowercase.</p>
 <h2 id="example">Example</h2>
 <pre><code class="language-python-repl">&gt;&gt;&gt; hexa(10)
 '7f33d853ef'
@@ -293,10 +354,10 @@ def number(min: int = 0, max: int = 100000) -&gt; int:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def hexa(size: int = 40) -&gt; str:
-    &#34;&#34;&#34;Generates a random hexadecimal string.
-    
+    &#34;&#34;&#34;Generates a random hexadecimal string. Letters a-f are lowercase.
+
     Example:
-    
+
         &gt;&gt;&gt; hexa(10)
         &#39;7f33d853ef&#39;
 
@@ -306,7 +367,7 @@ def number(min: int = 0, max: int = 100000) -&gt; int:
     Returns:
         str: Random hexadecimal string
     &#34;&#34;&#34;
-    return string(size, charset=&#34;0123456789abcdef&#34;)</code></pre>
+    return string(size, charset=_string.hexdigits.lower())</code></pre>
 </details>
 </dd>
 <dt id="tenlib.transform.random.digits"><code class="name flex">
@@ -334,9 +395,9 @@ def number(min: int = 0, max: int = 100000) -&gt; int:
 </summary>
 <pre><code class="python">def digits(size: int = 8) -&gt; str:
     &#34;&#34;&#34;Generates a random digit string.
-    
+
     Example:
-    
+
         &gt;&gt;&gt; digits(10)
         &#39;3030278136&#39;
 
@@ -376,9 +437,9 @@ def number(min: int = 0, max: int = 100000) -&gt; int:
 </summary>
 <pre><code class="python">def number(min: int = 0, max: int = 100000) -&gt; int:
     &#34;&#34;&#34;Generates a random integer between `min` and `max`, included.
-    
+
     Example:
-    
+
         &gt;&gt;&gt; number(1, 10)
         8
 
@@ -412,6 +473,7 @@ def number(min: int = 0, max: int = 100000) -&gt; int:
 <ul class="two-column">
 <li><code><a title="tenlib.transform.random.string" href="#tenlib.transform.random.string">string</a></code></li>
 <li><code><a title="tenlib.transform.random.alpha" href="#tenlib.transform.random.alpha">alpha</a></code></li>
+<li><code><a title="tenlib.transform.random.alphanumeric" href="#tenlib.transform.random.alphanumeric">alphanumeric</a></code></li>
 <li><code><a title="tenlib.transform.random.lower" href="#tenlib.transform.random.lower">lower</a></code></li>
 <li><code><a title="tenlib.transform.random.hexa" href="#tenlib.transform.random.hexa">hexa</a></code></li>
 <li><code><a title="tenlib.transform.random.digits" href="#tenlib.transform.random.digits">digits</a></code></li>
