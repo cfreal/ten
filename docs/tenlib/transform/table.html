@@ -31,7 +31,13 @@ from tenlib import fs
 
 
 @multiform
-def split(data: str, separator: str=&#34;\n&#34;, *separators: str, strip: bool=False, empty: bool=False):
+def split(
+    data: str,
+    separator: str = &#34;\n&#34;,
+    *separators: str,
+    strip: bool = False,
+    empty: bool = False,
+) -&gt; list:
     &#34;&#34;&#34;Splits the `data` with the first `separator`.
     Then, splits every row of the `data` with the second `separator`, and so on.
 
@@ -66,7 +72,7 @@ def split(data: str, separator: str=&#34;\n&#34;, *separators: str, strip: bool=
     return split(data, *separators, strip=strip)
 
 
-def join(data, separator=&#34;\n&#34;, *separators):
+def join(data, separator=&#34;\n&#34;, *separators) -&gt; str:
     &#34;&#34;&#34;Merges the deepest list with the last `separator`. Then, merges the
     obtained sublist with the second to last `separator`, and so on.
 
@@ -83,7 +89,7 @@ def join(data, separator=&#34;\n&#34;, *separators):
     return separator.join(join(row, *separators) for row in data)
 
 
-def map(table, **functions):
+def map(table, **functions) -&gt; list:
     &#34;&#34;&#34;For every column *n* in the table, if the keyword argument `_n` was
     given, apply it to every cell of said column.
 
@@ -104,8 +110,10 @@ def map(table, **functions):
     for row in table:
         processed_row = []
         for i, cell in enumerate(row):
-            function = functions.get(f&#34;_{i}&#34;, functions.get(i, identity))
-            processed_row.append(function(cell))
+            function = functions.get(f&#34;_{i}&#34;) or functions.get(i)
+            if function:
+                cell = function(cell)
+            processed_row.append(cell)
         processed_table.append(processed_row)
     return processed_table
 
@@ -122,7 +130,7 @@ write = fs.wrapper_write(join)</code></pre>
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="tenlib.transform.table.split"><code class="name flex">
-<span>def <span class="ident">split</span></span>(<span>data: str, separator: str = '\n', *separators: str, strip: bool = False, empty: bool = False)</span>
+<span>def <span class="ident">split</span></span>(<span>data: str, separator: str = '\n', *separators: str, strip: bool = False, empty: bool = False) ‑> list</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Splits the <code>data</code> with the first <code>separator</code>.
@@ -154,7 +162,13 @@ Then, splits every row of the <code>data</code> with the second <code>separator<
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@multiform
-def split(data: str, separator: str=&#34;\n&#34;, *separators: str, strip: bool=False, empty: bool=False):
+def split(
+    data: str,
+    separator: str = &#34;\n&#34;,
+    *separators: str,
+    strip: bool = False,
+    empty: bool = False,
+) -&gt; list:
     &#34;&#34;&#34;Splits the `data` with the first `separator`.
     Then, splits every row of the `data` with the second `separator`, and so on.
 
@@ -190,7 +204,7 @@ def split(data: str, separator: str=&#34;\n&#34;, *separators: str, strip: bool=
 </details>
 </dd>
 <dt id="tenlib.transform.table.join"><code class="name flex">
-<span>def <span class="ident">join</span></span>(<span>data, separator='\n', *separators)</span>
+<span>def <span class="ident">join</span></span>(<span>data, separator='\n', *separators) ‑> str</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Merges the deepest list with the last <code>separator</code>. Then, merges the
@@ -204,7 +218,7 @@ obtained sublist with the second to last <code>separator</code>, and so on.</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def join(data, separator=&#34;\n&#34;, *separators):
+<pre><code class="python">def join(data, separator=&#34;\n&#34;, *separators) -&gt; str:
     &#34;&#34;&#34;Merges the deepest list with the last `separator`. Then, merges the
     obtained sublist with the second to last `separator`, and so on.
 
@@ -222,7 +236,7 @@ obtained sublist with the second to last <code>separator</code>, and so on.</p>
 </details>
 </dd>
 <dt id="tenlib.transform.table.map"><code class="name flex">
-<span>def <span class="ident">map</span></span>(<span>table, **functions)</span>
+<span>def <span class="ident">map</span></span>(<span>table, **functions) ‑> list</span>
 </code></dt>
 <dd>
 <div class="desc"><p>For every column <em>n</em> in the table, if the keyword argument <code>_n</code> was
@@ -246,7 +260,7 @@ given, apply it to every cell of said column.</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def map(table, **functions):
+<pre><code class="python">def map(table, **functions) -&gt; list:
     &#34;&#34;&#34;For every column *n* in the table, if the keyword argument `_n` was
     given, apply it to every cell of said column.
 
@@ -267,14 +281,16 @@ given, apply it to every cell of said column.</p>
     for row in table:
         processed_row = []
         for i, cell in enumerate(row):
-            function = functions.get(f&#34;_{i}&#34;, functions.get(i, identity))
-            processed_row.append(function(cell))
+            function = functions.get(f&#34;_{i}&#34;) or functions.get(i)
+            if function:
+                cell = function(cell)
+            processed_row.append(cell)
         processed_table.append(processed_row)
     return processed_table</code></pre>
 </details>
 </dd>
 <dt id="tenlib.transform.table.read"><code class="name flex">
-<span>def <span class="ident">read</span></span>(<span>data: str, separator: str = '\n', *separators: str, strip: bool = False, empty: bool = False)</span>
+<span>def <span class="ident">read</span></span>(<span>data: str, separator: str = '\n', *separators: str, strip: bool = False, empty: bool = False) ‑> list</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Splits the <code>data</code> with the first <code>separator</code>.
@@ -306,7 +322,13 @@ Then, splits every row of the <code>data</code> with the second <code>separator<
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@multiform
-def split(data: str, separator: str=&#34;\n&#34;, *separators: str, strip: bool=False, empty: bool=False):
+def split(
+    data: str,
+    separator: str = &#34;\n&#34;,
+    *separators: str,
+    strip: bool = False,
+    empty: bool = False,
+) -&gt; list:
     &#34;&#34;&#34;Splits the `data` with the first `separator`.
     Then, splits every row of the `data` with the second `separator`, and so on.
 
@@ -342,7 +364,7 @@ def split(data: str, separator: str=&#34;\n&#34;, *separators: str, strip: bool=
 </details>
 </dd>
 <dt id="tenlib.transform.table.write"><code class="name flex">
-<span>def <span class="ident">write</span></span>(<span>data, separator='\n', *separators)</span>
+<span>def <span class="ident">write</span></span>(<span>data, separator='\n', *separators) ‑> str</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Merges the deepest list with the last <code>separator</code>. Then, merges the
@@ -356,7 +378,7 @@ obtained sublist with the second to last <code>separator</code>, and so on.</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def join(data, separator=&#34;\n&#34;, *separators):
+<pre><code class="python">def join(data, separator=&#34;\n&#34;, *separators) -&gt; str:
     &#34;&#34;&#34;Merges the deepest list with the last `separator`. Then, merges the
     obtained sublist with the second to last `separator`, and so on.
 

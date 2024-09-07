@@ -35,6 +35,8 @@ See `tenlib.flow.msg_info` to check the display functions, and
 `tenlib.flow.set_message_formatter` to change the display style.
 &#34;&#34;&#34;
 
+from abc import ABC, abstractmethod
+from enum import Enum
 from tenlib.flow.console import get_console
 from rich.console import Console
 
@@ -43,22 +45,16 @@ __all__ = [
     &#34;MessageFormatter&#34;,
     &#34;NewschoolMessageFormatter&#34;,
     &#34;OldschoolMessageFormatter&#34;,
+    &#34;OtherOldschoolMessageFormatter&#34;,
     &#34;SlickMessageFormatter&#34;,
     &#34;CircleMessageFormatter&#34;,
+    &#34;IconMessageFormatter&#34;,
     &#34;BackgroundMessageFormatter&#34;,
 ]
 
 
-class MessageFormatter:
+class MessageFormatter(ABC):
     &#34;&#34;&#34;Wrapper to display information in a pretty way.
-    When displaying a message, a status, a format string and its parameters must
-    be given. A few stati are available: `INFO`, `SUCCESS`, `ERROR`, `WARNING`,
-    `DEBUG`. The status will be prepended to the displayed line, and every
-    parameter of a format string will be colored.
-
-    This message formatter displays a colored character indicating the status at
-    the beginning of every line: `+` for success, `-` for failure, `i` for
-    information, etc.
 
     The list of possible calls is as follows:
 
@@ -70,22 +66,6 @@ class MessageFormatter:
     * `MessageFormatter.debug`
     &#34;&#34;&#34;
 
-    _INFO = &#34;INFO&#34;
-    _SUCCESS = &#34;SUCCESS&#34;
-    _FAILURE = &#34;FAILURE&#34;
-    _ERROR = &#34;ERROR&#34;
-    _WARNING = &#34;WARNING&#34;
-    _DEBUG = &#34;DEBUG&#34;
-
-    _FORMAT = {
-        &#34;INFO&#34;: &#34;[b blue]*[/] {}&#34;,
-        &#34;FAILURE&#34;: &#34;[b red]-[/] {}&#34;,
-        &#34;ERROR&#34;: &#34;[b red]x[/] {}&#34;,
-        &#34;SUCCESS&#34;: &#34;[b green]+[/] {}&#34;,
-        &#34;WARNING&#34;: &#34;[b yellow]![/] {}&#34;,
-        &#34;DEBUG&#34;: &#34;[b magenta]D[/] {}&#34;,
-    }
-
     CLEAR_LINE = &#34;\r\x1b[K&#34;
 
     def __init__(self, *, console: Console = None):
@@ -96,17 +76,17 @@ class MessageFormatter:
         self._console = console
 
     @property
-    def console(self):
+    def console(self) -&gt; Console:
         return self._console or get_console()
 
-    def _output(self, message, **kwargs):
-        self.console.print(message, **kwargs)
+    def _output(self, *objects, **kwargs) -&gt; None:
+        self.console.print(*objects, **kwargs)
 
-    def print(self, message=&#34;&#34;, **kwargs):
+    def print(self, *objects, **kwargs) -&gt; None:
         &#34;&#34;&#34;Displays a message.&#34;&#34;&#34;
-        return self._output(message, **kwargs)
+        return self._output(*objects, **kwargs)
 
-    def bin_print(self, data: bytes):
+    def bin_print(self, data: bytes) -&gt; None:
         &#34;&#34;&#34;Prints binary `data` and flushes the stream.
 
         Args:
@@ -118,86 +98,170 @@ class MessageFormatter:
             raise TypeError(&#34;MessageFormatter.bin_print() expects a byte-like object&#34;)
         self.console.file.buffer.flush()
 
-    def status(self, status, message, **kwargs):
+    @abstractmethod
+    def info(self, *objects, **kwargs) -&gt; None:
+        &#34;&#34;&#34;Displays an information message.&#34;&#34;&#34;
+
+    @abstractmethod
+    def warning(self, *objects, **kwargs) -&gt; None:
+        &#34;&#34;&#34;Displays a warning message.&#34;&#34;&#34;
+
+    @abstractmethod
+    def error(self, message, **kwargs) -&gt; None:
+        &#34;&#34;&#34;Displays an error message.&#34;&#34;&#34;
+
+    @abstractmethod
+    def success(self, message, **kwargs) -&gt; None:
+        &#34;&#34;&#34;Displays a success message.&#34;&#34;&#34;
+
+    @abstractmethod
+    def failure(self, message, **kwargs) -&gt; None:
+        &#34;&#34;&#34;Displays a failure message.&#34;&#34;&#34;
+
+    @abstractmethod
+    def debug(self, message, **kwargs) -&gt; None:
+        &#34;&#34;&#34;Displays a debug message.&#34;&#34;&#34;
+
+    def clear(self) -&gt; None:
+        &#34;&#34;&#34;Clears last line.&#34;&#34;&#34;
+        self.console.file.write(self.CLEAR_LINE)
+
+
+class Status(Enum):
+    INFO = 1
+    SUCCESS = 2
+    FAILURE = 3
+    ERROR = 4
+    WARNING = 5
+    DEBUG = 6
+
+
+class PrefixMessageFormatter(MessageFormatter):
+    &#34;&#34;&#34;Displays a prefix indicating the status of the message.&#34;&#34;&#34;
+
+    # Prefix to add to the message
+    _PREFIX = {
+        Status.INFO: &#34;[b blue]*[/]&#34;,
+        Status.FAILURE: &#34;[b red]-[/]&#34;,
+        Status.ERROR: &#34;[b red]x[/]&#34;,
+        Status.SUCCESS: &#34;[b green]+[/]&#34;,
+        Status.WARNING: &#34;[b yellow]![/]&#34;,
+        Status.DEBUG: &#34;[b magenta]D[/]&#34;,
+    }
+    # Styles to apply to the whole message
+    _STYLES = {
+        Status.INFO: None,
+        Status.FAILURE: None,
+        Status.ERROR: None,
+        Status.SUCCESS: None,
+        Status.WARNING: None,
+        Status.DEBUG: None,
+    }
+
+    def _status(self, status: Status, *objects, **kwargs):
         &#34;&#34;&#34;Displays a message along with a status.
         Arguments of the format string will be colored in a color indicating the
         status. For instance, arguments for the success function will be in
         green, and failure in red.
         &#34;&#34;&#34;
-        return self._output(self._FORMAT[status].format(message), **kwargs)
+        return self._output(
+            self._PREFIX[status], *objects, style=self._STYLES[status], **kwargs
+        )
 
-    def info(self, message, **kwargs):
-        self.status(self._INFO, message, **kwargs)
+    def info(self, *objects, **kwargs):
+        self._status(Status.INFO, *objects, **kwargs)
 
-    def warning(self, message, **kwargs):
-        self.status(self._WARNING, message, **kwargs)
+    def warning(self, *objects, **kwargs):
+        self._status(Status.WARNING, *objects, **kwargs)
 
-    def error(self, message, **kwargs):
-        self.status(self._ERROR, message, **kwargs)
+    def error(self, *objects, **kwargs):
+        self._status(Status.ERROR, *objects, **kwargs)
 
-    def success(self, message, **kwargs):
-        self.status(self._SUCCESS, message, **kwargs)
+    def success(self, *objects, **kwargs):
+        self._status(Status.SUCCESS, *objects, **kwargs)
 
-    def failure(self, message, **kwargs):
-        self.status(self._FAILURE, message, **kwargs)
+    def failure(self, *objects, **kwargs):
+        self._status(Status.FAILURE, *objects, **kwargs)
 
-    def debug(self, message, **kwargs):
-        self.status(self._DEBUG, message, **kwargs)
+    def debug(self, *objects, **kwargs):
+        self._status(Status.DEBUG, *objects, **kwargs)
 
     def clear(self):
         &#34;&#34;&#34;Clears last line.&#34;&#34;&#34;
         self.console.file.write(self.CLEAR_LINE)
 
 
-class SlickMessageFormatter(MessageFormatter):
+class SlickMessageFormatter(PrefixMessageFormatter):
     &#34;&#34;&#34;Status is indicated as a colored pipe at the beginning of every line.
 
     Examples:
-        &gt;&gt;&gt; o = SlickOutput()
+        &gt;&gt;&gt; o = SlickMessageFormatter()
         &gt;&gt;&gt; o.info(&#39;Something&#39;)
         | Something
     &#34;&#34;&#34;
 
-    _FORMAT = {
-        &#34;INFO&#34;: &#34;[b blue]|[/] {}&#34;,
-        &#34;FAILURE&#34;: &#34;[b red]|[/] {}&#34;,
-        &#34;ERROR&#34;: &#34;[b red]|[/] {}&#34;,
-        &#34;SUCCESS&#34;: &#34;[b green]|[/] {}&#34;,
-        &#34;WARNING&#34;: &#34;[b yellow]|[/] {}&#34;,
-        &#34;DEBUG&#34;: &#34;[b magenta]|[/] {}&#34;,
+    _PREFIX = {
+        Status.INFO: &#34;[b blue]|[/]&#34;,
+        Status.FAILURE: &#34;[b red]|[/]&#34;,
+        Status.ERROR: &#34;[b red]|[/]&#34;,
+        Status.SUCCESS: &#34;[b green]|[/]&#34;,
+        Status.WARNING: &#34;[b yellow]|[/]&#34;,
+        Status.DEBUG: &#34;[b magenta]|[/]&#34;,
     }
 
 
-class OldschoolMessageFormatter(MessageFormatter):
-    &#34;&#34;&#34;Status is indicated as `[+]`, `[-]`, `[i]`, etc. at the beginning of
-    every line.
+class OldschoolMessageFormatter(PrefixMessageFormatter):
+    &#34;&#34;&#34;Status is indicated as `[+]`, `[-]`, `[*]`, etc. at the beginning of
+    every line, with the icon colored.
 
     Examples:
-        &gt;&gt;&gt; o = OldSchoolOutput()
+        &gt;&gt;&gt; o = OtherOldschoolMessageFormatter()
+        &gt;&gt;&gt; o.info(&#39;Something&#39;)
+        [*] Something
+        &gt;&gt;&gt; o.success(&#39;Something else&#39;)
+        [+] Something else
+    &#34;&#34;&#34;
+
+    _PREFIX = {
+        Status.INFO: &#34;[[blue]*[/]]&#34;,
+        Status.FAILURE: &#34;[[red]-[/]]&#34;,
+        Status.ERROR: &#34;[[red]x[/]]&#34;,
+        Status.SUCCESS: &#34;[[green]+[/]]&#34;,
+        Status.WARNING: &#34;[[yellow]![/]]&#34;,
+        Status.DEBUG: &#34;[[magenta]D[/]]&#34;,
+    }
+
+
+class OtherOldschoolMessageFormatter(PrefixMessageFormatter):
+    &#34;&#34;&#34;Status is indicated as `[+]`, `[-]`, `[*]`, etc. at the beginning of
+    every line, colored and bold.
+
+    Examples:
+        &gt;&gt;&gt; o = OldschoolMessageFormatter()
         &gt;&gt;&gt; o.info(&#39;Something&#39;)
         [i] Something
         &gt;&gt;&gt; o.success(&#39;Something else&#39;)
         [+] Something else
     &#34;&#34;&#34;
 
-    _FORMAT = {
-        &#34;INFO&#34;: &#34;[[blue]*[/]] {}&#34;,
-        &#34;FAILURE&#34;: &#34;[[red]-[/]] {}&#34;,
-        &#34;ERROR&#34;: &#34;[[red]x[/]] {}&#34;,
-        &#34;SUCCESS&#34;: &#34;[[green]+[/]] {}&#34;,
-        &#34;WARNING&#34;: &#34;[[yellow]![/]] {}&#34;,
-        &#34;DEBUG&#34;: &#34;[[magenta]D[/]] {}&#34;,
+    _PREFIX = {
+        Status.INFO: &#34;[b blue]\[*][/]&#34;,
+        Status.FAILURE: &#34;[b red]\[-][/]&#34;,
+        Status.ERROR: &#34;[b red]\[x][/]&#34;,
+        Status.SUCCESS: &#34;[b green]\[+][/]&#34;,
+        Status.WARNING: &#34;[b yellow]\[!][/]&#34;,
+        Status.DEBUG: &#34;[b magenta]\[D][/]&#34;,
     }
 
 
-class NewschoolMessageFormatter(MessageFormatter):
+class NewschoolMessageFormatter(PrefixMessageFormatter):
     &#34;&#34;&#34;Status is be indicated as a colored symbol at the beginning of every
     line. Requires UTF-8.
 
     Examples:
         &gt;&gt;&gt; o = NewschoolOutput()
         &gt;&gt;&gt; o.info(&#39;Something&#39;)
-        » Something
+        · Something
         &gt;&gt;&gt; o.success(&#39;Success&#39;)
         ✔ Success
         &gt;&gt;&gt; o.failure(&#39;Failure&#39;)
@@ -206,13 +270,39 @@ class NewschoolMessageFormatter(MessageFormatter):
          test
     &#34;&#34;&#34;
 
-    _FORMAT = {
-        &#34;INFO&#34;: &#34;[b blue]·[/] {}&#34;,
-        &#34;FAILURE&#34;: &#34;[b red]✖[/] {}&#34;,
-        &#34;ERROR&#34;: &#34;[b red]✖[/] {}&#34;,
-        &#34;SUCCESS&#34;: &#34;[b green]✔[/] {}&#34;,
-        &#34;WARNING&#34;: &#34;[b yellow]▲[/] {}&#34;,
-        &#34;DEBUG&#34;: &#34;[b magenta]⊙[/] {}&#34;,
+    _PREFIX = {
+        Status.INFO: &#34;[b blue]·[/]&#34;,
+        Status.FAILURE: &#34;[b red]✖[/]&#34;,
+        Status.ERROR: &#34;[b red]✖[/]&#34;,
+        Status.SUCCESS: &#34;[b green]✔[/]&#34;,
+        Status.WARNING: &#34;[b yellow]▲[/]&#34;,
+        Status.DEBUG: &#34;[b magenta]⊙[/]&#34;,
+    }
+
+
+class IconMessageFormatter(PrefixMessageFormatter):
+    &#34;&#34;&#34;Status is be indicated as a colored symbol at the beginning of every
+    line. Requires UTF-8.
+
+    Examples:
+        &gt;&gt;&gt; o = NewschoolOutput()
+        &gt;&gt;&gt; o.info(&#39;Something&#39;)
+         ·  Something
+        &gt;&gt;&gt; o.success(&#39;Success&#39;)
+         ✔  Success
+        &gt;&gt;&gt; o.failure(&#39;Failure&#39;)
+         ✖  Failure
+        &gt;&gt;&gt; o.print(&#39;test&#39;)
+        test
+    &#34;&#34;&#34;
+
+    _PREFIX = {
+        Status.INFO: &#34;[b blue on black] · [/]&#34;,
+        Status.FAILURE: &#34;[b red on black] ✖ [/]&#34;,
+        Status.ERROR: &#34;[b red on black] ✖ [/]&#34;,
+        Status.SUCCESS: &#34;[b green on black] ✔ [/]&#34;,
+        Status.WARNING: &#34;[b yellow on black] ▲ [/]&#34;,
+        Status.DEBUG: &#34;[b magenta on black] ⊙ [/]&#34;,
     }
 
 
@@ -221,13 +311,13 @@ class CircleMessageFormatter(MessageFormatter):
     line. Requires UTF-8.
     &#34;&#34;&#34;
 
-    _FORMAT = {
-        &#34;INFO&#34;: &#34;[b blue]·[/] {}&#34;,
-        &#34;FAILURE&#34;: &#34;[b red]·[/] {}&#34;,
-        &#34;ERROR&#34;: &#34;[b red]·[/] {}&#34;,
-        &#34;SUCCESS&#34;: &#34;[b green]·[/] {}&#34;,
-        &#34;WARNING&#34;: &#34;[b yellow]·[/] {}&#34;,
-        &#34;DEBUG&#34;: &#34;[b magenta]·[/] {}&#34;,
+    _PREFIX = {
+        Status.INFO: &#34;[b blue]·[/]&#34;,
+        Status.FAILURE: &#34;[b red]·[/]&#34;,
+        Status.ERROR: &#34;[b red]·[/]&#34;,
+        Status.SUCCESS: &#34;[b green]·[/]&#34;,
+        Status.WARNING: &#34;[b yellow]·[/]&#34;,
+        Status.DEBUG: &#34;[b magenta]·[/]&#34;,
     }
 
 
@@ -237,12 +327,21 @@ class BackgroundMessageFormatter(MessageFormatter):
     &#34;&#34;&#34;
 
     _FORMAT = {
-        &#34;INFO&#34;: &#34;[on blue]· {}[/]&#34;,
-        &#34;FAILURE&#34;: &#34;[on red]✖ {}[/]&#34;,
-        &#34;ERROR&#34;: &#34;[on red]✖ {}[/]&#34;,
-        &#34;SUCCESS&#34;: &#34;[on green]✔ {}[/]&#34;,
-        &#34;WARNING&#34;: &#34;[on yellow]▲ {}[/]&#34;,
-        &#34;DEBUG&#34;: &#34;[on magenta]⊙ {}[/]&#34;,
+        Status.INFO: &#34;·&#34;,
+        Status.FAILURE: &#34;✖&#34;,
+        Status.ERROR: &#34;✖&#34;,
+        Status.SUCCESS: &#34;✔&#34;,
+        Status.WARNING: &#34;▲&#34;,
+        Status.DEBUG: &#34;⊙&#34;,
+    }
+
+    _STYLES = {
+        Status.INFO: &#34;on blue&#34;,
+        Status.FAILURE: &#34;on red&#34;,
+        Status.ERROR: &#34;on red&#34;,
+        Status.SUCCESS: &#34;on green&#34;,
+        Status.WARNING: &#34;on yellow&#34;,
+        Status.DEBUG: &#34;on magenta&#34;,
     }</code></pre>
 </details>
 </section>
@@ -260,14 +359,7 @@ class BackgroundMessageFormatter(MessageFormatter):
 <span>(</span><span>*, console: rich.console.Console = None)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Wrapper to display information in a pretty way.
-When displaying a message, a status, a format string and its parameters must
-be given. A few stati are available: <code>INFO</code>, <code>SUCCESS</code>, <code>ERROR</code>, <code>WARNING</code>,
-<code>DEBUG</code>. The status will be prepended to the displayed line, and every
-parameter of a format string will be colored.</p>
-<p>This message formatter displays a colored character indicating the status at
-the beginning of every line: <code>+</code> for success, <code>-</code> for failure, <code>i</code> for
-information, etc.</p>
+<div class="desc"><p>Wrapper to display information in a pretty way.</p>
 <p>The list of possible calls is as follows:</p>
 <ul>
 <li><code><a title="tenlib.flow.messageformatter.MessageFormatter.info" href="#tenlib.flow.messageformatter.MessageFormatter.info">MessageFormatter.info()</a></code></li>
@@ -283,16 +375,8 @@ information, etc.</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class MessageFormatter:
+<pre><code class="python">class MessageFormatter(ABC):
     &#34;&#34;&#34;Wrapper to display information in a pretty way.
-    When displaying a message, a status, a format string and its parameters must
-    be given. A few stati are available: `INFO`, `SUCCESS`, `ERROR`, `WARNING`,
-    `DEBUG`. The status will be prepended to the displayed line, and every
-    parameter of a format string will be colored.
-
-    This message formatter displays a colored character indicating the status at
-    the beginning of every line: `+` for success, `-` for failure, `i` for
-    information, etc.
 
     The list of possible calls is as follows:
 
@@ -304,22 +388,6 @@ information, etc.</p>
     * `MessageFormatter.debug`
     &#34;&#34;&#34;
 
-    _INFO = &#34;INFO&#34;
-    _SUCCESS = &#34;SUCCESS&#34;
-    _FAILURE = &#34;FAILURE&#34;
-    _ERROR = &#34;ERROR&#34;
-    _WARNING = &#34;WARNING&#34;
-    _DEBUG = &#34;DEBUG&#34;
-
-    _FORMAT = {
-        &#34;INFO&#34;: &#34;[b blue]*[/] {}&#34;,
-        &#34;FAILURE&#34;: &#34;[b red]-[/] {}&#34;,
-        &#34;ERROR&#34;: &#34;[b red]x[/] {}&#34;,
-        &#34;SUCCESS&#34;: &#34;[b green]+[/] {}&#34;,
-        &#34;WARNING&#34;: &#34;[b yellow]![/] {}&#34;,
-        &#34;DEBUG&#34;: &#34;[b magenta]D[/] {}&#34;,
-    }
-
     CLEAR_LINE = &#34;\r\x1b[K&#34;
 
     def __init__(self, *, console: Console = None):
@@ -330,17 +398,17 @@ information, etc.</p>
         self._console = console
 
     @property
-    def console(self):
+    def console(self) -&gt; Console:
         return self._console or get_console()
 
-    def _output(self, message, **kwargs):
-        self.console.print(message, **kwargs)
+    def _output(self, *objects, **kwargs) -&gt; None:
+        self.console.print(*objects, **kwargs)
 
-    def print(self, message=&#34;&#34;, **kwargs):
+    def print(self, *objects, **kwargs) -&gt; None:
         &#34;&#34;&#34;Displays a message.&#34;&#34;&#34;
-        return self._output(message, **kwargs)
+        return self._output(*objects, **kwargs)
 
-    def bin_print(self, data: bytes):
+    def bin_print(self, data: bytes) -&gt; None:
         &#34;&#34;&#34;Prints binary `data` and flushes the stream.
 
         Args:
@@ -352,43 +420,43 @@ information, etc.</p>
             raise TypeError(&#34;MessageFormatter.bin_print() expects a byte-like object&#34;)
         self.console.file.buffer.flush()
 
-    def status(self, status, message, **kwargs):
-        &#34;&#34;&#34;Displays a message along with a status.
-        Arguments of the format string will be colored in a color indicating the
-        status. For instance, arguments for the success function will be in
-        green, and failure in red.
-        &#34;&#34;&#34;
-        return self._output(self._FORMAT[status].format(message), **kwargs)
+    @abstractmethod
+    def info(self, *objects, **kwargs) -&gt; None:
+        &#34;&#34;&#34;Displays an information message.&#34;&#34;&#34;
 
-    def info(self, message, **kwargs):
-        self.status(self._INFO, message, **kwargs)
+    @abstractmethod
+    def warning(self, *objects, **kwargs) -&gt; None:
+        &#34;&#34;&#34;Displays a warning message.&#34;&#34;&#34;
 
-    def warning(self, message, **kwargs):
-        self.status(self._WARNING, message, **kwargs)
+    @abstractmethod
+    def error(self, message, **kwargs) -&gt; None:
+        &#34;&#34;&#34;Displays an error message.&#34;&#34;&#34;
 
-    def error(self, message, **kwargs):
-        self.status(self._ERROR, message, **kwargs)
+    @abstractmethod
+    def success(self, message, **kwargs) -&gt; None:
+        &#34;&#34;&#34;Displays a success message.&#34;&#34;&#34;
 
-    def success(self, message, **kwargs):
-        self.status(self._SUCCESS, message, **kwargs)
+    @abstractmethod
+    def failure(self, message, **kwargs) -&gt; None:
+        &#34;&#34;&#34;Displays a failure message.&#34;&#34;&#34;
 
-    def failure(self, message, **kwargs):
-        self.status(self._FAILURE, message, **kwargs)
+    @abstractmethod
+    def debug(self, message, **kwargs) -&gt; None:
+        &#34;&#34;&#34;Displays a debug message.&#34;&#34;&#34;
 
-    def debug(self, message, **kwargs):
-        self.status(self._DEBUG, message, **kwargs)
-
-    def clear(self):
+    def clear(self) -&gt; None:
         &#34;&#34;&#34;Clears last line.&#34;&#34;&#34;
         self.console.file.write(self.CLEAR_LINE)</code></pre>
 </details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>abc.ABC</li>
+</ul>
 <h3>Subclasses</h3>
 <ul class="hlist">
 <li><a title="tenlib.flow.messageformatter.BackgroundMessageFormatter" href="#tenlib.flow.messageformatter.BackgroundMessageFormatter">BackgroundMessageFormatter</a></li>
 <li><a title="tenlib.flow.messageformatter.CircleMessageFormatter" href="#tenlib.flow.messageformatter.CircleMessageFormatter">CircleMessageFormatter</a></li>
-<li><a title="tenlib.flow.messageformatter.NewschoolMessageFormatter" href="#tenlib.flow.messageformatter.NewschoolMessageFormatter">NewschoolMessageFormatter</a></li>
-<li><a title="tenlib.flow.messageformatter.OldschoolMessageFormatter" href="#tenlib.flow.messageformatter.OldschoolMessageFormatter">OldschoolMessageFormatter</a></li>
-<li><a title="tenlib.flow.messageformatter.SlickMessageFormatter" href="#tenlib.flow.messageformatter.SlickMessageFormatter">SlickMessageFormatter</a></li>
+<li>tenlib.flow.messageformatter.PrefixMessageFormatter</li>
 </ul>
 <h3>Class variables</h3>
 <dl>
@@ -399,7 +467,7 @@ information, etc.</p>
 </dl>
 <h3>Instance variables</h3>
 <dl>
-<dt id="tenlib.flow.messageformatter.MessageFormatter.console"><code class="name">var <span class="ident">console</span></code></dt>
+<dt id="tenlib.flow.messageformatter.MessageFormatter.console"><code class="name">var <span class="ident">console</span> : rich.console.Console</code></dt>
 <dd>
 <div class="desc"></div>
 <details class="source">
@@ -407,7 +475,7 @@ information, etc.</p>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-def console(self):
+def console(self) -&gt; Console:
     return self._console or get_console()</code></pre>
 </details>
 </dd>
@@ -415,7 +483,7 @@ def console(self):
 <h3>Methods</h3>
 <dl>
 <dt id="tenlib.flow.messageformatter.MessageFormatter.print"><code class="name flex">
-<span>def <span class="ident">print</span></span>(<span>self, message='', **kwargs)</span>
+<span>def <span class="ident">print</span></span>(<span>self, *objects, **kwargs) ‑> None</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Displays a message.</p></div>
@@ -423,13 +491,13 @@ def console(self):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def print(self, message=&#34;&#34;, **kwargs):
+<pre><code class="python">def print(self, *objects, **kwargs) -&gt; None:
     &#34;&#34;&#34;Displays a message.&#34;&#34;&#34;
-    return self._output(message, **kwargs)</code></pre>
+    return self._output(*objects, **kwargs)</code></pre>
 </details>
 </dd>
 <dt id="tenlib.flow.messageformatter.MessageFormatter.bin_print"><code class="name flex">
-<span>def <span class="ident">bin_print</span></span>(<span>self, data: bytes)</span>
+<span>def <span class="ident">bin_print</span></span>(<span>self, data: bytes) ‑> None</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Prints binary <code>data</code> and flushes the stream.</p>
@@ -439,7 +507,7 @@ def console(self):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def bin_print(self, data: bytes):
+<pre><code class="python">def bin_print(self, data: bytes) -&gt; None:
     &#34;&#34;&#34;Prints binary `data` and flushes the stream.
 
     Args:
@@ -452,107 +520,92 @@ def console(self):
     self.console.file.buffer.flush()</code></pre>
 </details>
 </dd>
-<dt id="tenlib.flow.messageformatter.MessageFormatter.status"><code class="name flex">
-<span>def <span class="ident">status</span></span>(<span>self, status, message, **kwargs)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Displays a message along with a status.
-Arguments of the format string will be colored in a color indicating the
-status. For instance, arguments for the success function will be in
-green, and failure in red.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def status(self, status, message, **kwargs):
-    &#34;&#34;&#34;Displays a message along with a status.
-    Arguments of the format string will be colored in a color indicating the
-    status. For instance, arguments for the success function will be in
-    green, and failure in red.
-    &#34;&#34;&#34;
-    return self._output(self._FORMAT[status].format(message), **kwargs)</code></pre>
-</details>
-</dd>
 <dt id="tenlib.flow.messageformatter.MessageFormatter.info"><code class="name flex">
-<span>def <span class="ident">info</span></span>(<span>self, message, **kwargs)</span>
+<span>def <span class="ident">info</span></span>(<span>self, *objects, **kwargs) ‑> None</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Displays an information message.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def info(self, message, **kwargs):
-    self.status(self._INFO, message, **kwargs)</code></pre>
+<pre><code class="python">@abstractmethod
+def info(self, *objects, **kwargs) -&gt; None:
+    &#34;&#34;&#34;Displays an information message.&#34;&#34;&#34;</code></pre>
 </details>
 </dd>
 <dt id="tenlib.flow.messageformatter.MessageFormatter.warning"><code class="name flex">
-<span>def <span class="ident">warning</span></span>(<span>self, message, **kwargs)</span>
+<span>def <span class="ident">warning</span></span>(<span>self, *objects, **kwargs) ‑> None</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Displays a warning message.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def warning(self, message, **kwargs):
-    self.status(self._WARNING, message, **kwargs)</code></pre>
+<pre><code class="python">@abstractmethod
+def warning(self, *objects, **kwargs) -&gt; None:
+    &#34;&#34;&#34;Displays a warning message.&#34;&#34;&#34;</code></pre>
 </details>
 </dd>
 <dt id="tenlib.flow.messageformatter.MessageFormatter.error"><code class="name flex">
-<span>def <span class="ident">error</span></span>(<span>self, message, **kwargs)</span>
+<span>def <span class="ident">error</span></span>(<span>self, message, **kwargs) ‑> None</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Displays an error message.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def error(self, message, **kwargs):
-    self.status(self._ERROR, message, **kwargs)</code></pre>
+<pre><code class="python">@abstractmethod
+def error(self, message, **kwargs) -&gt; None:
+    &#34;&#34;&#34;Displays an error message.&#34;&#34;&#34;</code></pre>
 </details>
 </dd>
 <dt id="tenlib.flow.messageformatter.MessageFormatter.success"><code class="name flex">
-<span>def <span class="ident">success</span></span>(<span>self, message, **kwargs)</span>
+<span>def <span class="ident">success</span></span>(<span>self, message, **kwargs) ‑> None</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Displays a success message.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def success(self, message, **kwargs):
-    self.status(self._SUCCESS, message, **kwargs)</code></pre>
+<pre><code class="python">@abstractmethod
+def success(self, message, **kwargs) -&gt; None:
+    &#34;&#34;&#34;Displays a success message.&#34;&#34;&#34;</code></pre>
 </details>
 </dd>
 <dt id="tenlib.flow.messageformatter.MessageFormatter.failure"><code class="name flex">
-<span>def <span class="ident">failure</span></span>(<span>self, message, **kwargs)</span>
+<span>def <span class="ident">failure</span></span>(<span>self, message, **kwargs) ‑> None</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Displays a failure message.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def failure(self, message, **kwargs):
-    self.status(self._FAILURE, message, **kwargs)</code></pre>
+<pre><code class="python">@abstractmethod
+def failure(self, message, **kwargs) -&gt; None:
+    &#34;&#34;&#34;Displays a failure message.&#34;&#34;&#34;</code></pre>
 </details>
 </dd>
 <dt id="tenlib.flow.messageformatter.MessageFormatter.debug"><code class="name flex">
-<span>def <span class="ident">debug</span></span>(<span>self, message, **kwargs)</span>
+<span>def <span class="ident">debug</span></span>(<span>self, message, **kwargs) ‑> None</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Displays a debug message.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def debug(self, message, **kwargs):
-    self.status(self._DEBUG, message, **kwargs)</code></pre>
+<pre><code class="python">@abstractmethod
+def debug(self, message, **kwargs) -&gt; None:
+    &#34;&#34;&#34;Displays a debug message.&#34;&#34;&#34;</code></pre>
 </details>
 </dd>
 <dt id="tenlib.flow.messageformatter.MessageFormatter.clear"><code class="name flex">
-<span>def <span class="ident">clear</span></span>(<span>self)</span>
+<span>def <span class="ident">clear</span></span>(<span>self) ‑> None</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Clears last line.</p></div>
@@ -560,7 +613,7 @@ green, and failure in red.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def clear(self):
+<pre><code class="python">def clear(self) -&gt; None:
     &#34;&#34;&#34;Clears last line.&#34;&#34;&#34;
     self.console.file.write(self.CLEAR_LINE)</code></pre>
 </details>
@@ -577,7 +630,7 @@ line. Requires UTF-8.</p>
 <h2 id="examples">Examples</h2>
 <pre><code class="language-python-repl">&gt;&gt;&gt; o = NewschoolOutput()
 &gt;&gt;&gt; o.info('Something')
-» Something
+· Something
 &gt;&gt;&gt; o.success('Success')
 ✔ Success
 &gt;&gt;&gt; o.failure('Failure')
@@ -591,14 +644,14 @@ line. Requires UTF-8.</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class NewschoolMessageFormatter(MessageFormatter):
+<pre><code class="python">class NewschoolMessageFormatter(PrefixMessageFormatter):
     &#34;&#34;&#34;Status is be indicated as a colored symbol at the beginning of every
     line. Requires UTF-8.
 
     Examples:
         &gt;&gt;&gt; o = NewschoolOutput()
         &gt;&gt;&gt; o.info(&#39;Something&#39;)
-        » Something
+        · Something
         &gt;&gt;&gt; o.success(&#39;Success&#39;)
         ✔ Success
         &gt;&gt;&gt; o.failure(&#39;Failure&#39;)
@@ -607,18 +660,20 @@ line. Requires UTF-8.</p>
          test
     &#34;&#34;&#34;
 
-    _FORMAT = {
-        &#34;INFO&#34;: &#34;[b blue]·[/] {}&#34;,
-        &#34;FAILURE&#34;: &#34;[b red]✖[/] {}&#34;,
-        &#34;ERROR&#34;: &#34;[b red]✖[/] {}&#34;,
-        &#34;SUCCESS&#34;: &#34;[b green]✔[/] {}&#34;,
-        &#34;WARNING&#34;: &#34;[b yellow]▲[/] {}&#34;,
-        &#34;DEBUG&#34;: &#34;[b magenta]⊙[/] {}&#34;,
+    _PREFIX = {
+        Status.INFO: &#34;[b blue]·[/]&#34;,
+        Status.FAILURE: &#34;[b red]✖[/]&#34;,
+        Status.ERROR: &#34;[b red]✖[/]&#34;,
+        Status.SUCCESS: &#34;[b green]✔[/]&#34;,
+        Status.WARNING: &#34;[b yellow]▲[/]&#34;,
+        Status.DEBUG: &#34;[b magenta]⊙[/]&#34;,
     }</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
+<li>tenlib.flow.messageformatter.PrefixMessageFormatter</li>
 <li><a title="tenlib.flow.messageformatter.MessageFormatter" href="#tenlib.flow.messageformatter.MessageFormatter">MessageFormatter</a></li>
+<li>abc.ABC</li>
 </ul>
 <h3>Inherited members</h3>
 <ul class="hlist">
@@ -626,8 +681,13 @@ line. Requires UTF-8.</p>
 <ul class="hlist">
 <li><code><a title="tenlib.flow.messageformatter.MessageFormatter.bin_print" href="#tenlib.flow.messageformatter.MessageFormatter.bin_print">bin_print</a></code></li>
 <li><code><a title="tenlib.flow.messageformatter.MessageFormatter.clear" href="#tenlib.flow.messageformatter.MessageFormatter.clear">clear</a></code></li>
+<li><code><a title="tenlib.flow.messageformatter.MessageFormatter.debug" href="#tenlib.flow.messageformatter.MessageFormatter.debug">debug</a></code></li>
+<li><code><a title="tenlib.flow.messageformatter.MessageFormatter.error" href="#tenlib.flow.messageformatter.MessageFormatter.error">error</a></code></li>
+<li><code><a title="tenlib.flow.messageformatter.MessageFormatter.failure" href="#tenlib.flow.messageformatter.MessageFormatter.failure">failure</a></code></li>
+<li><code><a title="tenlib.flow.messageformatter.MessageFormatter.info" href="#tenlib.flow.messageformatter.MessageFormatter.info">info</a></code></li>
 <li><code><a title="tenlib.flow.messageformatter.MessageFormatter.print" href="#tenlib.flow.messageformatter.MessageFormatter.print">print</a></code></li>
-<li><code><a title="tenlib.flow.messageformatter.MessageFormatter.status" href="#tenlib.flow.messageformatter.MessageFormatter.status">status</a></code></li>
+<li><code><a title="tenlib.flow.messageformatter.MessageFormatter.success" href="#tenlib.flow.messageformatter.MessageFormatter.success">success</a></code></li>
+<li><code><a title="tenlib.flow.messageformatter.MessageFormatter.warning" href="#tenlib.flow.messageformatter.MessageFormatter.warning">warning</a></code></li>
 </ul>
 </li>
 </ul>
@@ -637,10 +697,74 @@ line. Requires UTF-8.</p>
 <span>(</span><span>*, console: rich.console.Console = None)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Status is indicated as <code>[+]</code>, <code>[-]</code>, <code>[i]</code>, etc. at the beginning of
-every line.</p>
+<div class="desc"><p>Status is indicated as <code>[+]</code>, <code>[-]</code>, <code>[*]</code>, etc. at the beginning of
+every line, with the icon colored.</p>
 <h2 id="examples">Examples</h2>
-<pre><code class="language-python-repl">&gt;&gt;&gt; o = OldSchoolOutput()
+<pre><code class="language-python-repl">&gt;&gt;&gt; o = OtherOldschoolMessageFormatter()
+&gt;&gt;&gt; o.info('Something')
+[*] Something
+&gt;&gt;&gt; o.success('Something else')
+[+] Something else
+</code></pre>
+<h2 id="params">Params</h2>
+<p>console: Console to write to.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class OldschoolMessageFormatter(PrefixMessageFormatter):
+    &#34;&#34;&#34;Status is indicated as `[+]`, `[-]`, `[*]`, etc. at the beginning of
+    every line, with the icon colored.
+
+    Examples:
+        &gt;&gt;&gt; o = OtherOldschoolMessageFormatter()
+        &gt;&gt;&gt; o.info(&#39;Something&#39;)
+        [*] Something
+        &gt;&gt;&gt; o.success(&#39;Something else&#39;)
+        [+] Something else
+    &#34;&#34;&#34;
+
+    _PREFIX = {
+        Status.INFO: &#34;[[blue]*[/]]&#34;,
+        Status.FAILURE: &#34;[[red]-[/]]&#34;,
+        Status.ERROR: &#34;[[red]x[/]]&#34;,
+        Status.SUCCESS: &#34;[[green]+[/]]&#34;,
+        Status.WARNING: &#34;[[yellow]![/]]&#34;,
+        Status.DEBUG: &#34;[[magenta]D[/]]&#34;,
+    }</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>tenlib.flow.messageformatter.PrefixMessageFormatter</li>
+<li><a title="tenlib.flow.messageformatter.MessageFormatter" href="#tenlib.flow.messageformatter.MessageFormatter">MessageFormatter</a></li>
+<li>abc.ABC</li>
+</ul>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="tenlib.flow.messageformatter.MessageFormatter" href="#tenlib.flow.messageformatter.MessageFormatter">MessageFormatter</a></b></code>:
+<ul class="hlist">
+<li><code><a title="tenlib.flow.messageformatter.MessageFormatter.bin_print" href="#tenlib.flow.messageformatter.MessageFormatter.bin_print">bin_print</a></code></li>
+<li><code><a title="tenlib.flow.messageformatter.MessageFormatter.clear" href="#tenlib.flow.messageformatter.MessageFormatter.clear">clear</a></code></li>
+<li><code><a title="tenlib.flow.messageformatter.MessageFormatter.debug" href="#tenlib.flow.messageformatter.MessageFormatter.debug">debug</a></code></li>
+<li><code><a title="tenlib.flow.messageformatter.MessageFormatter.error" href="#tenlib.flow.messageformatter.MessageFormatter.error">error</a></code></li>
+<li><code><a title="tenlib.flow.messageformatter.MessageFormatter.failure" href="#tenlib.flow.messageformatter.MessageFormatter.failure">failure</a></code></li>
+<li><code><a title="tenlib.flow.messageformatter.MessageFormatter.info" href="#tenlib.flow.messageformatter.MessageFormatter.info">info</a></code></li>
+<li><code><a title="tenlib.flow.messageformatter.MessageFormatter.print" href="#tenlib.flow.messageformatter.MessageFormatter.print">print</a></code></li>
+<li><code><a title="tenlib.flow.messageformatter.MessageFormatter.success" href="#tenlib.flow.messageformatter.MessageFormatter.success">success</a></code></li>
+<li><code><a title="tenlib.flow.messageformatter.MessageFormatter.warning" href="#tenlib.flow.messageformatter.MessageFormatter.warning">warning</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt id="tenlib.flow.messageformatter.OtherOldschoolMessageFormatter"><code class="flex name class">
+<span>class <span class="ident">OtherOldschoolMessageFormatter</span></span>
+<span>(</span><span>*, console: rich.console.Console = None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Status is indicated as <code>[+]</code>, <code>[-]</code>, <code>[*]</code>, etc. at the beginning of
+every line, colored and bold.</p>
+<h2 id="examples">Examples</h2>
+<pre><code class="language-python-repl">&gt;&gt;&gt; o = OldschoolMessageFormatter()
 &gt;&gt;&gt; o.info('Something')
 [i] Something
 &gt;&gt;&gt; o.success('Something else')
@@ -652,30 +776,32 @@ every line.</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class OldschoolMessageFormatter(MessageFormatter):
-    &#34;&#34;&#34;Status is indicated as `[+]`, `[-]`, `[i]`, etc. at the beginning of
-    every line.
+<pre><code class="python">class OtherOldschoolMessageFormatter(PrefixMessageFormatter):
+    &#34;&#34;&#34;Status is indicated as `[+]`, `[-]`, `[*]`, etc. at the beginning of
+    every line, colored and bold.
 
     Examples:
-        &gt;&gt;&gt; o = OldSchoolOutput()
+        &gt;&gt;&gt; o = OldschoolMessageFormatter()
         &gt;&gt;&gt; o.info(&#39;Something&#39;)
         [i] Something
         &gt;&gt;&gt; o.success(&#39;Something else&#39;)
         [+] Something else
     &#34;&#34;&#34;
 
-    _FORMAT = {
-        &#34;INFO&#34;: &#34;[[blue]*[/]] {}&#34;,
-        &#34;FAILURE&#34;: &#34;[[red]-[/]] {}&#34;,
-        &#34;ERROR&#34;: &#34;[[red]x[/]] {}&#34;,
-        &#34;SUCCESS&#34;: &#34;[[green]+[/]] {}&#34;,
-        &#34;WARNING&#34;: &#34;[[yellow]![/]] {}&#34;,
-        &#34;DEBUG&#34;: &#34;[[magenta]D[/]] {}&#34;,
+    _PREFIX = {
+        Status.INFO: &#34;[b blue]\[*][/]&#34;,
+        Status.FAILURE: &#34;[b red]\[-][/]&#34;,
+        Status.ERROR: &#34;[b red]\[x][/]&#34;,
+        Status.SUCCESS: &#34;[b green]\[+][/]&#34;,
+        Status.WARNING: &#34;[b yellow]\[!][/]&#34;,
+        Status.DEBUG: &#34;[b magenta]\[D][/]&#34;,
     }</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
+<li>tenlib.flow.messageformatter.PrefixMessageFormatter</li>
 <li><a title="tenlib.flow.messageformatter.MessageFormatter" href="#tenlib.flow.messageformatter.MessageFormatter">MessageFormatter</a></li>
+<li>abc.ABC</li>
 </ul>
 <h3>Inherited members</h3>
 <ul class="hlist">
@@ -683,8 +809,13 @@ every line.</p>
 <ul class="hlist">
 <li><code><a title="tenlib.flow.messageformatter.MessageFormatter.bin_print" href="#tenlib.flow.messageformatter.MessageFormatter.bin_print">bin_print</a></code></li>
 <li><code><a title="tenlib.flow.messageformatter.MessageFormatter.clear" href="#tenlib.flow.messageformatter.MessageFormatter.clear">clear</a></code></li>
+<li><code><a title="tenlib.flow.messageformatter.MessageFormatter.debug" href="#tenlib.flow.messageformatter.MessageFormatter.debug">debug</a></code></li>
+<li><code><a title="tenlib.flow.messageformatter.MessageFormatter.error" href="#tenlib.flow.messageformatter.MessageFormatter.error">error</a></code></li>
+<li><code><a title="tenlib.flow.messageformatter.MessageFormatter.failure" href="#tenlib.flow.messageformatter.MessageFormatter.failure">failure</a></code></li>
+<li><code><a title="tenlib.flow.messageformatter.MessageFormatter.info" href="#tenlib.flow.messageformatter.MessageFormatter.info">info</a></code></li>
 <li><code><a title="tenlib.flow.messageformatter.MessageFormatter.print" href="#tenlib.flow.messageformatter.MessageFormatter.print">print</a></code></li>
-<li><code><a title="tenlib.flow.messageformatter.MessageFormatter.status" href="#tenlib.flow.messageformatter.MessageFormatter.status">status</a></code></li>
+<li><code><a title="tenlib.flow.messageformatter.MessageFormatter.success" href="#tenlib.flow.messageformatter.MessageFormatter.success">success</a></code></li>
+<li><code><a title="tenlib.flow.messageformatter.MessageFormatter.warning" href="#tenlib.flow.messageformatter.MessageFormatter.warning">warning</a></code></li>
 </ul>
 </li>
 </ul>
@@ -696,7 +827,7 @@ every line.</p>
 <dd>
 <div class="desc"><p>Status is indicated as a colored pipe at the beginning of every line.</p>
 <h2 id="examples">Examples</h2>
-<pre><code class="language-python-repl">&gt;&gt;&gt; o = SlickOutput()
+<pre><code class="language-python-repl">&gt;&gt;&gt; o = SlickMessageFormatter()
 &gt;&gt;&gt; o.info('Something')
 | Something
 </code></pre>
@@ -706,27 +837,29 @@ every line.</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class SlickMessageFormatter(MessageFormatter):
+<pre><code class="python">class SlickMessageFormatter(PrefixMessageFormatter):
     &#34;&#34;&#34;Status is indicated as a colored pipe at the beginning of every line.
 
     Examples:
-        &gt;&gt;&gt; o = SlickOutput()
+        &gt;&gt;&gt; o = SlickMessageFormatter()
         &gt;&gt;&gt; o.info(&#39;Something&#39;)
         | Something
     &#34;&#34;&#34;
 
-    _FORMAT = {
-        &#34;INFO&#34;: &#34;[b blue]|[/] {}&#34;,
-        &#34;FAILURE&#34;: &#34;[b red]|[/] {}&#34;,
-        &#34;ERROR&#34;: &#34;[b red]|[/] {}&#34;,
-        &#34;SUCCESS&#34;: &#34;[b green]|[/] {}&#34;,
-        &#34;WARNING&#34;: &#34;[b yellow]|[/] {}&#34;,
-        &#34;DEBUG&#34;: &#34;[b magenta]|[/] {}&#34;,
+    _PREFIX = {
+        Status.INFO: &#34;[b blue]|[/]&#34;,
+        Status.FAILURE: &#34;[b red]|[/]&#34;,
+        Status.ERROR: &#34;[b red]|[/]&#34;,
+        Status.SUCCESS: &#34;[b green]|[/]&#34;,
+        Status.WARNING: &#34;[b yellow]|[/]&#34;,
+        Status.DEBUG: &#34;[b magenta]|[/]&#34;,
     }</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
+<li>tenlib.flow.messageformatter.PrefixMessageFormatter</li>
 <li><a title="tenlib.flow.messageformatter.MessageFormatter" href="#tenlib.flow.messageformatter.MessageFormatter">MessageFormatter</a></li>
+<li>abc.ABC</li>
 </ul>
 <h3>Inherited members</h3>
 <ul class="hlist">
@@ -734,8 +867,13 @@ every line.</p>
 <ul class="hlist">
 <li><code><a title="tenlib.flow.messageformatter.MessageFormatter.bin_print" href="#tenlib.flow.messageformatter.MessageFormatter.bin_print">bin_print</a></code></li>
 <li><code><a title="tenlib.flow.messageformatter.MessageFormatter.clear" href="#tenlib.flow.messageformatter.MessageFormatter.clear">clear</a></code></li>
+<li><code><a title="tenlib.flow.messageformatter.MessageFormatter.debug" href="#tenlib.flow.messageformatter.MessageFormatter.debug">debug</a></code></li>
+<li><code><a title="tenlib.flow.messageformatter.MessageFormatter.error" href="#tenlib.flow.messageformatter.MessageFormatter.error">error</a></code></li>
+<li><code><a title="tenlib.flow.messageformatter.MessageFormatter.failure" href="#tenlib.flow.messageformatter.MessageFormatter.failure">failure</a></code></li>
+<li><code><a title="tenlib.flow.messageformatter.MessageFormatter.info" href="#tenlib.flow.messageformatter.MessageFormatter.info">info</a></code></li>
 <li><code><a title="tenlib.flow.messageformatter.MessageFormatter.print" href="#tenlib.flow.messageformatter.MessageFormatter.print">print</a></code></li>
-<li><code><a title="tenlib.flow.messageformatter.MessageFormatter.status" href="#tenlib.flow.messageformatter.MessageFormatter.status">status</a></code></li>
+<li><code><a title="tenlib.flow.messageformatter.MessageFormatter.success" href="#tenlib.flow.messageformatter.MessageFormatter.success">success</a></code></li>
+<li><code><a title="tenlib.flow.messageformatter.MessageFormatter.warning" href="#tenlib.flow.messageformatter.MessageFormatter.warning">warning</a></code></li>
 </ul>
 </li>
 </ul>
@@ -758,18 +896,19 @@ line. Requires UTF-8.</p>
     line. Requires UTF-8.
     &#34;&#34;&#34;
 
-    _FORMAT = {
-        &#34;INFO&#34;: &#34;[b blue]·[/] {}&#34;,
-        &#34;FAILURE&#34;: &#34;[b red]·[/] {}&#34;,
-        &#34;ERROR&#34;: &#34;[b red]·[/] {}&#34;,
-        &#34;SUCCESS&#34;: &#34;[b green]·[/] {}&#34;,
-        &#34;WARNING&#34;: &#34;[b yellow]·[/] {}&#34;,
-        &#34;DEBUG&#34;: &#34;[b magenta]·[/] {}&#34;,
+    _PREFIX = {
+        Status.INFO: &#34;[b blue]·[/]&#34;,
+        Status.FAILURE: &#34;[b red]·[/]&#34;,
+        Status.ERROR: &#34;[b red]·[/]&#34;,
+        Status.SUCCESS: &#34;[b green]·[/]&#34;,
+        Status.WARNING: &#34;[b yellow]·[/]&#34;,
+        Status.DEBUG: &#34;[b magenta]·[/]&#34;,
     }</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li><a title="tenlib.flow.messageformatter.MessageFormatter" href="#tenlib.flow.messageformatter.MessageFormatter">MessageFormatter</a></li>
+<li>abc.ABC</li>
 </ul>
 <h3>Inherited members</h3>
 <ul class="hlist">
@@ -777,8 +916,85 @@ line. Requires UTF-8.</p>
 <ul class="hlist">
 <li><code><a title="tenlib.flow.messageformatter.MessageFormatter.bin_print" href="#tenlib.flow.messageformatter.MessageFormatter.bin_print">bin_print</a></code></li>
 <li><code><a title="tenlib.flow.messageformatter.MessageFormatter.clear" href="#tenlib.flow.messageformatter.MessageFormatter.clear">clear</a></code></li>
+<li><code><a title="tenlib.flow.messageformatter.MessageFormatter.debug" href="#tenlib.flow.messageformatter.MessageFormatter.debug">debug</a></code></li>
+<li><code><a title="tenlib.flow.messageformatter.MessageFormatter.error" href="#tenlib.flow.messageformatter.MessageFormatter.error">error</a></code></li>
+<li><code><a title="tenlib.flow.messageformatter.MessageFormatter.failure" href="#tenlib.flow.messageformatter.MessageFormatter.failure">failure</a></code></li>
+<li><code><a title="tenlib.flow.messageformatter.MessageFormatter.info" href="#tenlib.flow.messageformatter.MessageFormatter.info">info</a></code></li>
 <li><code><a title="tenlib.flow.messageformatter.MessageFormatter.print" href="#tenlib.flow.messageformatter.MessageFormatter.print">print</a></code></li>
-<li><code><a title="tenlib.flow.messageformatter.MessageFormatter.status" href="#tenlib.flow.messageformatter.MessageFormatter.status">status</a></code></li>
+<li><code><a title="tenlib.flow.messageformatter.MessageFormatter.success" href="#tenlib.flow.messageformatter.MessageFormatter.success">success</a></code></li>
+<li><code><a title="tenlib.flow.messageformatter.MessageFormatter.warning" href="#tenlib.flow.messageformatter.MessageFormatter.warning">warning</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt id="tenlib.flow.messageformatter.IconMessageFormatter"><code class="flex name class">
+<span>class <span class="ident">IconMessageFormatter</span></span>
+<span>(</span><span>*, console: rich.console.Console = None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Status is be indicated as a colored symbol at the beginning of every
+line. Requires UTF-8.</p>
+<h2 id="examples">Examples</h2>
+<pre><code class="language-python-repl">&gt;&gt;&gt; o = NewschoolOutput()
+&gt;&gt;&gt; o.info('Something')
+ ·  Something
+&gt;&gt;&gt; o.success('Success')
+ ✔  Success
+&gt;&gt;&gt; o.failure('Failure')
+ ✖  Failure
+&gt;&gt;&gt; o.print('test')
+test
+</code></pre>
+<h2 id="params">Params</h2>
+<p>console: Console to write to.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class IconMessageFormatter(PrefixMessageFormatter):
+    &#34;&#34;&#34;Status is be indicated as a colored symbol at the beginning of every
+    line. Requires UTF-8.
+
+    Examples:
+        &gt;&gt;&gt; o = NewschoolOutput()
+        &gt;&gt;&gt; o.info(&#39;Something&#39;)
+         ·  Something
+        &gt;&gt;&gt; o.success(&#39;Success&#39;)
+         ✔  Success
+        &gt;&gt;&gt; o.failure(&#39;Failure&#39;)
+         ✖  Failure
+        &gt;&gt;&gt; o.print(&#39;test&#39;)
+        test
+    &#34;&#34;&#34;
+
+    _PREFIX = {
+        Status.INFO: &#34;[b blue on black] · [/]&#34;,
+        Status.FAILURE: &#34;[b red on black] ✖ [/]&#34;,
+        Status.ERROR: &#34;[b red on black] ✖ [/]&#34;,
+        Status.SUCCESS: &#34;[b green on black] ✔ [/]&#34;,
+        Status.WARNING: &#34;[b yellow on black] ▲ [/]&#34;,
+        Status.DEBUG: &#34;[b magenta on black] ⊙ [/]&#34;,
+    }</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>tenlib.flow.messageformatter.PrefixMessageFormatter</li>
+<li><a title="tenlib.flow.messageformatter.MessageFormatter" href="#tenlib.flow.messageformatter.MessageFormatter">MessageFormatter</a></li>
+<li>abc.ABC</li>
+</ul>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="tenlib.flow.messageformatter.MessageFormatter" href="#tenlib.flow.messageformatter.MessageFormatter">MessageFormatter</a></b></code>:
+<ul class="hlist">
+<li><code><a title="tenlib.flow.messageformatter.MessageFormatter.bin_print" href="#tenlib.flow.messageformatter.MessageFormatter.bin_print">bin_print</a></code></li>
+<li><code><a title="tenlib.flow.messageformatter.MessageFormatter.clear" href="#tenlib.flow.messageformatter.MessageFormatter.clear">clear</a></code></li>
+<li><code><a title="tenlib.flow.messageformatter.MessageFormatter.debug" href="#tenlib.flow.messageformatter.MessageFormatter.debug">debug</a></code></li>
+<li><code><a title="tenlib.flow.messageformatter.MessageFormatter.error" href="#tenlib.flow.messageformatter.MessageFormatter.error">error</a></code></li>
+<li><code><a title="tenlib.flow.messageformatter.MessageFormatter.failure" href="#tenlib.flow.messageformatter.MessageFormatter.failure">failure</a></code></li>
+<li><code><a title="tenlib.flow.messageformatter.MessageFormatter.info" href="#tenlib.flow.messageformatter.MessageFormatter.info">info</a></code></li>
+<li><code><a title="tenlib.flow.messageformatter.MessageFormatter.print" href="#tenlib.flow.messageformatter.MessageFormatter.print">print</a></code></li>
+<li><code><a title="tenlib.flow.messageformatter.MessageFormatter.success" href="#tenlib.flow.messageformatter.MessageFormatter.success">success</a></code></li>
+<li><code><a title="tenlib.flow.messageformatter.MessageFormatter.warning" href="#tenlib.flow.messageformatter.MessageFormatter.warning">warning</a></code></li>
 </ul>
 </li>
 </ul>
@@ -802,17 +1018,27 @@ will be colored. Requires UTF-8.</p>
     &#34;&#34;&#34;
 
     _FORMAT = {
-        &#34;INFO&#34;: &#34;[on blue]· {}[/]&#34;,
-        &#34;FAILURE&#34;: &#34;[on red]✖ {}[/]&#34;,
-        &#34;ERROR&#34;: &#34;[on red]✖ {}[/]&#34;,
-        &#34;SUCCESS&#34;: &#34;[on green]✔ {}[/]&#34;,
-        &#34;WARNING&#34;: &#34;[on yellow]▲ {}[/]&#34;,
-        &#34;DEBUG&#34;: &#34;[on magenta]⊙ {}[/]&#34;,
+        Status.INFO: &#34;·&#34;,
+        Status.FAILURE: &#34;✖&#34;,
+        Status.ERROR: &#34;✖&#34;,
+        Status.SUCCESS: &#34;✔&#34;,
+        Status.WARNING: &#34;▲&#34;,
+        Status.DEBUG: &#34;⊙&#34;,
+    }
+
+    _STYLES = {
+        Status.INFO: &#34;on blue&#34;,
+        Status.FAILURE: &#34;on red&#34;,
+        Status.ERROR: &#34;on red&#34;,
+        Status.SUCCESS: &#34;on green&#34;,
+        Status.WARNING: &#34;on yellow&#34;,
+        Status.DEBUG: &#34;on magenta&#34;,
     }</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li><a title="tenlib.flow.messageformatter.MessageFormatter" href="#tenlib.flow.messageformatter.MessageFormatter">MessageFormatter</a></li>
+<li>abc.ABC</li>
 </ul>
 <h3>Inherited members</h3>
 <ul class="hlist">
@@ -820,8 +1046,13 @@ will be colored. Requires UTF-8.</p>
 <ul class="hlist">
 <li><code><a title="tenlib.flow.messageformatter.MessageFormatter.bin_print" href="#tenlib.flow.messageformatter.MessageFormatter.bin_print">bin_print</a></code></li>
 <li><code><a title="tenlib.flow.messageformatter.MessageFormatter.clear" href="#tenlib.flow.messageformatter.MessageFormatter.clear">clear</a></code></li>
+<li><code><a title="tenlib.flow.messageformatter.MessageFormatter.debug" href="#tenlib.flow.messageformatter.MessageFormatter.debug">debug</a></code></li>
+<li><code><a title="tenlib.flow.messageformatter.MessageFormatter.error" href="#tenlib.flow.messageformatter.MessageFormatter.error">error</a></code></li>
+<li><code><a title="tenlib.flow.messageformatter.MessageFormatter.failure" href="#tenlib.flow.messageformatter.MessageFormatter.failure">failure</a></code></li>
+<li><code><a title="tenlib.flow.messageformatter.MessageFormatter.info" href="#tenlib.flow.messageformatter.MessageFormatter.info">info</a></code></li>
 <li><code><a title="tenlib.flow.messageformatter.MessageFormatter.print" href="#tenlib.flow.messageformatter.MessageFormatter.print">print</a></code></li>
-<li><code><a title="tenlib.flow.messageformatter.MessageFormatter.status" href="#tenlib.flow.messageformatter.MessageFormatter.status">status</a></code></li>
+<li><code><a title="tenlib.flow.messageformatter.MessageFormatter.success" href="#tenlib.flow.messageformatter.MessageFormatter.success">success</a></code></li>
+<li><code><a title="tenlib.flow.messageformatter.MessageFormatter.warning" href="#tenlib.flow.messageformatter.MessageFormatter.warning">warning</a></code></li>
 </ul>
 </li>
 </ul>
@@ -847,7 +1078,6 @@ will be colored. Requires UTF-8.</p>
 <ul class="two-column">
 <li><code><a title="tenlib.flow.messageformatter.MessageFormatter.print" href="#tenlib.flow.messageformatter.MessageFormatter.print">print</a></code></li>
 <li><code><a title="tenlib.flow.messageformatter.MessageFormatter.bin_print" href="#tenlib.flow.messageformatter.MessageFormatter.bin_print">bin_print</a></code></li>
-<li><code><a title="tenlib.flow.messageformatter.MessageFormatter.status" href="#tenlib.flow.messageformatter.MessageFormatter.status">status</a></code></li>
 <li><code><a title="tenlib.flow.messageformatter.MessageFormatter.info" href="#tenlib.flow.messageformatter.MessageFormatter.info">info</a></code></li>
 <li><code><a title="tenlib.flow.messageformatter.MessageFormatter.warning" href="#tenlib.flow.messageformatter.MessageFormatter.warning">warning</a></code></li>
 <li><code><a title="tenlib.flow.messageformatter.MessageFormatter.error" href="#tenlib.flow.messageformatter.MessageFormatter.error">error</a></code></li>
@@ -866,10 +1096,16 @@ will be colored. Requires UTF-8.</p>
 <h4><code><a title="tenlib.flow.messageformatter.OldschoolMessageFormatter" href="#tenlib.flow.messageformatter.OldschoolMessageFormatter">OldschoolMessageFormatter</a></code></h4>
 </li>
 <li>
+<h4><code><a title="tenlib.flow.messageformatter.OtherOldschoolMessageFormatter" href="#tenlib.flow.messageformatter.OtherOldschoolMessageFormatter">OtherOldschoolMessageFormatter</a></code></h4>
+</li>
+<li>
 <h4><code><a title="tenlib.flow.messageformatter.SlickMessageFormatter" href="#tenlib.flow.messageformatter.SlickMessageFormatter">SlickMessageFormatter</a></code></h4>
 </li>
 <li>
 <h4><code><a title="tenlib.flow.messageformatter.CircleMessageFormatter" href="#tenlib.flow.messageformatter.CircleMessageFormatter">CircleMessageFormatter</a></code></h4>
+</li>
+<li>
+<h4><code><a title="tenlib.flow.messageformatter.IconMessageFormatter" href="#tenlib.flow.messageformatter.IconMessageFormatter">IconMessageFormatter</a></code></h4>
 </li>
 <li>
 <h4><code><a title="tenlib.flow.messageformatter.BackgroundMessageFormatter" href="#tenlib.flow.messageformatter.BackgroundMessageFormatter">BackgroundMessageFormatter</a></code></h4>

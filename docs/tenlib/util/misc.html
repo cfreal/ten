@@ -61,7 +61,7 @@ def niter(data: Iterable, n: int) -&gt; Iterator[tuple]:
     elif isinstance(data, str):
         cast = &#34;&#34;.join
     else:
-        cast = lambda x: tuple(x)
+        cast = tuple
 
     got = []
     ngot = 0
@@ -140,7 +140,7 @@ attributes.</p></div>
     elif isinstance(data, str):
         cast = &#34;&#34;.join
     else:
-        cast = lambda x: tuple(x)
+        cast = tuple
 
     got = []
     ngot = 0

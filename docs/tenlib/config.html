@@ -42,7 +42,7 @@ __all__ = [
 
 class Configuration:
     burp_proxy: str = &#34;http://localhost:8080&#34;
-    message_formatter: str = &#34;OldschoolMessageFormatter&#34;
+    message_formatter: str = &#34;OtherOldschoolMessageFormatter&#34;
     log_file: str = os.path.expanduser(&#34;~/ten.log&#34;)
 
     def __setattribute__(self):
@@ -74,7 +74,7 @@ config = Configuration()</code></pre>
 </summary>
 <pre><code class="python">class Configuration:
     burp_proxy: str = &#34;http://localhost:8080&#34;
-    message_formatter: str = &#34;OldschoolMessageFormatter&#34;
+    message_formatter: str = &#34;OtherOldschoolMessageFormatter&#34;
     log_file: str = os.path.expanduser(&#34;~/ten.log&#34;)
 
     def __setattribute__(self):

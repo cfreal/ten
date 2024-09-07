@@ -26,10 +26,7 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">import datetime
-
-from tenlib import fs
-from tenlib.config import config
+<pre><code class="python">from tenlib import fs
 
 
 class Storable:
@@ -74,10 +71,7 @@ class Storable:
         }
 
         for extension, method in methods.items():
-            try:
-                method(f&#34;{path}.{extension}&#34;)
-            except:
-                raise
+            method(f&#34;{path}.{extension}&#34;)
 
         return str(path)
 
@@ -154,10 +148,7 @@ json file will be created, under the filename <code>/tmp/file.json</code>.</p></
         }
 
         for extension, method in methods.items():
-            try:
-                method(f&#34;{path}.{extension}&#34;)
-            except:
-                raise
+            method(f&#34;{path}.{extension}&#34;)
 
         return str(path)
 
@@ -224,10 +215,7 @@ Otherwise, every file type will be stored</dd>
     }
 
     for extension, method in methods.items():
-        try:
-            method(f&#34;{path}.{extension}&#34;)
-        except:
-            raise
+        method(f&#34;{path}.{extension}&#34;)
 
     return str(path)</code></pre>
 </details>
