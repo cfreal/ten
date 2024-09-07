@@ -1,5 +1,8 @@
+"""Read and write CSV files."""
+
 import csv
 import io
+
 from tenlib.struct.proxy import TenList, TenDict
 from tenlib.transform.generic import multiform
 

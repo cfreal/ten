@@ -543,12 +543,12 @@ class Response(requests.Response, struct.Storable):
     tag: Any
     """A tag that can be used to identify the response."""
 
-    def __init__(self, session: Session):
+    def __init__(self, session: Session) -> None:
         self.session = session
         super().__init__()
 
     @classmethod
-    def _from_response(cls, session: Session, response: requests.Response):
+    def _from_response(cls, session: Session, response: requests.Response) -> Response:
         new_response = cls(session)
         new_response.__dict__.update(response.__dict__)
         return new_response
@@ -593,7 +593,7 @@ class Response(requests.Response, struct.Storable):
         """A `BeautifulSoup` object built from this response."""
         return BeautifulSoup(self.content, "lxml")
 
-    def form(self, selector: str = None, **attributes) -> Form:
+    def form(self, selector: str = None, **attributes: dict[str, str]) -> Form:
         """Finds a `<form>` tag with given CSS selector and extracts its action,
         method and input/textarea fields to build a `Form` object.
 
@@ -610,6 +610,7 @@ class Response(requests.Response, struct.Storable):
             >>> response.form(action='/login')
             ...
         """
+        attributes = {k: v.replace('"', '\\"') for k, v in attributes.items()}
         selector = selector or ""
         selector = "form" + selector
         selector += "".join(f'[{k}="{v}"]' for k, v in attributes.items())
@@ -672,7 +673,7 @@ class Response(requests.Response, struct.Storable):
         """Builds a dict representation of the XML response."""
         return struct.XMLDict.build(self.text)
 
-    def store_as_txt(self, path):
+    def store_as_txt(self, path: str) -> None:
         """Saves both the HTTP request and the HTTP response in a file."""
         dump = requests_toolbelt.utils.dump
         data = dump.dump_all(self, request_prefix="", response_prefix="")
@@ -740,12 +741,12 @@ class Form:
         self.referer = referer
 
     @property
-    def referrer(self):
+    def referrer(self) -> str:
         # Referer is actually a misspelling of Referrer
         return self.referer
 
     @referrer.setter
-    def referrer(self, value):
+    def referrer(self, value) -> None:
         # Referer is actually a misspelling of Referrer
         self.referer = value
 
@@ -787,10 +788,10 @@ class Form:
         self.data.update(data, **kwargs)
         return self
 
-    def __getitem__(self, key):
+    def __getitem__(self, key) -> Any:
         return self.data[key]
 
-    def __setitem__(self, key, value):
+    def __setitem__(self, key, value) -> None:
         self.data[key] = value
 
 
@@ -996,7 +997,7 @@ class MultiRequest:
         """Sends GET requests. Returns a list of `Response`s."""
         return self._run_requests("get", url=url, **kwargs)
 
-    def post(self, url: str, data=None, json=None, **kwargs) -> list[Response]:
+    def post(self, url: str, data: dict=None, json: Any=None, **kwargs) -> list[Response]:
         """Sends POST requests. Returns a list of `Response`s.
 
         Args:
@@ -1037,7 +1038,7 @@ class MultiRequest:
             self._iter_set_path(method, arguments, list(paths_items.items()), {})
             return self._get_results(pool)
 
-    def _get_results(self, pool: RequestPool):
+    def _get_results(self, pool: RequestPool) -> list[Response | BaseException]:
         return pool.in_order()
 
     def _find_multis_in_value(self, paths: dict, path: tuple, value: Any) -> None:
@@ -1059,7 +1060,7 @@ class MultiRequest:
             return "X"
         return arguments
 
-    def _replace_at_path(self, arguments, path, value) -> None:
+    def _replace_at_path(self, arguments: dict | list, path: list, value: Any) -> None:
         deep = arguments
         *path, last = path
         for stop in path:
@@ -1101,7 +1102,7 @@ class MultiRequest:
 
 
 class MultiRequestFirst(MultiRequest):
-    """Runs several requests concurrently and return the first successful
+    """Runs several requests concurrently and returns the first successful
     response.
     """
 
@@ -1116,7 +1117,7 @@ class MultiRequestFirst(MultiRequest):
         super().__init__(session, workers, on_error, description)
         self._filter = filter
 
-    def _get_results(self, pool: RequestPool):
+    def _get_results(self, pool: RequestPool) -> Response | BaseException | None:
         for response in pool.as_completed():
             if self._filter(response):
                 return response

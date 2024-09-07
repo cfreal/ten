@@ -1,3 +1,5 @@
+"""Generates random data."""
+
 import random
 import string as _string
 

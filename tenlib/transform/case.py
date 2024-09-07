@@ -1,3 +1,5 @@
+"""Converts case names between `CamelCase` and `under_score`."""
+
 import re
 
 from tenlib.transform.generic import multiform
