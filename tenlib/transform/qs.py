@@ -1,3 +1,6 @@
+"""Manipulates the query string.
+"""
+
 import itertools
 import urllib.parse
 

@@ -4,7 +4,7 @@
 
 - Concerns: flow, http
 
-Although enumerating wordpress users isn't the most interesting part of a pentest, and it can be done by hundred of scripts, it's an interesting way to learn how to to build a simple script with ten, and then gradually improve it to make it more efficient, cleaner, and well-documented.
+Although enumerating wordpress users isn't the most interesting part of a pentest, and it can be done by hundred of scripts, it's an interesting way to learn how to to build a simple script with **ten**, and then gradually improve it to make it more efficient, cleaner, and well-documented.
 
 The goal is to list wordpress users (name and slug) using the well-known technique consisting in iterating over the `author` parameter: `/?author=1`, `/?author=2`, etc.
 

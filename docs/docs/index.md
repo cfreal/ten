@@ -4,19 +4,10 @@
 
 ## Installation
 
-**ten** can be installed from source using *pip* or *poetry*. It requires Python 3.10 or higher.
+Ten is available on [PyPi](https://pypi.org/project/ten/).
 
-Use *poetry* to create a virtual environment and install the package: 
-
-```
-$ poetry install
-$ poetry shell
-```
-
-If you're feeling adventurous, you can also install it with *pip*. This enables the `ten` and `tf` commands system-wide:
-
-```
-$ pip install .
+```bash
+$ pip install ten
 ```
 
 ## Quick start

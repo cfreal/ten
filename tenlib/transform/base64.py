@@ -1,3 +1,6 @@
+"""Handles base64 encoding/decoding.
+"""
+
 import base64
 
 from tenlib.transform.generic import multiform

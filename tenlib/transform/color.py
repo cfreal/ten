@@ -1,3 +1,7 @@
+"""
+Constants and functions to colorize text in the terminal.
+"""
+
 from colorama import Fore, Back, Style
 from typing import Callable
 

@@ -379,14 +379,14 @@ This code runs requests concurrently until one matches the `news_exists` predica
 
 ### Pool: advanced concurrency
 
-For more advanced usage, you can use `Session.pool()`, which produces a `Pool` object. Pool objects run requests concurrently, and allow you to add requests to the pool, and retrieve responses as they come.
+For more advanced usage, you can use `Session.pool()`, which produces a `Pool` object. Pool objects run requests concurrently, and allow you to queue requests, and retrieve responses as they come.
 
 ```python
 with session.pool() as pool:
     # Queue 10 requests
     for id in range(10):
         pool.get(f"/news/{id}")
-    # Retrieve responses, in order
+    # Retrieve all responses, in order
     responses = pool.in_order()
 ```
 
