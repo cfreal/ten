@@ -997,7 +997,9 @@ class MultiRequest:
         """Sends GET requests. Returns a list of `Response`s."""
         return self._run_requests("get", url=url, **kwargs)
 
-    def post(self, url: str, data: dict=None, json: Any=None, **kwargs) -> list[Response]:
+    def post(
+        self, url: str, data: dict = None, json: Any = None, **kwargs
+    ) -> list[Response]:
         """Sends POST requests. Returns a list of `Response`s.
 
         Args:
