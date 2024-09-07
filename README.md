@@ -33,26 +33,10 @@ It includes tutorials, quickstart guides, and the Python documentation.
 
 # Installation
 
-First clone the repository and cd into it:
+Ten is available on [PyPi](https://pypi.org/project/ten/).
 
-```
-$ git clone https://github.com/cfreal/ten.git
-$ cd ten
-```
-
-**ten** can be installed from source using *pip* or *poetry*. It requires Python 3.10 or higher.
-
-Use *poetry* to create a virtual environment and install the package: 
-
-```
-$ poetry install
-$ poetry shell
-```
-
-If you're feeling adventurous, you can also install it with *pip*. This enables the `ten` and `tf` commands system-wide:
-
-```
-$ pip install .
+```bash
+$ pip install ten
 ```
 
 # Example
