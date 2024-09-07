@@ -204,7 +204,7 @@ class TestFlowPrototype(TenTestCase):
 
         self.assertEqual(
             str(cm.exception.__context__),
-            "argument -a: invalid str_to_bool value: 'blu'",
+            "argument -a: invalid _str_to_bool value: 'blu'",
         )
 
     @unittest.mock.patch("sys.stderr")

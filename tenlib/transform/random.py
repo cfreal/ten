@@ -23,7 +23,7 @@ def string(size: int = 8, charset: str = _string.ascii_letters + _string.digits)
 
 
 def alpha(size: int = 8) -> str:
-    """Generates a random alphanumeric string.
+    """Generates a random string of lowercase and uppercase letters.
 
     Example:
 
@@ -34,9 +34,26 @@ def alpha(size: int = 8) -> str:
         size (int): Size of the string
 
     Returns:
-        str: Random alphanumeric string
+        str: Random string of lowercase and uppercase letters
     """
     return string(size, charset=_string.ascii_letters)
+
+
+def alphanumeric(size: int = 8) -> str:
+    """Generates a random alphanumeric string.
+
+    Example:
+
+        >>> alphanumeric(10)
+        'erMR12LuA3'
+
+    Args:
+        size (int): Size of the string
+
+    Returns:
+        str: Random alphanumeric string
+    """
+    return string(size, charset=_string.ascii_letters + _string.digits)
 
 
 def lower(size: int = 8) -> str:
@@ -57,7 +74,7 @@ def lower(size: int = 8) -> str:
 
 
 def hexa(size: int = 40) -> str:
-    """Generates a random hexadecimal string.
+    """Generates a random hexadecimal string. Letters a-f are lowercase.
 
     Example:
 
@@ -70,7 +87,7 @@ def hexa(size: int = 40) -> str:
     Returns:
         str: Random hexadecimal string
     """
-    return string(size, charset="0123456789abcdef")
+    return string(size, charset=_string.hexdigits.lower())
 
 
 def digits(size: int = 8) -> str:

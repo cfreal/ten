@@ -465,15 +465,7 @@ def _prototype_to_args(function: type | Callable) -> tuple[list, dict]:
             )
         # Last annoying case: casting booleans from strings
         if getattr(arg_desc, "nargs", None) == "*" and arg_desc.type is bool:
-
-            def str_to_bool(value):
-                if value.lower() in ("1", "true", "yes"):
-                    return True
-                if value.lower() in ("0", "false", "no"):
-                    return False
-                raise ValueError(f"Invalid argument for type bool: {value!r}")
-
-            arg_desc.type = str_to_bool
+            arg_desc.type = _str_to_bool
 
         try:
             arg_desc.help = function.__ten_doc__[k]
@@ -490,6 +482,14 @@ def _prototype_to_args(function: type | Callable) -> tuple[list, dict]:
         args += arg_desc.pop(star_argument)
 
     return args, arg_desc
+
+
+def _str_to_bool(value) -> bool:
+    if value.lower() in ("1", "true", "yes"):
+        return True
+    if value.lower() in ("0", "false", "no"):
+        return False
+    raise ValueError(f"Invalid argument for type bool: {value!r}")
 
 
 def arg(name: str, description: str):
