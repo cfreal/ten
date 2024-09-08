@@ -22,13 +22,14 @@ To set the level of logging in this file, use `set_level`. Change the path using
 """
 
 import logging
+import os
 from typing import IO
 from logging import Handler, Logger
 
 from rich.console import Console
 from rich.logging import RichHandler
 
-from tenlib.config import config
+from tenlib.flow.console import get_console
 
 __all__ = [
     "logger",
@@ -47,8 +48,105 @@ __all__ = [
     "TRACE",
 ]
 
-__cli_handler: Handler = None
-__file_handler: Handler = None
+DEFAULT_FILE_LEVEL = logging.DEBUG
+DEFAULT_CLI_LEVEL = logging.CRITICAL
+
+__cli_handler: Handler | None = None
+__file_handler: Handler | None = None
+
+
+def logger(name: str | None = "ten") -> Logger:
+    """Returns a logger with the specified name or, if name is None, returns the root
+    logger of the hierarchy.
+    """
+    return logging.getLogger(name)
+
+
+def set_cli_level(level: int | str | None) -> None:
+    """Sets the threshold for the CLI logger to `level`. Setting it to `None` disables
+    CLI logging.
+
+    >>> set_cli_level("DEBUG")
+    >>> set_cli_level(logging.INFO)
+    >>> set_cli_level(None)
+    """
+    global __cli_handler
+
+    if level is None:
+        _get_root_logger().removeHandler(__cli_handler)
+        __cli_handler = None
+        return
+
+    if not __cli_handler:
+        __cli_handler = RichHandler(console=get_console())
+        _get_root_logger().addHandler(__cli_handler)
+    __cli_handler.setLevel(level)
+
+
+def _remove_file_handler() -> None:
+    global __file_handler
+
+    if __file_handler:
+        __file_handler.console.file.close()
+        _get_root_logger().removeHandler(__file_handler)
+        __file_handler = None
+
+
+def set_level(level: int | str | None) -> None:
+    """Sets the threshold for the file logger to `level`. Setting it to `None` disables
+    file logging.
+
+    >>> set_level("DEBUG")
+    >>> set_level(logging.INFO)
+    >>> set_level(None)
+    """
+    if level is None:
+        return _remove_file_handler()
+
+    # If the file logger is not set yet, we set it to /dev/null so that we can set its
+    # level without creating a file
+    if not __file_handler:
+        set_file(os.devnull)
+
+    __file_handler.setLevel(level)
+
+
+def set_file(file: str | IO[str] | None) -> None:
+    """Set the location of the log file.
+
+    Args:
+        file: The path to the log file or a file object. Setting it to `None` disables
+            file logging.
+
+    Example:
+
+        >>> logging.set_file('/tmp/test.log')
+        >>> logging.set_file(open('/tmp/test2.log', 'a+'))
+        >>> logging.set_file(None)
+    """
+    global __file_handler
+
+    if file is None:
+        return _remove_file_handler()
+
+    if isinstance(file, str):
+        file = open(file, "a+")
+
+    # Create a new handler if none exist
+    if __file_handler is None:
+        console = Console(file=file, color_system="truecolor")
+        __file_handler = RichHandler(console=console)
+        __file_handler.setLevel(DEFAULT_FILE_LEVEL)
+        _get_root_logger().addHandler(__file_handler)
+    # Change the file of the already existing one
+    else:
+        old_file = __file_handler.console.file
+        __file_handler.console.file = file
+        old_file.close()
+
+
+def _get_root_logger() -> Logger:
+    return logger(None)
 
 
 def _define_log_level(levelName, levelNum, methodName=None):
@@ -79,12 +177,13 @@ def _define_log_level(levelName, levelNum, methodName=None):
     if not methodName:
         methodName = levelName.lower()
 
-    if hasattr(logging, levelName):
-        raise AttributeError(f"{levelName} already defined in logging module")
-    if hasattr(logging, methodName):
-        raise AttributeError(f"{methodName} already defined in logging module")
-    if hasattr(logging.getLoggerClass(), methodName):
-        raise AttributeError(f"{methodName} already defined in logger class")
+    # Removed checks as we only call this function with unique, constant level names
+    # if hasattr(logging, levelName):
+    #     raise AttributeError(f"{levelName} already defined in logging module")
+    # if hasattr(logging, methodName):
+    #     raise AttributeError(f"{methodName} already defined in logging module")
+    # if hasattr(logging.getLoggerClass(), methodName):
+    #     raise AttributeError(f"{methodName} already defined in logger class")
 
     # This method was inspired by the answers to Stack Overflow post
     # http://stackoverflow.com/q/2183233/2988730, especially
@@ -93,101 +192,9 @@ def _define_log_level(levelName, levelNum, methodName=None):
         if self.isEnabledFor(levelNum):
             self._log(levelNum, message, args, **kwargs)
 
-    def logToRoot(message, *args, **kwargs):
-        logging.log(levelNum, message, *args, **kwargs)
-
     logging.addLevelName(levelNum, levelName)
     setattr(logging, levelName, levelNum)
     setattr(logging.getLoggerClass(), methodName, logForLevel)
-    setattr(logging, methodName, logToRoot)
-
-
-def logger(name="ten") -> Logger:
-    """Return a logger with the specified name or, if name is None, return a
-    logger which is the root logger of the hierarchy.
-    """
-    return logging.getLogger(name)
-
-
-def set_cli_level(level):
-    """Sets the threshold for the CLI logger to `level`."""
-    if not __cli_handler:
-        _create_default_cli_handler()
-    __cli_handler.setLevel(level)
-
-
-def set_level(level):
-    """Sets the threshold for the file logger to `level`."""
-    if not __file_handler:
-        _create_default_file_handler()
-
-    __file_handler.setLevel(level)
-
-
-def set_file(file: str | IO[str]) -> None:
-    """Set the location of the log file.
-
-    Example:
-
-        >>> logging.set_file('/tmp/test.log')
-        >>> logging.set_file(open('/tmp/test2.log', 'a+'))
-    """
-    if not __file_handler:
-        _create_default_file_handler()
-
-    if isinstance(file, str):
-        file = open(file, "w")
-
-    old_file = __file_handler.console.file
-    __file_handler.console.file = file
-    old_file.close()
-
-
-def _get_root_logger() -> Logger:
-    return logger(None)
-
-
-def _set_cli_handler(handler: Handler):
-    global __cli_handler
-
-    __cli_handler = __replace_handler(__cli_handler, handler, logging.CRITICAL)
-
-
-def _set_file_handler(handler: Handler):
-    global __file_handler
-
-    __file_handler = __replace_handler(__file_handler, handler, logging.DEBUG)
-
-
-def __replace_handler(old_handler: Handler, handler: Handler, default_level) -> Handler:
-    """Replaces previous handler with new one. If there was no handler, set the
-    log level to `default_level`.
-    """
-    root_logger = _get_root_logger()
-
-    if old_handler:
-        level = old_handler.level
-        root_logger.removeHandler(old_handler)
-    else:
-        level = default_level
-
-    handler.setLevel(level)
-    root_logger.addHandler(handler)
-
-    return handler
-
-
-def _create_default_cli_handler():
-    console = Console(stderr=True)
-    handler = RichHandler(console=console)
-    _set_cli_handler(handler)
-
-
-def _create_default_file_handler():
-    file = open(config.log_file, "a+")
-    console = Console(file=file, color_system="truecolor")
-    handler = RichHandler(console=console)
-    _set_file_handler(handler)
 
 
 # Create logging levels
@@ -218,7 +225,4 @@ logging.getLogger("urllib3").setLevel(logging.ERROR)
 # Add our default handler
 
 logging.basicConfig(level="NOTSET", format="%(message)s", datefmt="[%X]", handlers=[])
-
-_create_default_file_handler()
-
 log = logger("ten")

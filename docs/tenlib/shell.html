@@ -102,8 +102,7 @@ def process(command: str | list[str], **kwargs) -&gt; Popen:
 def _execute_process(
     command: str | list[str], timeout: int, **kwargs
 ) -&gt; tuple[Popen, str | bytes, str | bytes]:
-    &#34;&#34;&#34;Creates a process and waits for it to finish, or a timeout to occur.
-    &#34;&#34;&#34;
+    &#34;&#34;&#34;Creates a process and waits for it to finish, or a timeout to occur.&#34;&#34;&#34;
     p = process(command, **kwargs)
     try:
         stdout, stderr = p.communicate(timeout=timeout)

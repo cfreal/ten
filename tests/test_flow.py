@@ -15,7 +15,7 @@ from tenlib import flow, exception, fs, logging
 
 
 class TestFlowPrototype(TenTestCase):
-    def _get_args(self, func, *args):
+    def _get_args(self, func, *args):  # -> tuple[list, dict]:
         sys.argv = ["./main"] + list(args)
         return flow._prototype_to_args(func)
 

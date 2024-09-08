@@ -43,7 +43,6 @@ __all__ = [
 class Configuration:
     burp_proxy: str = &#34;http://localhost:8080&#34;
     message_formatter: str = &#34;OtherOldschoolMessageFormatter&#34;
-    log_file: str = os.path.expanduser(&#34;~/ten.log&#34;)
 
     def __setattribute__(self):
         raise AttributeError(
@@ -75,7 +74,6 @@ config = Configuration()</code></pre>
 <pre><code class="python">class Configuration:
     burp_proxy: str = &#34;http://localhost:8080&#34;
     message_formatter: str = &#34;OtherOldschoolMessageFormatter&#34;
-    log_file: str = os.path.expanduser(&#34;~/ten.log&#34;)
 
     def __setattribute__(self):
         raise AttributeError(
@@ -89,10 +87,6 @@ config = Configuration()</code></pre>
 <div class="desc"></div>
 </dd>
 <dt id="tenlib.config.Configuration.message_formatter"><code class="name">var <span class="ident">message_formatter</span> : str</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="tenlib.config.Configuration.log_file"><code class="name">var <span class="ident">log_file</span> : str</code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
@@ -119,7 +113,6 @@ config = Configuration()</code></pre>
 <ul class="">
 <li><code><a title="tenlib.config.Configuration.burp_proxy" href="#tenlib.config.Configuration.burp_proxy">burp_proxy</a></code></li>
 <li><code><a title="tenlib.config.Configuration.message_formatter" href="#tenlib.config.Configuration.message_formatter">message_formatter</a></code></li>
-<li><code><a title="tenlib.config.Configuration.log_file" href="#tenlib.config.Configuration.log_file">log_file</a></code></li>
 </ul>
 </li>
 </ul>
