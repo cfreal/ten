@@ -48,8 +48,8 @@ __all__ = [
     "TRACE",
 ]
 
-DEFAULT_FILE_LEVEL = logging.DEBUG
-DEFAULT_CLI_LEVEL = logging.CRITICAL
+DEFAULT_FILE_LEVEL: int = logging.DEBUG
+FILE_CONSOLE_WIDTH: int = 80
 
 __cli_handler: Handler | None = None
 __file_handler: Handler | None = None
@@ -134,7 +134,7 @@ def set_file(file: str | IO[str] | None) -> None:
 
     # Create a new handler if none exist
     if __file_handler is None:
-        console = Console(file=file, color_system="truecolor")
+        console = Console(file=file, color_system="truecolor", width=FILE_CONSOLE_WIDTH)
         __file_handler = RichHandler(console=console)
         __file_handler.setLevel(DEFAULT_FILE_LEVEL)
         _get_root_logger().addHandler(__file_handler)
