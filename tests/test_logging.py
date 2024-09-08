@@ -12,6 +12,12 @@ class TestLogging(TenTestCase):
     def setUp(self) -> None:
         super().setUp()
         logging.set_file(None)
+        logging.set_cli_level(None)
+        
+    def tearDown(self) -> flow.NoneType:
+        logging.set_file(None)
+        logging.set_cli_level(None)
+        super().tearDown()
 
     def test_cli_logging_while_displaying_data_works(self):
         def display_both():
@@ -103,15 +109,21 @@ class TestLogging(TenTestCase):
 
     def test_cli_logging_can_get_disabled_twice(self):
         logging.set_cli_level(None)
+        self.assertEqual(logging._get_root_logger().handlers, [])
         logging.set_cli_level(None)
+        self.assertEqual(logging._get_root_logger().handlers, [])
 
-    def test_console_logging_can_get_disabled_twice_through_set_level(self):
+    def test_file_logging_can_get_disabled_twice_through_set_level(self):
         logging.set_level(None)
+        self.assertEqual(logging._get_root_logger().handlers, [])
         logging.set_level(None)
+        self.assertEqual(logging._get_root_logger().handlers, [])
 
-    def test_console_logging_can_get_disabled_twice_through_set_file(self):
+    def test_file_logging_can_get_disabled_twice_through_set_file(self):
         logging.set_file(None)
+        self.assertEqual(logging._get_root_logger().handlers, [])
         logging.set_file(None)
+        self.assertEqual(logging._get_root_logger().handlers, [])
 
 
 if __name__ == "__main__":
