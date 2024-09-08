@@ -60,7 +60,6 @@ class TestCLI(TenTestCase):
         _, output = self._test_program(
             transform, "base64.decode", "--python", input=b"AAAA"
         )
-        print(_)
         self.assertEqual(output, "b'\\x00\\x00\\x00'\n")
 
     def test_transform_to_tendict_returns_dict(self) -> None:
