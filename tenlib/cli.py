@@ -11,7 +11,7 @@ from tenlib.struct.proxy import TenDict
 @arg("transforms", "Transforms to apply")
 @arg("python", "If set, data is displayed as python code")
 @arg("keep_newline", "If not set, the last newline of the input is removed")
-def transform(*transforms, python=False, keep_newline=False):
+def transform(*transforms: str, python: bool=False, keep_newline: bool=False) -> None:
     """Applies one or several transforms from the transform module of ten.
 
     Examples:
