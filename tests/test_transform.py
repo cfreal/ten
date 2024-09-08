@@ -443,15 +443,21 @@ user1,user1@user.net,user1passwd
         with self.assertRaises(ValueError) as cm:
             transform.color.build_color("invalid")
         self.assertEqual(str(cm.exception), "Invalid color format: 'invalid' ('i')")
-        
+
     def test_color_with_invalid_code_byte_raises_valueerror(self) -> None:
         with self.assertRaises(ValueError) as cm:
             transform.color.build_color("\x00")
         self.assertEqual(str(cm.exception), "Invalid color format: '\\x00' ('\\x00')")
-        
+
     def test_use_color_wrapper(self) -> None:
         color = transform.color.build_color("b*")
-        self.assertEqual(color("test"), colorama.Fore.BLUE + colorama.Style.BRIGHT + "test" + colorama.Style.RESET_ALL)
+        self.assertEqual(
+            color("test"),
+            colorama.Fore.BLUE
+            + colorama.Style.BRIGHT
+            + "test"
+            + colorama.Style.RESET_ALL,
+        )
 
 
 if __name__ == "__main__":
