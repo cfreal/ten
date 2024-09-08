@@ -84,4 +84,4 @@ def ten(filename: str) -> None:
         path.write(PATTERN)
         path.chmod(0o740)
     
-    shell.call(config.create_file_command + (filename, ))
+    shell.call(config.create_script_command + (filename, ))

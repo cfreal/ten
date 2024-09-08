@@ -65,7 +65,7 @@ class TestCLI(TenTestCase):
         self.assertEqual(output, b"[{'a': '1', 'b': '2', 'c': '3'}]\n")
         
     def test_ten_program(self) -> None:
-        config.__dict__['create_file_command'] = ("touch",)
+        config.__dict__['create_script_command'] = ("touch",)
         
         with tempfile.TemporaryDirectory() as directory:
             file = Path(directory) / "test.py"
@@ -76,8 +76,8 @@ class TestCLI(TenTestCase):
             self.assertTrue(file.exists())
     
     def test_ten_program_already_exists(self) -> None:
-        create_file_command = config.create_file_command
-        config.__dict__['create_file_command'] = ("touch",)
+        create_file_command = config.create_script_command
+        config.__dict__['create_script_command'] = ("touch",)
         
         try:
             with tempfile.TemporaryDirectory() as directory:
@@ -88,7 +88,7 @@ class TestCLI(TenTestCase):
                 self.assertIn("File exists\n", output1)
                 self.assertEqual(b"", output2)
         finally:
-           config.__dict__['create_file_command'] = create_file_command
+           config.__dict__['create_script_command'] = create_file_command
         
     
 if __name__ == "__main__":
