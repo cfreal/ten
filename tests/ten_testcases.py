@@ -16,6 +16,7 @@ class TenTestCase(unittest.TestCase):
         sys.argc = len(sys.argv)
         flow.set_message_formatter(NewschoolMessageFormatter())
         console = get_console()
+        console.width = 100
         self.__old_console_file = console.file
         console.file = io.StringIO()
         console.record = True
