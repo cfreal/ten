@@ -44,7 +44,7 @@ def build_color(spec: str) -> Callable[[str], str]:
         ```
     """
     prefix = ""
-    for c in spec or "":
+    for c in spec:
         try:
             if c == "*":
                 prefix += Style.BRIGHT
