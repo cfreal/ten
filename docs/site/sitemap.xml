@@ -1,38 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
-         <loc>https://example.com/index.html</loc>
-         <lastmod>2024-09-07</lastmod>
+         <loc>https://cfreal.github.io/ten/site/index.html</loc>
+         <lastmod>2024-09-08</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://example.com/flow.html</loc>
-         <lastmod>2024-09-07</lastmod>
+         <loc>https://cfreal.github.io/ten/site/flow.html</loc>
+         <lastmod>2024-09-08</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://example.com/fs.html</loc>
-         <lastmod>2024-09-07</lastmod>
+         <loc>https://cfreal.github.io/ten/site/fs.html</loc>
+         <lastmod>2024-09-08</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://example.com/http.html</loc>
-         <lastmod>2024-09-07</lastmod>
+         <loc>https://cfreal.github.io/ten/site/http.html</loc>
+         <lastmod>2024-09-08</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://example.com/shell.html</loc>
-         <lastmod>2024-09-07</lastmod>
+         <loc>https://cfreal.github.io/ten/site/logging.html</loc>
+         <lastmod>2024-09-08</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://example.com/transform.html</loc>
-         <lastmod>2024-09-07</lastmod>
+         <loc>https://cfreal.github.io/ten/site/shell.html</loc>
+         <lastmod>2024-09-08</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://example.com/tutorial.html</loc>
-         <lastmod>2024-09-07</lastmod>
+         <loc>https://cfreal.github.io/ten/site/transform.html</loc>
+         <lastmod>2024-09-08</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://cfreal.github.io/ten/site/tutorial.html</loc>
+         <lastmod>2024-09-08</lastmod>
          <changefreq>daily</changefreq>
     </url>
 </urlset>

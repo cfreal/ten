@@ -1,5 +1,5 @@
 site_name: ten's documentation
-site_url: https://example.com/
+site_url: https://cfreal.github.io/ten/site/
 nav:
     - Home: index.md
     - "Flow: Input, output, and flow control": flow.md
@@ -7,6 +7,7 @@ nav:
     - "HTTP: requests on steroids": http.md
     - "Shell: run commands": shell.md
     - "Filesystem: manage folders and files": fs.md
+    - "Logging": logging.md
     - "Tutorials and examples": tutorial.md
 theme: readthedocs
 markdown_extensions:

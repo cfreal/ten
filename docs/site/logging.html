@@ -3,18 +3,18 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://cfreal.github.io/ten/site/fs.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://cfreal.github.io/ten/site/logging.html" />
       <link rel="shortcut icon" href="img/favicon.ico" />
-    <title>Filesystem: manage folders and files - ten's documentation</title>
+    <title>Logging - ten's documentation</title>
     <link rel="stylesheet" href="css/theme.css" />
     <link rel="stylesheet" href="css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Filesystem: manage folders and files";
-        var mkdocs_page_input_path = "fs.md";
-        var mkdocs_page_url = "/ten/site/fs.html";
+        var mkdocs_page_name = "Logging";
+        var mkdocs_page_input_path = "logging.md";
+        var mkdocs_page_url = "/ten/site/logging.html";
       </script>
     
     <!--[if lt IE 9]>
@@ -59,24 +59,18 @@
                 <li class="toctree-l1"><a class="reference internal" href="shell.html">Shell: run commands</a>
                 </li>
               </ul>
-              <ul class="current">
-                <li class="toctree-l1 current"><a class="reference internal current" href="fs.html">Filesystem: manage folders and files</a>
-    <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#files">Files</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#read-and-write">Read and write</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#creating-a-file">Creating a file</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#directories">Directories</a>
-    </li>
-    </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="fs.html">Filesystem: manage folders and files</a>
                 </li>
               </ul>
-              <ul>
-                <li class="toctree-l1"><a class="reference internal" href="logging.html">Logging</a>
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="logging.html">Logging</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#file-logging">File logging</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#cli-logging">CLI logging</a>
+    </li>
+    </ul>
                 </li>
               </ul>
               <ul>
@@ -97,7 +91,7 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href="index.html" class="icon icon-home" aria-label="Docs"></a></li>
-      <li class="breadcrumb-item active">Filesystem: manage folders and files</li>
+      <li class="breadcrumb-item active">Logging</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -106,76 +100,38 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="filesystem-files-directories">Filesystem (files, directories)</h1>
-<p>Quickly access and edit files. Refer to <a href="../tenlib/fs.html"><code>tenlib.fs</code>'s documentation</a> for details.</p>
-<p>The FS module has a few functions to quickly manipulate files:</p>
-<pre><code class="language-python">from ten import *
-
-if exists(&quot;/tmp/test.txt&quot;):
-    data = read_text(&quot;/tmp/test.txt&quot;)
-else:
-    data = compute()
-    write(&quot;/tmp/test.txt&quot;, data)
+                <h1 id="logging">Logging</h1>
+<p>Logging can be stored in a file and displayed on the console.</p>
+<p>A <code>log</code> object is available:</p>
+<pre><code class="language-python">&gt;&gt;&gt; log.info(&quot;A log message&quot;)
+&gt;&gt;&gt; log.debug(&quot;Another log message&quot;)
 </code></pre>
-<p>For advanced usage, use <a href="../tenlib/fs.html#tenlib.fs.Path"><code>Path</code></a> instead:</p>
-<pre><code class="language-python">path = Path(&quot;/tmp/test.txt&quot;)
-
-if path.exists():
-    data = path.read_text()
-else:
-    data = compute()
-    path.write(data)
+<p>Alternatively, you can obtain a log object using <code>logger()</code>:</p>
+<pre><code class="language-python">class Something:
+    def __init__(self):
+        self.log = logger(self.__class__.__name__)
 </code></pre>
-<h2 id="files">Files</h2>
-<p>Create a <code>Path</code> object, a wrapper for <code>pathlib.Path</code> with a few additional methods.</p>
-<pre><code class="language-python">p = Path(&quot;/tmp/test.txt&quot;)
+<h2 id="file-logging">File logging</h2>
+<p>To write log data to a file, use <code>logging.set_file()</code> and <code>logging.set_level()</code>:</p>
+<pre><code class="language-python">&gt;&gt;&gt; logging.set_file(&quot;ten.log&quot;)
+&gt;&gt;&gt; logging.set_level(DEBUG)
 </code></pre>
-<h3 id="read-and-write">Read and write</h3>
-<p>To read data as a string or bytes:</p>
-<pre><code class="language-python">contents = p.read_text()
-contents = p.read_bytes()
+<p>It can be disabled by calling any of these functions with <code>None</code>. For instance:</p>
+<pre><code class="language-python">&gt;&gt;&gt; logging.set_file(None)
 </code></pre>
-<p>To write data as bytes or string, use the <code>Path.write()</code> method.</p>
-<pre><code class="language-python">p.write(b&quot;contents&quot;)
+<h2 id="cli-logging">CLI logging</h2>
+<p>To display log messages to the CLI, use <code>logging.set_cli_level()</code>:</p>
+<pre><code class="language-python">&gt;&gt;&gt; logging.set_cli_level(&quot;INFO&quot;)
 </code></pre>
-<pre><code class="language-python">p.write(&quot;contents&quot;)
+<p>Disable it using:</p>
+<pre><code class="language-python">&gt;&gt;&gt; logging.set_cli_level(None)
 </code></pre>
-<p>To append, use <code>Path.append()</code>:</p>
-<pre><code class="language-python">p.append(&quot;additional contents&quot;)
-</code></pre>
-<h3 id="creating-a-file">Creating a file</h3>
-<p>Create a file using <code>Path.touch()</code>.</p>
-<pre><code class="language-python">p.touch()
-</code></pre>
-<p>To create the whole directory hierarchy, use <code>parents=True</code>, or simply <code>ptouch()</code>:</p>
-<pre><code class="language-python">p = Path(&quot;/tmp/long/path/to/file&quot;)
-
-# equivalent
-p.touch(parents=True)
-p.ptouch()
-</code></pre>
-<p>The call returns the instance, so it can be chained with <code>write()</code>, for instance.</p>
-<pre><code class="language-python">p.ptouch().write(&quot;data&quot;)
-</code></pre>
-<h2 id="directories">Directories</h2>
-<p>To go through a directory, use <code>glob()</code> or <code>rglob()</code>.</p>
-<pre><code class="language-python">dir = Path(&quot;./dir&quot;)
-
-for file in dir.rglob(&quot;**/*.py&quot;):
-    msg_info(f&quot;Found python file: {file}&quot;)
-    process_file(file)
-</code></pre>
-<p>Create a directory using <code>mkdir()</code>:</p>
-<pre><code class="language-python">dir = Path(&quot;./dir&quot;)
-dir.mkdir()
-</code></pre>
-<p>To create the parent directories as well, use <code>mkdir(parent=True)</code>.</p>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="shell.html" class="btn btn-neutral float-left" title="Shell: run commands"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="logging.html" class="btn btn-neutral float-right" title="Logging">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="fs.html" class="btn btn-neutral float-left" title="Filesystem: manage folders and files"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="tutorial.html" class="btn btn-neutral float-right" title="Tutorials and examples">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -198,10 +154,10 @@ dir.mkdir()
   <span class="rst-current-version" data-toggle="rst-current-version">
     
     
-      <span><a href="shell.html" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="fs.html" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="logging.html" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="tutorial.html" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

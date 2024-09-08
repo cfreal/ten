@@ -1025,7 +1025,9 @@ class MultiRequest:
         &#34;&#34;&#34;Sends GET requests. Returns a list of `Response`s.&#34;&#34;&#34;
         return self._run_requests(&#34;get&#34;, url=url, **kwargs)
 
-    def post(self, url: str, data: dict=None, json: Any=None, **kwargs) -&gt; list[Response]:
+    def post(
+        self, url: str, data: dict = None, json: Any = None, **kwargs
+    ) -&gt; list[Response]:
         &#34;&#34;&#34;Sends POST requests. Returns a list of `Response`s.
 
         Args:
@@ -3600,7 +3602,9 @@ to it and its value. For example:</p>
         &#34;&#34;&#34;Sends GET requests. Returns a list of `Response`s.&#34;&#34;&#34;
         return self._run_requests(&#34;get&#34;, url=url, **kwargs)
 
-    def post(self, url: str, data: dict=None, json: Any=None, **kwargs) -&gt; list[Response]:
+    def post(
+        self, url: str, data: dict = None, json: Any = None, **kwargs
+    ) -&gt; list[Response]:
         &#34;&#34;&#34;Sends POST requests. Returns a list of `Response`s.
 
         Args:
@@ -3749,7 +3753,9 @@ object to send in the body of the <code>Request</code>.</dd>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def post(self, url: str, data: dict=None, json: Any=None, **kwargs) -&gt; list[Response]:
+<pre><code class="python">def post(
+    self, url: str, data: dict = None, json: Any = None, **kwargs
+) -&gt; list[Response]:
     &#34;&#34;&#34;Sends POST requests. Returns a list of `Response`s.
 
     Args:
