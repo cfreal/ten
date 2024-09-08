@@ -21,7 +21,7 @@ class TestShell(TenTestCase):
         p.stdin.close()
         p.stdout.close()
         p.stderr.close()
-        
+
     def test_command_expecting_stdin_does_not_hang(self):
         out, err = shell.output("cat")
         self.assertEqual(out, "")
