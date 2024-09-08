@@ -9,7 +9,7 @@ import sys
 from tenlib.config import config
 from tests.ten_testcases import TenTestCase
 from tenlib.cli import transform, ten
-    
+
 
 class TestCLI(TenTestCase):
     def setUp(self) -> None:
@@ -21,8 +21,10 @@ class TestCLI(TenTestCase):
 
         stdin = io.TextIOWrapper(io.BytesIO(input))
         stdout = io.TextIOWrapper(io.BytesIO())
-        
-        with unittest.mock.patch("sys.stdin", stdin), unittest.mock.patch("sys.stdout", stdout):
+
+        with unittest.mock.patch("sys.stdin", stdin), unittest.mock.patch(
+            "sys.stdout", stdout
+        ):
             output = self._read_output(program)
 
         stdout.seek(0)
