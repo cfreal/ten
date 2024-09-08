@@ -55,7 +55,7 @@ class TestShell(TenTestCase):
         self.assertEqual(shell.escape("abc"), "'abc'")
         self.assertEqual(shell.escape("abc'def"), "'abc'\\''def'")
         self.assertEqual(shell.escape("abc'def'ijk"), "'abc'\\''def'\\''ijk'")
-        
+
     def test_kill_after_sleep(self):
         with self.assertRaises(shell.TimeoutExpired) as cm:
             shell.call(["sleep", "2"], timeout=1)
