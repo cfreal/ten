@@ -56,12 +56,17 @@ def process(command: str | list[str], **kwargs) -> Popen:
 def _execute_process(
     command: str | list[str], timeout: int, **kwargs
 ) -> tuple[Popen, str | bytes, str | bytes]:
-    """Creates a process and waits for it to finish, or a timeout to occur."""
+    """Creates a process and waits for it to finish, or a timeout to occur.
+    If a timeout occurs, the process is killed, waited for, and the exception is raised.
+    """
     p = process(command, **kwargs)
     try:
         stdout, stderr = p.communicate(timeout=timeout)
     except TimeoutExpired:
-        process.kill()
+        p.stderr.close()
+        p.stdout.close()
+        p.kill()
+        p.wait()
         raise
 
     return p, stdout, stderr
