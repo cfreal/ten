@@ -29,7 +29,7 @@ class TenTestCase(unittest.TestCase):
         console.file = self.__old_console_file
         return super().tearDown()
 
-    def _read_output(self, func, *args, **kwargs):
+    def _read_output(self, func, *args, **kwargs) -> str:
         try:
             func(*args, **kwargs)
         except SystemExit:

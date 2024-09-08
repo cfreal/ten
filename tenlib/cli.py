@@ -4,14 +4,17 @@
 import sys
 
 from ten import *
-from tenlib.struct.proxy import TenDict
+from tenlib.struct.proxy import TenDict, TenList
+from tenlib.config import config
 
 
 @entry
 @arg("transforms", "Transforms to apply")
 @arg("python", "If set, data is displayed as python code")
 @arg("keep_newline", "If not set, the last newline of the input is removed")
-def transform(*transforms, python=False, keep_newline=False):
+def transform(
+    *transforms: str, python: bool = False, keep_newline: bool = False
+) -> None:
     """Applies one or several transforms from the transform module of ten.
 
     Examples:
@@ -50,7 +53,9 @@ def transform(*transforms, python=False, keep_newline=False):
         print(data)
     else:
         if isinstance(data, TenDict):
-            data = dict(data)
+            data = data.__wo__
+        if isinstance(data, TenList):
+            data = data.data
         pprint(data, indent=4)
 
 
@@ -71,7 +76,7 @@ main()
 
 @entry
 @arg("filename", "File to create")
-def ten(filename: str):
+def ten(filename: str) -> None:
     """Creates a new ten script and opens it."""
     path = Path(filename)
 
@@ -80,4 +85,5 @@ def ten(filename: str):
     else:
         path.write(PATTERN)
         path.chmod(0o740)
-    shell.process(("code", "--", filename))
+
+    shell.call(config.create_script_command + (filename,))

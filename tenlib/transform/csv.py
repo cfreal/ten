@@ -44,7 +44,7 @@ def read(file, **fmtparams) -> TenList:
 def _stream_read(stream, **fmtparams) -> TenList:
     """Reads CSV data from a stream and returns each row."""
     reader = csv.DictReader(stream, **fmtparams)
-    return TenList([TenDict(row) for row in reader])
+    return TenList([row for row in reader])
 
 
 def _stream_write(stream, data, fieldnames=None, **fmtparams):
