@@ -35,7 +35,7 @@ hljs.highlightAll();
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="tenlib.cli.transform"><code class="name flex">
-<span>def <span class="ident">transform</span></span>(<span>*transforms, python=False, keep_newline=False)</span>
+<span>def <span class="ident">transform</span></span>(<span>*transforms: str, python: bool = False, keep_newline: bool = False) ‑> None</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Applies one or several transforms from the transform module of ten.</p>
@@ -48,7 +48,7 @@ $ cat /etc/passwd | tf base64.encode
 cm9vdDp4OjA6MDpyb290Oi9yb290Oi9iaW4vYmFzaApkYWVtb24&hellip;</p></div>
 </dd>
 <dt id="tenlib.cli.ten"><code class="name flex">
-<span>def <span class="ident">ten</span></span>(<span>filename: str)</span>
+<span>def <span class="ident">ten</span></span>(<span>filename: str) ‑> None</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Creates a new ten script and opens it.</p></div>
