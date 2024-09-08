@@ -13,7 +13,7 @@ class TestLogging(TenTestCase):
         super().setUp()
         logging.set_file(None)
         logging.set_cli_level(None)
-        
+
     def tearDown(self) -> flow.NoneType:
         logging.set_file(None)
         logging.set_cli_level(None)
