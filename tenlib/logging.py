@@ -20,6 +20,7 @@ To set the level of logging in this file, use `set_level`. Change the path using
 [07/13/22 17:49:07] ERROR    Woops !                                   <stdin>:1
 ```
 """
+from __future__ import annotations
 
 import logging
 import os
@@ -55,7 +56,7 @@ __cli_handler: Handler | None = None
 __file_handler: Handler | None = None
 
 
-def logger(name: str | None = "ten") -> Logger:
+def logger(name: str | None = "ten") -> TenLogger:
     """Returns a logger with the specified name or, if name is None, returns the root
     logger of the hierarchy.
     """
@@ -202,6 +203,25 @@ def _define_log_level(levelName, levelNum, methodName=None):
 _define_log_level("SUCCESS", 25)
 _define_log_level("FAILURE", 26)
 _define_log_level("TRACE", 11)
+
+
+class TenLogger(logging.Logger):
+    """A logger class that adds convenience methods for logging at the new levels."""
+
+    def trace(self, msg, *args, **kwargs) -> None:
+        if self.isEnabledFor(TRACE):
+            self._log(TRACE, msg, args, **kwargs)
+
+    def success(self, msg, *args, **kwargs) -> None:
+        if self.isEnabledFor(SUCCESS):
+            self._log(SUCCESS, msg, args, **kwargs)
+
+    def failure(self, msg, *args, **kwargs) -> None:
+        if self.isEnabledFor(FAILURE):
+            self._log(FAILURE, msg, args, **kwargs)
+
+
+logging.setLoggerClass(TenLogger)
 
 # Reference logging levels
 
