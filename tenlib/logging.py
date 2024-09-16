@@ -204,9 +204,10 @@ _define_log_level("SUCCESS", 25)
 _define_log_level("FAILURE", 26)
 _define_log_level("TRACE", 11)
 
+
 class TenLogger(logging.Logger):
     """A logger class that adds convenience methods for logging at the new levels."""
-    
+
     def trace(self, msg, *args, **kwargs) -> None:
         if self.isEnabledFor(TRACE):
             self._log(TRACE, msg, args, **kwargs)
@@ -218,7 +219,8 @@ class TenLogger(logging.Logger):
     def failure(self, msg, *args, **kwargs) -> None:
         if self.isEnabledFor(FAILURE):
             self._log(FAILURE, msg, args, **kwargs)
-            
+
+
 logging.setLoggerClass(TenLogger)
 
 # Reference logging levels
