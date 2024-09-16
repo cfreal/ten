@@ -124,6 +124,12 @@ class TestLogging(TenTestCase):
         self.assertEqual(logging._get_root_logger().handlers, [])
         logging.set_file(None)
         self.assertEqual(logging._get_root_logger().handlers, [])
+        
+    def test_log_object_is_of_type_TenLogger(self):
+        self.assertIsInstance(logging.log, logging.TenLogger)
+        
+    def test_logger_object_is_of_type_TenLogger(self):
+        self.assertIsInstance(logging.logger("test"), logging.TenLogger)
 
 
 if __name__ == "__main__":
