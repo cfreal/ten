@@ -21,4 +21,4 @@ from tenlib.fs import *
 from tenlib.struct import Table
 from tenlib.util.misc import niter
 from tenlib.util.watch import stopwatch, watch
-from tenlib.logging import logger
+from tenlib.logging import logger, log
