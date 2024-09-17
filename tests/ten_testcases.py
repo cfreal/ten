@@ -1,8 +1,7 @@
 import io
-from threading import Lock
 import unittest
 import sys
-from tenlib import flow
+from tenlib import logging, flow
 
 from tenlib.flow.console import get_console
 from tenlib.flow.messageformatter import NewschoolMessageFormatter
@@ -20,6 +19,8 @@ class TenTestCase(unittest.TestCase):
         self.__old_console_file = console.file
         console.file = io.StringIO()
         console.record = True
+        logging.set_cli_level(None)
+        logging.set_level(None)
 
     def tearDown(self) -> None:
         console = get_console()
