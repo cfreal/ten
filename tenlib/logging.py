@@ -65,6 +65,7 @@ def logger(name: str | None = "ten") -> TenLogger:
 
 class CLIHandler(RichHandler):
     """A custom CLI handler that can be disabled."""
+
     enabled: bool = False
 
     def __init__(self, *args, **kwargs) -> None:
@@ -73,15 +74,17 @@ class CLIHandler(RichHandler):
     def emit(self, record: logging.LogRecord) -> None:
         if self.enabled:
             super().emit(record)
-            
+
     def __repr__(self) -> str:
         level = logging.getLevelName(self.level)
         return f"<CLIHandler enabled={self.enabled} level={level}>"
-            
+
+
 def _create_cli_handler() -> None:
     global __cli_handler
     __cli_handler = CLIHandler(console=get_console())
     _get_root_logger().addHandler(__cli_handler)
+
 
 def set_cli_level(level: int | str | None) -> None:
     """Sets the threshold for the CLI logger to `level`. Setting it to `None` disables

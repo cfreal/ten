@@ -110,9 +110,11 @@ class TestLogging(TenTestCase):
         self.assertNotIn("This is not displayed", output)
         self.assertIn("This is also displayed", output)
 
-    def _check_only_has_cli_logger(self, enabled: bool=False):
+    def _check_only_has_cli_logger(self, enabled: bool = False):
         self.assertEqual(len(logging._get_root_logger().handlers), 1)
-        self.assertIsInstance(logging._get_root_logger().handlers[0], logging.CLIHandler)
+        self.assertIsInstance(
+            logging._get_root_logger().handlers[0], logging.CLIHandler
+        )
         self.assertIs(logging._get_root_logger().handlers[0].enabled, enabled)
 
     def test_cli_logging_can_get_disabled_twice(self):
