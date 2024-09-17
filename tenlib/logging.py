@@ -52,7 +52,7 @@ __all__ = [
 DEFAULT_FILE_LEVEL: int = logging.DEBUG
 FILE_CONSOLE_WIDTH: int = 80
 
-__cli_handler: Handler | None = None
+__cli_handler: CLIHandler = None
 __file_handler: Handler | None = None
 
 
@@ -63,6 +63,26 @@ def logger(name: str | None = "ten") -> TenLogger:
     return logging.getLogger(name)
 
 
+class CLIHandler(RichHandler):
+    """A custom CLI handler that can be disabled."""
+    enabled: bool = False
+
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+
+    def emit(self, record: logging.LogRecord) -> None:
+        if self.enabled:
+            super().emit(record)
+            
+    def __repr__(self) -> str:
+        level = logging.getLevelName(self.level)
+        return f"<CLIHandler enabled={self.enabled} level={level}>"
+            
+def _create_cli_handler() -> None:
+    global __cli_handler
+    __cli_handler = CLIHandler(console=get_console())
+    _get_root_logger().addHandler(__cli_handler)
+
 def set_cli_level(level: int | str | None) -> None:
     """Sets the threshold for the CLI logger to `level`. Setting it to `None` disables
     CLI logging.
@@ -71,17 +91,16 @@ def set_cli_level(level: int | str | None) -> None:
     >>> set_cli_level(logging.INFO)
     >>> set_cli_level(None)
     """
+    # Disabling CLI logging is done by setting the handler's enabled attribute to False,
+    # not removing the handler itself. If we did so, the default "lastResort" handler
+    # would be used instead.
     global __cli_handler
 
     if level is None:
-        _get_root_logger().removeHandler(__cli_handler)
-        __cli_handler = None
-        return
-
-    if not __cli_handler:
-        __cli_handler = RichHandler(console=get_console())
-        _get_root_logger().addHandler(__cli_handler)
-    __cli_handler.setLevel(level)
+        __cli_handler.enabled = False
+    else:
+        __cli_handler.enabled = True
+        __cli_handler.setLevel(level)
 
 
 def _remove_file_handler() -> None:
@@ -245,4 +264,7 @@ logging.getLogger("urllib3").setLevel(logging.ERROR)
 # Add our default handler
 
 logging.basicConfig(level="NOTSET", format="%(message)s", datefmt="[%X]", handlers=[])
-log = logger("ten")
+
+_create_cli_handler()
+
+log = logger()

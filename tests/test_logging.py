@@ -96,10 +96,13 @@ class TestLogging(TenTestCase):
     def test_cli_logging_can_get_disabled_and_reenabled(self):
         def display_both():
             logging.set_cli_level(logging.DEBUG)
+            self._check_only_has_cli_logger(enabled=True)
             logging.log.debug("This is displayed")
             logging.set_cli_level(None)
+            self._check_only_has_cli_logger(enabled=False)
             logging.log.debug("This is not displayed")
             logging.set_cli_level(logging.DEBUG)
+            self._check_only_has_cli_logger(enabled=True)
             logging.log.debug("This is also displayed")
 
         output = self._read_output(display_both)
@@ -107,23 +110,28 @@ class TestLogging(TenTestCase):
         self.assertNotIn("This is not displayed", output)
         self.assertIn("This is also displayed", output)
 
+    def _check_only_has_cli_logger(self, enabled: bool=False):
+        self.assertEqual(len(logging._get_root_logger().handlers), 1)
+        self.assertIsInstance(logging._get_root_logger().handlers[0], logging.CLIHandler)
+        self.assertIs(logging._get_root_logger().handlers[0].enabled, enabled)
+
     def test_cli_logging_can_get_disabled_twice(self):
         logging.set_cli_level(None)
-        self.assertEqual(logging._get_root_logger().handlers, [])
+        self._check_only_has_cli_logger()
         logging.set_cli_level(None)
-        self.assertEqual(logging._get_root_logger().handlers, [])
+        self._check_only_has_cli_logger()
 
     def test_file_logging_can_get_disabled_twice_through_set_level(self):
         logging.set_level(None)
-        self.assertEqual(logging._get_root_logger().handlers, [])
+        self._check_only_has_cli_logger()
         logging.set_level(None)
-        self.assertEqual(logging._get_root_logger().handlers, [])
+        self._check_only_has_cli_logger()
 
     def test_file_logging_can_get_disabled_twice_through_set_file(self):
         logging.set_file(None)
-        self.assertEqual(logging._get_root_logger().handlers, [])
+        self._check_only_has_cli_logger()
         logging.set_file(None)
-        self.assertEqual(logging._get_root_logger().handlers, [])
+        self._check_only_has_cli_logger()
 
     def test_log_object_is_of_type_TenLogger(self):
         self.assertIsInstance(logging.log, logging.TenLogger)
