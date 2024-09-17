@@ -224,7 +224,7 @@ def _define_log_level(levelName, levelNum, methodName=None):
 
 _define_log_level("SUCCESS", 25)
 _define_log_level("FAILURE", 26)
-_define_log_level("TRACE", 11)
+_define_log_level("TRACE", 9)
 
 
 class TenLogger(logging.Logger):
