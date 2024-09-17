@@ -122,6 +122,9 @@ class TestLogging(TenTestCase):
         self._check_only_has_cli_logger()
         logging.set_cli_level(None)
         self._check_only_has_cli_logger()
+        
+    def test_trace_logging_is_not_greater_than_debug(self):
+        self.assertGreater(logging.DEBUG, logging.TRACE)
 
     def test_file_logging_can_get_disabled_twice_through_set_level(self):
         logging.set_level(None)
