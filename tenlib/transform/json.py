@@ -1,4 +1,5 @@
 import json
+from typing import Any, Optional
 
 from tenlib.transform.generic import multiform
 from tenlib import fs
@@ -14,13 +15,13 @@ __all__ = [
 JSONDecodeError = json.JSONDecodeError
 
 
-def encode(data, **kwargs) -> str:
+def encode(data, indent: Optional[int]=None, **kwargs) -> str:
     """Wrapper for `json.dumps()`."""
-    return json.dumps(data, **kwargs)
+    return json.dumps(data, indent=indent, **kwargs)
 
 
 @multiform
-def decode(data: str, **kwargs):
+def decode(data: str, **kwargs) -> Any:
     """Wrapper for `json.loads()`."""
     return json.loads(data, **kwargs)
 
