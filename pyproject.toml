@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "ten"
-version = "0.1.4"
+version = "0.1.5"
 description = "A (small) web exploit framework"
 authors = ["Charles \"cfreal\" Fol <folcharles@gmail.com>"]
 readme = "README.md"
