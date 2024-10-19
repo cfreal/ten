@@ -73,8 +73,9 @@ def multiform(
         data: bytearray, *args: OriginalParams.args, **kwargs: OriginalParams.kwargs
     ) -> OriginalRetType: ...
 
+    @functools.wraps(function)
     def mfunction(
-        data,
+        data: Any,
         *args: OriginalParams.args,
         **kwargs: OriginalParams.kwargs,
     ) -> Any:
