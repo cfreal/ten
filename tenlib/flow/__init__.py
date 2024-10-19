@@ -43,11 +43,14 @@ import re
 from types import SimpleNamespace, NoneType
 from typing import (
     Callable,
+    Generator,
+    ParamSpec,
     Type,
     Optional,
     Iterable,
     NoReturn,
     Any,
+    TypeVar,
     Union,
     get_args,
     get_origin,
@@ -113,7 +116,14 @@ else:
     __ARGPARSE_FORMATTER = rich_argparse.RawDescriptionRichHelpFormatter
 
 
-def entry(entrypoint: Callable | Type) -> Callable[[], None]:
+
+FParam = ParamSpec("FParam")
+FRetType = TypeVar("FRetType")
+FCallable = TypeVar("FCallable", Callable[FParam, FRetType])
+FIterableItem = TypeVar("FIterableItem")
+
+
+def entry(entrypoint: Callable[..., FRetType]) -> Callable[[], FRetType]:
     """Converts the given coroutine or class into the program's entry point.
     Command line arguments are mapped to the parameters of the function or the object's
     `__init__`. Also, `tenlib.exception.TenExit` and `KeyboardInterrupt` exceptions will
@@ -263,7 +273,7 @@ def entry(entrypoint: Callable | Type) -> Callable[[], None]:
             return entrypoint(*args, **kwargs)
 
     @functools.wraps(entrypoint)
-    def cli_main():
+    def cli_main() -> FRetType:
         args, kwargs = _prototype_to_args(entrypoint)
         logger = logging.logger(entrypoint.__module__)
         console = get_console()
@@ -296,7 +306,7 @@ def entry(entrypoint: Callable | Type) -> Callable[[], None]:
     return cli_main
 
 
-def _doc_to_description(function):
+def _doc_to_description(function: Callable) -> str:
     doc = function.__doc__
     if not doc:
         return None
@@ -492,7 +502,7 @@ def _str_to_bool(value) -> bool:
     raise ValueError(f"Invalid argument for type bool: {value!r}")
 
 
-def arg(name: str, description: str):
+def arg(name: str, description: str) -> Callable[[FCallable], FCallable]:
     """Provides documentation for the parameter `name` of the `entry` function.
     The documentation is visible when the program is run with the `--help` flag.
 
@@ -506,7 +516,7 @@ def arg(name: str, description: str):
     ```
     """
 
-    def wrapper(entry: Callable) -> Callable:
+    def wrapper(entry: FCallable) -> FCallable:
         if not hasattr(entry, "__ten_doc__"):
             entry.__ten_doc__ = {}
         entry.__ten_doc__[name] = description
@@ -669,10 +679,9 @@ def assume(assumption: bool, message: str = "Assumption failed") -> None:
     if not assumption:
         failure(message)
 
-
 def inform(
     go: str = None, ok: str = None, ko: str = None, ko_exit: bool = False
-) -> Callable[[Callable], Callable]:
+) -> Callable[[FCallable], FCallable]:
     """This decorator will display a spinner and a message while a coroutine is
     running, and optionally a message after it is done.
 
@@ -719,9 +728,9 @@ def inform(
         ```
     """
 
-    def inform_wrapper(function):
+    def inform_wrapper(function: FCallable) -> FCallable:
         @functools.wraps(function)
-        def _inform_wrapper(*args, **kwargs):
+        def _inform_wrapper(*args:FParam.args, **kwargs:FParam.kwargs) -> FRetType:
             if go:
                 with msg_status(go.format(args=args, kwargs=kwargs)):
                     result = function(*args, **kwargs)
@@ -743,15 +752,14 @@ def inform(
 
     return inform_wrapper
 
-
-def trace(function: Callable) -> Callable:
+def trace(function: FCallable) -> FCallable:
     """Decorator that displays a debug log line containing the function name,
     its parameters and the value returned.
     """
     logger = logging.logger(function.__module__)
 
     @functools.wraps(function)
-    def traced_function(*args, **kwargs):
+    def traced_function(*args: FParam.args, **kwargs: FParam.kwargs) -> FRetType:
         # Not the cleanest way
         name = function.__qualname__
         is_method = int(inspect.ismethod(function))
@@ -810,11 +818,11 @@ def progress(transient: bool = True, **kwargs) -> Progress:
 
 
 def track(
-    sequence: Iterable,
+    sequence: Iterable[FIterableItem],
     description: str = "Working...",
     total: Optional[float] = None,
     transient: bool = True,
-) -> Iterable:
+) -> Generator[FIterableItem]:
     """Track progress when iterating over a sequence. This is a wrapper for
     [rich's `track`](https://rich.readthedocs.io/en/stable/reference/progress.html#rich.progress.Progress.track).
 
@@ -833,7 +841,7 @@ def track(
         transient (bool, optional): Clear the progress on exit. Defaults to True.
 
     Returns:
-        Iterable: An iterable of the values in the sequence.
+        Iterable: The original iterable.
     """
     progress = Progress(
         *_progress_columns,
