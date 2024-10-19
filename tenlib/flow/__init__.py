@@ -116,10 +116,9 @@ else:
     __ARGPARSE_FORMATTER = rich_argparse.RawDescriptionRichHelpFormatter
 
 
-
 FParam = ParamSpec("FParam")
 FRetType = TypeVar("FRetType")
-FCallable = TypeVar("FCallable", Callable[FParam, FRetType])
+FCallable = TypeVar("FCallable", bound=Callable[FParam, FRetType])
 FIterableItem = TypeVar("FIterableItem")
 
 
@@ -679,6 +678,7 @@ def assume(assumption: bool, message: str = "Assumption failed") -> None:
     if not assumption:
         failure(message)
 
+
 def inform(
     go: str = None, ok: str = None, ko: str = None, ko_exit: bool = False
 ) -> Callable[[FCallable], FCallable]:
@@ -730,7 +730,7 @@ def inform(
 
     def inform_wrapper(function: FCallable) -> FCallable:
         @functools.wraps(function)
-        def _inform_wrapper(*args:FParam.args, **kwargs:FParam.kwargs) -> FRetType:
+        def _inform_wrapper(*args: FParam.args, **kwargs: FParam.kwargs) -> FRetType:
             if go:
                 with msg_status(go.format(args=args, kwargs=kwargs)):
                     result = function(*args, **kwargs)
@@ -751,6 +751,7 @@ def inform(
         return _inform_wrapper
 
     return inform_wrapper
+
 
 def trace(function: FCallable) -> FCallable:
     """Decorator that displays a debug log line containing the function name,
@@ -822,7 +823,7 @@ def track(
     description: str = "Working...",
     total: Optional[float] = None,
     transient: bool = True,
-) -> Generator[FIterableItem]:
+) -> Generator[FIterableItem, None, None]:
     """Track progress when iterating over a sequence. This is a wrapper for
     [rich's `track`](https://rich.readthedocs.io/en/stable/reference/progress.html#rich.progress.Progress.track).
 
@@ -914,9 +915,11 @@ def set_random_message_formatter() -> None:
 
 
 def set_message_formatter(
-    message_formatter: messageformatter.MessageFormatter
-    | Type[messageformatter.MessageFormatter]
-    | str,
+    message_formatter: (
+        messageformatter.MessageFormatter
+        | Type[messageformatter.MessageFormatter]
+        | str
+    ),
 ) -> None:
     """Sets given `messageformatter.MessageFormatter` as the message formatter."""
     global __message_formatter
