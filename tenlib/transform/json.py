@@ -15,7 +15,7 @@ __all__ = [
 JSONDecodeError = json.JSONDecodeError
 
 
-def encode(data, indent: Optional[int]=None, **kwargs) -> str:
+def encode(data, indent: Optional[int] = None, **kwargs) -> str:
     """Wrapper for `json.dumps()`."""
     return json.dumps(data, indent=indent, **kwargs)
 

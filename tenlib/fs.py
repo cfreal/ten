@@ -151,13 +151,16 @@ FParams = ParamSpec("FParams")
 FRetType = TypeVar("FRetType")
 FCallable = TypeVar("FCallable", bound=Callable[FParams, FRetType])
 
+
 def wrapper_read(function: Callable[Concatenate[bytes, FParams], FRetType]):
     """Returns a function which, instead of reading data from the first
     parameter, reads data from a file.
     """
 
     @functools.wraps(function)
-    def read_function(path: str, *args: FParams.args, **kwargs: FParams.kwargs) -> FRetType:
+    def read_function(
+        path: str, *args: FParams.args, **kwargs: FParams.kwargs
+    ) -> FRetType:
         data = read_bytes(path)
         return function(data, *args, **kwargs)
 
@@ -168,7 +171,9 @@ def wrapper_write(function: Callable[Concatenate[FData, FParams], FRetType]):
     """Returns a function which writes data to a file instead of returning it."""
 
     @functools.wraps(function)
-    def write_function(path: str, data: FData, *args: FParams.args, **kwargs: FParams.kwargs) -> Path:
+    def write_function(
+        path: str, data: FData, *args: FParams.args, **kwargs: FParams.kwargs
+    ) -> Path:
         data = function(data, *args, **kwargs)
         return write(path, data)
 

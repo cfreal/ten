@@ -41,37 +41,44 @@ def multiform(
     @overload
     def mfunction(
         data: str | bytes, *args: OriginalParams.args, **kwargs: OriginalParams.kwargs
-    ) -> OriginalRetType: ...
+    ) -> OriginalRetType:
+        ...
 
     @overload
     def mfunction(
         data: list, *args: OriginalParams.args, **kwargs: OriginalParams.kwargs
-    ) -> list[OriginalRetType]: ...
+    ) -> list[OriginalRetType]:
+        ...
 
     @overload
     def mfunction(
         data: set, *args: OriginalParams.args, **kwargs: OriginalParams.kwargs
-    ) -> set[OriginalRetType]: ...
+    ) -> set[OriginalRetType]:
+        ...
 
     @overload
     def mfunction(
         data: tuple, *args: OriginalParams.args, **kwargs: OriginalParams.kwargs
-    ) -> tuple[OriginalRetType]: ...
+    ) -> tuple[OriginalRetType]:
+        ...
 
     @overload
     def mfunction(
         data: dict[T, Any], *args: OriginalParams.args, **kwargs: OriginalParams.kwargs
-    ) -> dict[T, OriginalRetType]: ...
+    ) -> dict[T, OriginalRetType]:
+        ...
 
     @overload
     def mfunction(
         data: int, *args: OriginalParams.args, **kwargs: OriginalParams.kwargs
-    ) -> OriginalRetType: ...
+    ) -> OriginalRetType:
+        ...
 
     @overload
     def mfunction(
         data: bytearray, *args: OriginalParams.args, **kwargs: OriginalParams.kwargs
-    ) -> OriginalRetType: ...
+    ) -> OriginalRetType:
+        ...
 
     @functools.wraps(function)
     def mfunction(
