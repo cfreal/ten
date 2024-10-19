@@ -1,6 +1,6 @@
 import inspect
 import functools
-from typing import TypeVar, Callable
+from typing import Any, Concatenate, ParamSpec, TypeVar, Callable, Union, overload
 from tenlib.struct.proxy import TenDict, TenList
 
 __all__ = ["multiform", "wrap_join_format", "to_bytes", "to_str", "strip", "not_empty"]
@@ -8,8 +8,14 @@ __all__ = ["multiform", "wrap_join_format", "to_bytes", "to_str", "strip", "not_
 
 T = TypeVar("T")
 
+OriginalParams = ParamSpec("OriginalParams")
+OriginalRetType = TypeVar("OriginalRetType")
+OriginalType = TypeVar("OriginalType", str, bytes)
 
-def multiform(function):
+
+def multiform(
+    function: Callable[Concatenate[OriginalType, OriginalParams], OriginalRetType]
+):
     """Decorator converting a function expecting a single argument of type str
     or bytes into a function that applies additionally to a string or every
     value of a `list`, `dict`, `set` or `tenlib.struct.proxy.TenDict`, and its
@@ -29,8 +35,49 @@ def multiform(function):
             f"First argument of multiform-decored function should have a type of str or bytes, not {ptype.__name__}"
         )
 
-    @functools.wraps(function)
-    def mfunction(data, *args, **kwargs):
+    # Add correct signatures to the function, one by one, so that the return type is
+    # correctly inferred
+
+    @overload
+    def mfunction(
+        data: str | bytes, *args: OriginalParams.args, **kwargs: OriginalParams.kwargs
+    ) -> OriginalRetType: ...
+
+    @overload
+    def mfunction(
+        data: list, *args: OriginalParams.args, **kwargs: OriginalParams.kwargs
+    ) -> list[OriginalRetType]: ...
+
+    @overload
+    def mfunction(
+        data: set, *args: OriginalParams.args, **kwargs: OriginalParams.kwargs
+    ) -> set[OriginalRetType]: ...
+
+    @overload
+    def mfunction(
+        data: tuple, *args: OriginalParams.args, **kwargs: OriginalParams.kwargs
+    ) -> tuple[OriginalRetType]: ...
+
+    @overload
+    def mfunction(
+        data: dict[T, Any], *args: OriginalParams.args, **kwargs: OriginalParams.kwargs
+    ) -> dict[T, OriginalRetType]: ...
+
+    @overload
+    def mfunction(
+        data: int, *args: OriginalParams.args, **kwargs: OriginalParams.kwargs
+    ) -> OriginalRetType: ...
+
+    @overload
+    def mfunction(
+        data: bytearray, *args: OriginalParams.args, **kwargs: OriginalParams.kwargs
+    ) -> OriginalRetType: ...
+
+    def mfunction(
+        data,
+        *args: OriginalParams.args,
+        **kwargs: OriginalParams.kwargs,
+    ) -> Any:
         if data is None:
             return None
         if isinstance(data, bytes):
@@ -43,7 +90,7 @@ def multiform(function):
             return function(data, *args, **kwargs)
         if isinstance(data, bytearray):
             return function(bytes(data), *args, **kwargs)
-        if isinstance(data, (int, float)):
+        if isinstance(data, int):
             return mfunction(str(data), *args, **kwargs)
         if isinstance(data, TenList):
             return TenList([mfunction(item, *args, **kwargs) for item in data])
