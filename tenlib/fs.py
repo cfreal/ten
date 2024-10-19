@@ -47,6 +47,7 @@ from __future__ import annotations
 
 import functools
 import pathlib
+from typing import Callable, Concatenate, ParamSpec, TypeVar
 
 
 __all__ = [
@@ -145,31 +146,36 @@ def write(path: str, data: StrOrBytes) -> Path:
     return _to_path(path).write(data)
 
 
-def wrapper_read(function):
+FData = TypeVar("FData")
+FParams = ParamSpec("FParams")
+FRetType = TypeVar("FRetType")
+FCallable = TypeVar("FCallable", bound=Callable[FParams, FRetType])
+
+def wrapper_read(function: Callable[Concatenate[bytes, FParams], FRetType]):
     """Returns a function which, instead of reading data from the first
     parameter, reads data from a file.
     """
 
     @functools.wraps(function)
-    def read_function(path, *args, **kwargs):
+    def read_function(path: str, *args: FParams.args, **kwargs: FParams.kwargs) -> FRetType:
         data = read_bytes(path)
         return function(data, *args, **kwargs)
 
     return read_function
 
 
-def wrapper_write(function):
+def wrapper_write(function: Callable[Concatenate[FData, FParams], FRetType]):
     """Returns a function which writes data to a file instead of returning it."""
 
     @functools.wraps(function)
-    def write_function(path, data, *args, **kwargs):
+    def write_function(path: str, data: FData, *args: FParams.args, **kwargs: FParams.kwargs) -> Path:
         data = function(data, *args, **kwargs)
         return write(path, data)
 
     return write_function
 
 
-def _to_path(path) -> Path:
+def _to_path(path: str | Path) -> Path:
     if isinstance(path, Path):
         return path
     return Path(path)
