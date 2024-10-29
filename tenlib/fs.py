@@ -146,6 +146,16 @@ def write(path: str, data: StrOrBytes) -> Path:
     return _to_path(path).write(data)
 
 
+def append(path: str, data: StrOrBytes) -> Path:
+    """Append `data` to file `path`.
+
+    Args:
+        path (str): Path to the file
+        data (str, bytes): Data to append to the file
+    """
+    return _to_path(path).append(data)
+
+
 FData = TypeVar("FData")
 FParams = ParamSpec("FParams")
 FRetType = TypeVar("FRetType")
