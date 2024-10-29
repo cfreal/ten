@@ -57,6 +57,7 @@ __all__ = [
     "mkdir",
     "exists",
     "write",
+    "append",
 ]
 
 StrOrBytes = bytes | str
