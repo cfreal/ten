@@ -104,6 +104,7 @@ __all__ = [
     "trace",
     "set_message_formatter",
     "set_random_message_formatter",
+    "get_console",
 ]
 
 __message_formatter: messageformatter.MessageFormatter = None
