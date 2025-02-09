@@ -214,12 +214,12 @@ class OtherOldschoolMessageFormatter(PrefixMessageFormatter):
     """
 
     _PREFIX = {
-        Status.INFO: "[b blue]\[*][/]",
-        Status.FAILURE: "[b red]\[-][/]",
-        Status.ERROR: "[b red]\[x][/]",
-        Status.SUCCESS: "[b green]\[+][/]",
-        Status.WARNING: "[b yellow]\[!][/]",
-        Status.DEBUG: "[b magenta]\[D][/]",
+        Status.INFO: "[b blue]\\[*][/]",
+        Status.FAILURE: "[b red]\\[-][/]",
+        Status.ERROR: "[b red]\\[x][/]",
+        Status.SUCCESS: "[b green]\\[+][/]",
+        Status.WARNING: "[b yellow]\\[!][/]",
+        Status.DEBUG: "[b magenta]\\[D][/]",
     }
 
 
