@@ -40,6 +40,7 @@ import argparse
 import functools
 import inspect
 import re
+import sys
 from types import SimpleNamespace, NoneType
 from typing import (
     Callable,
@@ -310,6 +311,11 @@ def _doc_to_description(function: Callable) -> str:
     doc = function.__doc__
     if not doc:
         return None
+    # https://docs.python.org/3/whatsnew/3.13.html#other-language-changes
+    # Python now automatically strips the whitespaces from the __doc__ string, making
+    # this function useless
+    if sys.version_info.major == 3 and sys.version_info.minor >= 13:
+        return doc.rstrip()
     doc = doc.strip()
     # Find the smallest newline space prefix, but only if it is followed by a
     # character
