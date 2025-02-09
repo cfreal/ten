@@ -52,7 +52,7 @@ class TestMisc(unittest.TestCase):
 
     def test_niter_n_negative(self):
         with self.assertRaisesRegex(
-            ValueError, "niter\(\): n needs to be strictly positive: -3"
+            ValueError, r"niter\(\): n needs to be strictly positive: -3"
         ):
             next(misc.niter(range(10), -3))
 

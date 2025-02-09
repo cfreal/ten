@@ -57,6 +57,7 @@ __all__ = [
     "mkdir",
     "exists",
     "write",
+    "append",
 ]
 
 StrOrBytes = bytes | str
@@ -144,6 +145,16 @@ def write(path: str, data: StrOrBytes) -> Path:
         data (str, bytes): Data to write in the file
     """
     return _to_path(path).write(data)
+
+
+def append(path: str, data: StrOrBytes) -> Path:
+    """Append `data` to file `path`.
+
+    Args:
+        path (str): Path to the file
+        data (str, bytes): Data to append to the file
+    """
+    return _to_path(path).append(data)
 
 
 FData = TypeVar("FData")

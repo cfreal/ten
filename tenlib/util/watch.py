@@ -37,7 +37,7 @@ want them formatted:
 """
 import time
 from abc import ABC, abstractmethod
-from datetime import datetime
+from datetime import datetime, timezone
 from enum import Enum
 
 
@@ -109,7 +109,7 @@ class watch(TimeHandler):
     '21-01-14 12:34:11'
     """
 
-    def _to_datetime(self):
+    def _to_datetime(self) -> datetime:
         return datetime.today()
 
 
@@ -135,10 +135,10 @@ class stopwatch(TimeHandler):
         super().__init__(format)
         self.start()
 
-    def tick(self):
+    def tick(self) -> float:
         return time.monotonic()
 
-    def start(self):
+    def start(self) -> None:
         """Restarts the stopwatch."""
         self._start = self.tick()
 
@@ -146,5 +146,5 @@ class stopwatch(TimeHandler):
         """Returns the elapsed time since the stopwatch was started."""
         return self.tick() - self._start
 
-    def _to_datetime(self):
-        return datetime.utcfromtimestamp(self.elapsed())
+    def _to_datetime(self) -> datetime:
+        return datetime.fromtimestamp(self.elapsed(), timezone.utc)

@@ -473,7 +473,12 @@ class TestFlowDocToDesc(TenTestCase):
 
         self.assertEqual(
             r,
-            "Documentation with a strange indentation, due to this list:\n    - some\n    - random\n        * list\n\nNo comment !",
+            "Documentation with a strange indentation, due to this list:\n"
+            "    - some\n"
+            "    - random\n"
+            "        * list\n"
+            "\n"
+            "No comment !",
         )
 
     def test_oneliner_emptyend(self):
