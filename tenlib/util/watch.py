@@ -147,4 +147,4 @@ class stopwatch(TimeHandler):
         return self.tick() - self._start
 
     def _to_datetime(self):
-        return datetime.utcfromtimestamp(self.elapsed())
+        return datetime.fromtimestamp(self.elapsed())
