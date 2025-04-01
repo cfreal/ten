@@ -585,16 +585,15 @@ class Response(requests.Response, struct.Storable):
             return redirection
 
     @cached_property
-    def date(self) -> int:
-        """Returns the 'Date' header as a UNIX timestamp if it exists, otherwise
+    def date(self) -> datetime:
+        """Returns the 'Date' header as a `datetime` object if it exists, otherwise
         returns `None`.
         """
-        if (h := self.headers.get("Date",None)):
+        if (dt := self.headers.get("Date",None)):
             # RFC 9110 5.6.7 says date must be in GMT
-            h = int(datetime.strptime(h, "%a, %d %b %Y %H:%M:%S GMT")
+            dt = datetime.strptime(dt, "%a, %d %b %Y %H:%M:%S GMT")
                     .replace(tzinfo=timezone.utc)
-                    .timestamp())
-        return h
+        return dt
 
     @cached_property
     def re(self) -> ResponseRegex:
