@@ -1,5 +1,4 @@
-"""Everything related to HTTP.
-"""
+"""Everything related to HTTP."""
 
 from __future__ import annotations
 
@@ -589,10 +588,11 @@ class Response(requests.Response, struct.Storable):
         """Returns the 'Date' header as a `datetime` object if it exists, otherwise
         returns `None`.
         """
-        if (dt := self.headers.get("Date",None)):
+        if dt := self.headers.get("Date", None):
             # RFC 9110 5.6.7 says date must be in GMT
-            dt = datetime.strptime(dt, "%a, %d %b %Y %H:%M:%S GMT")
-                    .replace(tzinfo=timezone.utc)
+            dt = datetime.strptime(dt, "%a, %d %b %Y %H:%M:%S GMT").replace(
+                tzinfo=timezone.utc
+            )
         return dt
 
     @cached_property
@@ -1037,9 +1037,11 @@ class MultiRequest:
         # the last ones to a list in order not to iterate over them multiple
         # times.
         paths_items = {
-            path: list(multi.items)
-            if i >= 1 and not hasattr(multi, "__len__")
-            else multi.items
+            path: (
+                list(multi.items)
+                if i >= 1 and not hasattr(multi, "__len__")
+                else multi.items
+            )
             for i, (path, multi) in enumerate(paths_items.items())
         }
 
