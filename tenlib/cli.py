@@ -74,13 +74,15 @@ def main():
 main()
 """
 
+
 def _program_exists(program: str) -> bool:
     """Checks if a program exists in the system's PATH."""
     return any(
         os.access(os.path.join(path, program), os.X_OK)
         for path in os.environ["PATH"].split(os.pathsep)
     )
-    
+
+
 def _linux_open(path: str) -> None:
     """Opens a file in the default application on Linux."""
     if "DISPLAY" in os.environ and _program_exists("xdg-open"):
@@ -91,17 +93,18 @@ def _linux_open(path: str) -> None:
         editor = os.environ["EDITOR"]
         shell.call((editor, path))
     # else:
-        # msg_error("No suitable program found to open the file.")
-    
+    # msg_error("No suitable program found to open the file.")
+
+
 @entry
 @arg("filename", "File to create")
-def ten(filename: str, force: bool=False) -> None:
+def ten(filename: str, force: bool = False) -> None:
     """Creates a new ten script and opens it.
-    
+
     If the file already exists, it will not be overwritten, unless you specify the
     `--force` option.
     """
-    
+
     path = Path(filename)
 
     if not force and path.exists():
@@ -109,7 +112,7 @@ def ten(filename: str, force: bool=False) -> None:
     else:
         path.write(PATTERN)
         path.chmod(0o740)
-        
+
     if config.open_script_command is not None:
         shell.call(config.open_script_command + (str(path),))
         return

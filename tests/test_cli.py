@@ -85,7 +85,7 @@ class TestCLI(TenTestCase):
             output1, output2 = self._test_program(ten, str(file))
             self.assertIn("File exists\n", output1)
             self.assertEqual("", output2)
-    
+
     @unittest.mock.patch("tenlib.config.config.open_script_command", ("touch",))
     def test_ten_program_already_exists_but_force(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
@@ -97,7 +97,6 @@ class TestCLI(TenTestCase):
             self.assertEqual("", output2)
             self.assertTrue(file.exists())
             self.assertNotIn(file.read_text(), "sometest123")
-                
 
 
 if __name__ == "__main__":
