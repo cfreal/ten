@@ -66,9 +66,8 @@ class TestCLI(TenTestCase):
         _, output = self._test_program(transform, "csv.decode", input=b"a,b,c\n1,2,3")
         self.assertEqual(output, "[{'a': '1', 'b': '2', 'c': '3'}]\n")
 
+    @unittest.mock.patch("tenlib.config.config.open_script_command", ("touch",))
     def test_ten_program(self) -> None:
-        config.__dict__["create_script_command"] = ("touch",)
-
         with tempfile.TemporaryDirectory() as directory:
             file = Path(directory) / "test.py"
 
@@ -77,20 +76,28 @@ class TestCLI(TenTestCase):
             self.assertEqual("", output2)
             self.assertTrue(file.exists())
 
+    @unittest.mock.patch("tenlib.config.config.open_script_command", ("touch",))
     def test_ten_program_already_exists(self) -> None:
-        create_file_command = config.create_script_command
-        config.__dict__["create_script_command"] = ("touch",)
+        with tempfile.TemporaryDirectory() as directory:
+            file = Path(directory) / "test.py"
+            file.write_text("test")
 
-        try:
-            with tempfile.TemporaryDirectory() as directory:
-                file = Path(directory) / "test.py"
-                file.write_text("test")
+            output1, output2 = self._test_program(ten, str(file))
+            self.assertIn("File exists\n", output1)
+            self.assertEqual("", output2)
+    
+    @unittest.mock.patch("tenlib.config.config.open_script_command", ("touch",))
+    def test_ten_program_already_exists_but_force(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            file = Path(directory) / "test.py"
+            file.write_text("sometest123")
 
-                output1, output2 = self._test_program(ten, str(file))
-                self.assertIn("File exists\n", output1)
-                self.assertEqual("", output2)
-        finally:
-            config.__dict__["create_script_command"] = create_file_command
+            output1, output2 = self._test_program(ten, "-f", str(file))
+            self.assertEqual("", output1)
+            self.assertEqual("", output2)
+            self.assertTrue(file.exists())
+            self.assertNotIn(file.read_text(), "sometest123")
+                
 
 
 if __name__ == "__main__":
