@@ -340,14 +340,14 @@ session = ScopedSession("https://target.com/")
 responses = session.multi().get(Multi(f"/news/{id}" for id in range(10)))
 ```
 
-The Multi keyword can be anywhere in the call. If you want to issue POST requests to `/api/news`, with `news_id` being 0 to 9, you can do:
+The `Multi()` keyword can be anywhere in the call. If you want to issue POST requests to `/api/news`, with `news_id` being 0 to 9, you can do:
 
 ```python
 session = ScopedSession("https://target.com/")
 responses = session.multi().post("/api/news", data={"news_id": Multi(range(10))})
 ```
 
-Even better, you can use several Multi keywords:
+Even better, you can use several `Multi()` keywords:
 
 ```python
 # Get news for each month and day of the year 2023
@@ -375,7 +375,7 @@ def news_exists(r: Response):
 first_news = session.first(news_exists).get(Multi(f"/news/{id}" for id in range(10)))
 ```
 
-This code runs requests concurrently until one matches the `news_exists` predicate. It then returns the first response that matches, and cancel the other requests.
+This code runs requests concurrently until one matches the `news_exists()` predicate. It then returns the first response that matches, and cancel the other requests.
 
 ### Pool: advanced concurrency
 
@@ -432,6 +432,7 @@ Pool support adding new items while being iterated upon. If you're building some
     with s.pool() as pool:
         pool.get("/")
         done = set()
+        
         for response in pool.as_completed():
             done.add(response.url)
             msg_info(response.url)
