@@ -50,7 +50,7 @@ __all__ = [
 ]
 
 DEFAULT_FILE_LEVEL: int = logging.DEBUG
-FILE_CONSOLE_WIDTH: int = 80
+FILE_CONSOLE_WIDTH: int = 200
 
 __cli_handler: CLIHandler = None
 __file_handler: Handler | None = None
