@@ -146,14 +146,14 @@ You'd call methods like this:
 
 ```python
 # GET http://target.com/admin/login
-response = await session.get('/login')
+response = session.get('/login')
 ```
 
 If you request something that is out of scope, it'll raise an exception:
 
 ```python
 # raises HTTPOutOfScopeError
-response = await session.get('http://target.com/user')
+response = session.get('http://target.com/user')
 ```
 
 ### Setting a proxy
