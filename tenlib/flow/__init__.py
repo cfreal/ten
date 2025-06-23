@@ -730,7 +730,7 @@ def inform(
             ko_exit=True
         )
         def login(session, user, password):
-            r = await session.post('/login', {'u': user, 'p': password})
+            r = session.post('/login', {'u': user, 'p': password})
             return r.contains('login successful')
         ```
     """

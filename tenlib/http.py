@@ -376,17 +376,17 @@ class ScopedSession(Session):
 
     Examples:
 
-        >>> s = ScopedSession('https://target.com/admin')
-        >>> await s.get('/user/login').url
+        >>> session = ScopedSession('https://target.com/admin')
+        >>> session.get('/user/login').url
         'https://www.target.com/admin/user/login'
-        >>> await s.get('/login/../dashboard').url
+        >>> session.get('/login/../dashboard').url
         'https://www.target.com/admin/login/../dashboard'
-        >>> await s.get('https://target.com/admin/something').url
+        >>> session.get('https://target.com/admin/something').url
         'https://target.com/admin/something'
-        >>> await s.get('https://target.com/user')
+        >>> session.get('https://target.com/user')
             HTTPOutOfScopeError: https://target.com/user is not within
             https://target.com/admin
-        >>> await s.get('/../user').url
+        >>> session.get('/../user').url
         'https://target.com/admin/../user'
     """
 
