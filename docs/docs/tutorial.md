@@ -108,7 +108,6 @@ def main(url, max_users: int):
 
 ### Get username from the redirect page
 
-
 Generally, after the redirect, we land on the page describing the Wordpress author, and the HTML looks like:
 
 ```html
@@ -119,7 +118,7 @@ Generally, after the redirect, we land on the page describing the Wordpress auth
 </html>
 ```
 
-As a result, we can follow the redirect;
+As a result, we can follow the redirect:
 
 ```python
 response = response.follow_redirect()
@@ -131,7 +130,7 @@ and then use a CSS selector to extract the title's contents:
 title = response.select_one("title").text
 ```
 
-As a result, we obtain the username
+We thus obtain the username of each user
 
 ```python
 @entry

@@ -46,11 +46,8 @@ contents = p.read_bytes()
 To write data as bytes or string, use the `Path.write()` method.
 
 ```python
-p.write(b"contents")
-```
-
-```python
-p.write("contents")
+p.write(b"contents")  # writing bytes...
+p.write("contents")  # or a string!
 ```
 
 To append, use `Path.append()`:

@@ -27,9 +27,9 @@ shell.call(('cat', '/etc/passwd', '>', '/tmp/other')) # does not
 
 ## Running a program to completion
 
-Use `shell.call()`, as described in the previous section.
+Use `shell.call()`, as shown in the previous section.
 
-Use `shell.stdout` or `shell.stderr` files to get the output:
+Use the `shell.stdout` or `shell.stderr` files to get the output:
 
 ```python
 p = shell.call("cat /etc/passwd")
@@ -39,7 +39,7 @@ contents = p.stdout.read()
 ## Running a program in the background
 
 If you want to start a command and keep interacting with it, or simply let it
-run in the background, use `shell.run_background()`:
+run in the background, use `shell.background()`:
 
 ```python
 # Start a program
@@ -57,13 +57,13 @@ p.wait()
 Run a program and gets its output as a string:
 
 ```python
-stdout, stderr = shell.get_output('cat /etc/passwd')
+stdout, stderr = shell.output('cat /etc/passwd')
 ```
 
 or as bytes:
 
 ```python
-stdout, stderr = shell.get_output('cat /etc/passwd', text=False)
+stdout, stderr = shell.output('cat /etc/passwd', text=False)
 ```
 
 ## Misc
