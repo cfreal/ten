@@ -3,6 +3,7 @@
 
 import platform
 import sys
+from typing import NoReturn
 
 from ten import *
 from tenlib.struct.proxy import TenDict, TenList
@@ -75,23 +76,27 @@ main()
 """
 
 
-def _program_exists(program: str) -> bool:
-    """Checks if a program exists in the system's PATH."""
-    return any(
-        os.access(os.path.join(path, program), os.X_OK)
-        for path in os.environ["PATH"].split(os.pathsep)
+def _get_program_path(program: str) -> str | None:
+    """Checks if a program exists in the system's PATH and returns its full path."""
+    paths = (
+        os.path.join(path, program) for path in os.environ["PATH"].split(os.pathsep)
     )
+    return next((p for p in paths if os.access(p, os.X_OK)), None)
 
 
-def _linux_open(path: str) -> None:
+def _linux_open(path: str) -> None | NoReturn:
     """Opens a file in the default application on Linux."""
-    if "DISPLAY" in os.environ and _program_exists("xdg-open"):
-        shell.call(("xdg-open", path))
-    elif _program_exists("editor"):
-        shell.call(("editor", path))
+
+    if "DISPLAY" in os.environ and (editor := _get_program_path("xdg-open")):
+        options = ()
+    elif editor := _get_program_path("editor"):
+        options = ("--",)
     elif "EDITOR" in os.environ:
         editor = os.environ["EDITOR"]
-        shell.call((editor, path))
+        options = ("--",)
+
+    if editor:
+        os.execv(editor, (editor,) + options + (path,))
     # else:
     # msg_error("No suitable program found to open the file.")
 
