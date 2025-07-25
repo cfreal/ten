@@ -19,6 +19,14 @@ class TestMessageFormatter(TenTestCase):
     # The two next tests are redundant with TestFlowMessageFormatter, but it does not
     # hurt
 
+    def test_rule(self):
+        out = OldschoolMessageFormatter()
+        out.rule("Test Rule")
+        self.assertEqual(
+            get_console().export_text(),
+            "──────────────────────────────────────────── Test Rule ─────────────────────────────────────────────\n",
+        )
+
     def test_text_object_does_not_get_rendered(self):
         out = OldschoolMessageFormatter()
         out.success(Text("[b]Markup"))
