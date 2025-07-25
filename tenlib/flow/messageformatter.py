@@ -95,6 +95,12 @@ class MessageFormatter(ABC):
         """Clears last line."""
         self.console.file.write(self.CLEAR_LINE)
 
+    def rule(self, title=None, *, style: str = None) -> None:
+        """Displays an horizontal line with (optionally) a title. Wrapper for
+        `rich.console.Console.rule`.
+        """
+        self.console.rule(title, style=style)
+
 
 class Status(Enum):
     INFO = 1

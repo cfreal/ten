@@ -91,6 +91,7 @@ __all__ = [
     "msg_debug",
     "msg_clear",
     "msg_status",
+    "msg_rule",
     "bin_print",
     "leave",
     "failure",
@@ -531,47 +532,52 @@ def arg(name: str, description: str) -> Callable[[FCallable], FCallable]:
     return wrapper
 
 
-def msg_print(*objects, **kwargs):
+def msg_rule(self, title=None, *, style: str = None):
+    """Displays an horizontal line with (optionally) a title."""
+    get_message_formatter().rule(title, style=style)
+
+
+def msg_print(*objects, **kwargs) -> None:
     """Displays a message."""
     get_message_formatter().print(*objects, **kwargs)
 
 
-def msg_info(*objects, **kwargs):
+def msg_info(*objects, **kwargs) -> None:
     """Displays an info message."""
     get_message_formatter().info(*objects, **kwargs)
 
 
-def msg_failure(*objects, **kwargs):
+def msg_failure(*objects, **kwargs) -> None:
     """Displays a failure message."""
     get_message_formatter().failure(*objects, **kwargs)
 
 
-def msg_error(*objects, **kwargs):
+def msg_error(*objects, **kwargs) -> None:
     """Displays an error message."""
     get_message_formatter().error(*objects, **kwargs)
 
 
-def msg_success(*objects, **kwargs):
+def msg_success(*objects, **kwargs) -> None:
     """Displays a success message."""
     get_message_formatter().success(*objects, **kwargs)
 
 
-def msg_warning(*objects, **kwargs):
+def msg_warning(*objects, **kwargs) -> None:
     """Displays a warning message."""
     get_message_formatter().warning(*objects, **kwargs)
 
 
-def msg_debug(*objects, **kwargs):
+def msg_debug(*objects, **kwargs) -> None:
     """Displays a debug message."""
     get_message_formatter().debug(*objects, **kwargs)
 
 
-def msg_clear():
+def msg_clear() -> None:
     """Clears the current line."""
     get_message_formatter().clear()
 
 
-def bin_print(data: bytes):
+def bin_print(data: bytes) -> None:
     """Prints bytes to stdout."""
     get_message_formatter().bin_print(data)
 
