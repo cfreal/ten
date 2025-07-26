@@ -32,11 +32,11 @@ class Table(storable.Storable):
 
     """
 
-    def __init__(self, columns: list, data: list[list]):
+    def __init__(self, columns: list, data: list[list]) -> None:
         self.columns = columns
         self.data = data
 
-    def _to_str(self, cell):
+    def _to_str(self, cell) -> str:
         """Converts data of various types into a string."""
         if isinstance(cell, str):
             return cell
@@ -49,11 +49,11 @@ class Table(storable.Storable):
                 pass
         return str(cell)
 
-    def _get_title(self):
+    def _get_title(self) -> None:
         """Gets a title to prefix the table with."""
         return None
 
-    def __str__(self):
+    def __str__(self) -> str:
         columns = [self._to_str(column) for column in self.columns]
         data = [[self._to_str(cell) for cell in row] for row in self.data]
         nb_rows = len(self.data)
@@ -77,7 +77,7 @@ class Table(storable.Storable):
 
         return s.read()
 
-    def store_as_csv(self, filename):
+    def store_as_csv(self, filename) -> None:
         with open(filename, "w") as file:
             columns = [str(c) for c in self.columns]
             data = generic.to_str(self.data)

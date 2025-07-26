@@ -1,3 +1,6 @@
+from __future__ import annotations
+from typing import Self
+
 import yaml
 
 from tenlib.struct import storable
@@ -5,7 +8,8 @@ from tenlib.transform import color as _color
 
 
 class Map(storable.Storable):
-    """Represents a map of (for instance) the database schema.
+    """Represents a map.
+    
     A map can be though of as a number of top level nodes, each containing a few
     nodes, and so on.
     For instance, a database map would have database names as top level nodes,
@@ -33,10 +37,10 @@ class Map(storable.Storable):
             for cell in row:
                 current_item = current_item.setdefault(cell, self._DICT_CLS())
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self._str(self.items, 0)
 
-    def _str(self, items, depth):
+    def _str(self, items: dict, depth: str) -> str:
         pad = "  " * depth
         output = ""
 
@@ -55,14 +59,14 @@ class Map(storable.Storable):
         with open(filename, "w") as file:
             yaml.dump(self.items, file, default_flow_style=False)
 
-    def __add__(self, other):
+    def __add__(self, other: Map) -> Map:
         """Merges two maps."""
         new = type(self)()
         new += self
         new += other
         return new
 
-    def __iadd__(self, other):
+    def __iadd__(self, other: Map) -> Self:
         """Merges two maps."""
         items = self._DICT_CLS()
         self._merge_dicts(items, self.items)
@@ -70,6 +74,6 @@ class Map(storable.Storable):
         self.items = items
         return self
 
-    def _merge_dicts(self, one, two):
+    def _merge_dicts(self, one, two) -> None:
         for key, value in two.items():
             self._merge_dicts(one.setdefault(key, self._DICT_CLS()), value)
