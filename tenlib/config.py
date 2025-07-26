@@ -9,6 +9,9 @@ __all__ = [
 ]
 
 
+from typing import NoReturn
+
+
 class Configuration:
     BURP_PROXY: str = "http://localhost:8080"
     """Proxy to use when calling `tenlib.http.Session.burp()`."""
@@ -21,7 +24,7 @@ class Configuration:
     LOG_LINE_WIDTH: int = 200
     """Number of characters to display per line in the log file."""
 
-    def __setattribute__(self):
+    def __setattribute__(self) -> NoReturn:
         raise AttributeError(
             "Configuration attributes cannot be changed programmatically"
         )
