@@ -118,8 +118,8 @@ def ten(filename: str, force: bool = False) -> None:
         path.write(PATTERN)
         path.chmod(0o740)
 
-    if config.open_script_command is not None:
-        shell.call(config.open_script_command + (str(path),))
+    if config.OPEN_SCRIPT_COMMAND is not None:
+        shell.call(config.OPEN_SCRIPT_COMMAND + (str(path),))
         return
 
     match platform.system():

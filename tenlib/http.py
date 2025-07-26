@@ -326,7 +326,7 @@ class Session(requests.Session):
         if self._burp_saved_state:
             return
         self._burp_saved_state = {"proxies": self.proxies, "verify": self.verify}
-        self.proxies = config.burp_proxy
+        self.proxies = config.BURP_PROXY
         self.verify = False
 
     def unburp(self) -> None:

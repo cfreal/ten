@@ -66,7 +66,7 @@ class TestCLI(TenTestCase):
         _, output = self._test_program(transform, "csv.decode", input=b"a,b,c\n1,2,3")
         self.assertEqual(output, "[{'a': '1', 'b': '2', 'c': '3'}]\n")
 
-    @unittest.mock.patch("tenlib.config.config.open_script_command", ("touch",))
+    @unittest.mock.patch("tenlib.config.config.OPEN_SCRIPT_COMMAND", ("touch",))
     def test_ten_program(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             file = Path(directory) / "test.py"
@@ -76,7 +76,7 @@ class TestCLI(TenTestCase):
             self.assertEqual("", output2)
             self.assertTrue(file.exists())
 
-    @unittest.mock.patch("tenlib.config.config.open_script_command", ("touch",))
+    @unittest.mock.patch("tenlib.config.config.OPEN_SCRIPT_COMMAND", ("touch",))
     def test_ten_program_already_exists(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             file = Path(directory) / "test.py"
@@ -86,7 +86,7 @@ class TestCLI(TenTestCase):
             self.assertIn("File exists\n", output1)
             self.assertEqual("", output2)
 
-    @unittest.mock.patch("tenlib.config.config.open_script_command", ("touch",))
+    @unittest.mock.patch("tenlib.config.config.OPEN_SCRIPT_COMMAND", ("touch",))
     def test_ten_program_already_exists_but_force(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             file = Path(directory) / "test.py"

@@ -908,7 +908,10 @@ def ask(
 def get_message_formatter() -> messageformatter.MessageFormatter:
     """Returns the `messageformatter.MessageFormatter` instance."""
     if not __message_formatter:
-        set_message_formatter(config.message_formatter)
+        if config.MESSAGE_FORMATTER is None:
+            set_random_message_formatter()
+        else:
+            set_message_formatter(config.MESSAGE_FORMATTER)
     return __message_formatter
 
 

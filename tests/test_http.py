@@ -70,7 +70,7 @@ class TestHTTPSession(TenTestCase):
 
         ns.burp()
 
-        self.assertEqual(ns.proxies, {"all": config.burp_proxy})
+        self.assertEqual(ns.proxies, {"all": config.BURP_PROXY})
         self.assertFalse(ns.verify)
         self.assertEqual(
             ns._burp_saved_state, {"proxies": {"http": "fake_proxy"}, "verify": True}
@@ -79,7 +79,7 @@ class TestHTTPSession(TenTestCase):
         # Change it again, should not do anything
         ns.burp()
 
-        self.assertEqual(ns.proxies, {"all": config.burp_proxy})
+        self.assertEqual(ns.proxies, {"all": config.BURP_PROXY})
         self.assertFalse(ns.verify)
         self.assertEqual(
             ns._burp_saved_state, {"proxies": {"http": "fake_proxy"}, "verify": True}
