@@ -1,5 +1,4 @@
 from __future__ import annotations
-from typing import Self
 
 import yaml
 
@@ -66,7 +65,7 @@ class Map(storable.Storable):
         new += other
         return new
 
-    def __iadd__(self, other: Map) -> Self:
+    def __iadd__(self, other: Map):
         """Merges two maps."""
         items = self._DICT_CLS()
         self._merge_dicts(items, self.items)
