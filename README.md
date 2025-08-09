@@ -1,6 +1,6 @@
-# ten
-
 ![Coverage](docs/coverage.svg)
+
+# ten
 
 My (small) web exploit framework. I got tired of writing standard code over and over again,
 so I made this. Makes code more concise, clearer, faster to write. Might be useful to you.
