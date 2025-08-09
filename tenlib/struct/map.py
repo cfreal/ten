@@ -8,7 +8,7 @@ from tenlib.transform import color as _color
 
 class Map(storable.Storable):
     """Represents a map.
-    
+
     A map can be though of as a number of top level nodes, each containing a few
     nodes, and so on.
     For instance, a database map would have database names as top level nodes,
