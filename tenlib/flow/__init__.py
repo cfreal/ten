@@ -532,7 +532,7 @@ def arg(name: str, description: str) -> Callable[[FCallable], FCallable]:
     return wrapper
 
 
-def msg_rule(self, title=None, *, style: str = None):
+def msg_rule(title=None, *, style: str = None):
     """Displays an horizontal line with (optionally) a title."""
     get_message_formatter().rule(title, style=style)
 
