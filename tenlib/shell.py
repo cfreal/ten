@@ -90,7 +90,7 @@ def call(command: str | list[str], timeout: int = None, **kwargs) -> Popen:
 
 def output(
     command: str | list[str], text: bool = True, timeout: int = None, **kwargs
-) -> tuple[str | bytes, str | bytes]:
+) -> tuple[str, str] | tuple[bytes, bytes]:
     """Returns the output of the process.
 
     Args:
