@@ -299,9 +299,12 @@ def entry(entrypoint: Callable[..., FRetType]) -> Callable[[], FRetType]:
             exit_code = 1
         finally:
             with console._lock:
-                if console._live:
+                if hasattr(console, "_live") and console._live:
                     console._live.stop()
                     console._live = None
+                elif hasattr(console, "_live_stack") and console._live_stack:
+                    console._live_stack[-1].stop()
+                    console.clear_live()
             if exit_code:
                 exit(exit_code)
 
