@@ -396,22 +396,19 @@ class TestFlowPrototype(TenTestCase):
         self.assertEqual(str(args[0]), "/etc/passwd")
 
     def test_string_annotation_is_properly_resolved(self):
-        def main(a: "int"):
-            ...
+        def main(a: "int"): ...
 
         args, kwargs = self._get_args(main, "1")
         self.assertEqual(args[0], 1)
 
     def test_string_annotation_list_is_properly_resolved(self):
-        def main(a: "list[int]"):
-            ...
+        def main(a: "list[int]"): ...
 
         args, kwargs = self._get_args(main, "-a", "1", "2")
         self.assertEqual(kwargs["a"], [1, 2])
 
     def test_string_annotation_is_not_used_as_string(self):
-        def main(a: "str", b: "int"):
-            ...
+        def main(a: "str", b: "int"): ...
 
         try:
             self._get_args(main, "abc", "123")

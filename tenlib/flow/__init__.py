@@ -1,6 +1,6 @@
 """Main input/output functions.
 
-Here's a base `ten` python file layout: 
+Here's a base `ten` python file layout:
 
 ```python
 #!/usr/bin/env python
@@ -31,7 +31,7 @@ Execution can be paused using `pause`, or delayed using `sleep`.
 To inform the user of progress in real time, use `msg_status`, `progress`, or
 `track`, or use the `inform` decorator.
 
-Most of the heavy lifting for display is done by the 
+Most of the heavy lifting for display is done by the
 [`rich` library](https://rich.readthedocs.io/en/stable/).
 """
 
@@ -626,7 +626,7 @@ def msg_status(
     )
 
 
-def leave(message: str=None, *args, **kwargs) -> NoReturn:
+def leave(message: str = None, *args, **kwargs) -> NoReturn:
     """Displays a message if given, and exits.
 
     Raises:

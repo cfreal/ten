@@ -1,5 +1,5 @@
-"""Functions imported from `urllib.parse`.
-"""
+"""Functions imported from `urllib.parse`."""
+
 import urllib.parse
 
 

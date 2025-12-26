@@ -20,6 +20,7 @@ To set the level of logging in this file, use `set_level`. Change the path using
 [07/13/22 17:49:07] ERROR    Woops !                                   <stdin>:1
 ```
 """
+
 from __future__ import annotations
 
 import logging

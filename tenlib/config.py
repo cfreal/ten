@@ -1,5 +1,5 @@
-"""Holds the general configuration.
-"""
+"""Holds the general configuration."""
+
 # TODO Get config values from ~/ten.conf
 # TODO Disallow editing properly
 

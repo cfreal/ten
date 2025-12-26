@@ -1,5 +1,4 @@
-"""Framework exceptions.
-"""
+"""Framework exceptions."""
 
 
 class TenError(Exception):

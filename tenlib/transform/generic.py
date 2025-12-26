@@ -14,7 +14,7 @@ OriginalType = TypeVar("OriginalType", str, bytes)
 
 
 def multiform(
-    function: Callable[Concatenate[OriginalType, OriginalParams], OriginalRetType]
+    function: Callable[Concatenate[OriginalType, OriginalParams], OriginalRetType],
 ):
     """Decorator converting a function expecting a single argument of type str
     or bytes into a function that applies additionally to a string or every
@@ -41,44 +41,37 @@ def multiform(
     @overload
     def mfunction(
         data: str | bytes, *args: OriginalParams.args, **kwargs: OriginalParams.kwargs
-    ) -> OriginalRetType:
-        ...
+    ) -> OriginalRetType: ...
 
     @overload
     def mfunction(
         data: list, *args: OriginalParams.args, **kwargs: OriginalParams.kwargs
-    ) -> list[OriginalRetType]:
-        ...
+    ) -> list[OriginalRetType]: ...
 
     @overload
     def mfunction(
         data: set, *args: OriginalParams.args, **kwargs: OriginalParams.kwargs
-    ) -> set[OriginalRetType]:
-        ...
+    ) -> set[OriginalRetType]: ...
 
     @overload
     def mfunction(
         data: tuple, *args: OriginalParams.args, **kwargs: OriginalParams.kwargs
-    ) -> tuple[OriginalRetType]:
-        ...
+    ) -> tuple[OriginalRetType]: ...
 
     @overload
     def mfunction(
         data: dict[T, Any], *args: OriginalParams.args, **kwargs: OriginalParams.kwargs
-    ) -> dict[T, OriginalRetType]:
-        ...
+    ) -> dict[T, OriginalRetType]: ...
 
     @overload
     def mfunction(
         data: int, *args: OriginalParams.args, **kwargs: OriginalParams.kwargs
-    ) -> OriginalRetType:
-        ...
+    ) -> OriginalRetType: ...
 
     @overload
     def mfunction(
         data: bytearray, *args: OriginalParams.args, **kwargs: OriginalParams.kwargs
-    ) -> OriginalRetType:
-        ...
+    ) -> OriginalRetType: ...
 
     @functools.wraps(function)
     def mfunction(

@@ -1,5 +1,5 @@
-"""Useful data structures.
-"""
+"""Useful data structures."""
+
 from types import SimpleNamespace
 
 from tenlib.struct.xmldict import XMLDict

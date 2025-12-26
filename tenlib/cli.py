@@ -1,5 +1,4 @@
-"""CLI tools for ten.
-"""
+"""CLI tools for ten."""
 
 import platform
 import sys

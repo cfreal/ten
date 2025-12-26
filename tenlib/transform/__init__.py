@@ -56,7 +56,7 @@ Use `tenlib.transform.color` to colorize output.
 Additionally, a `tf` script is available in `./tools`.
 
 Examples:
-    
+
     Simple usage on standard structures:
 
         >>> transform.base64.encode(['abc', 123, 'def'])
@@ -71,14 +71,14 @@ Examples:
         ...     'password': 'my&lt;complex&gt;password'
         ... })
         TenDict({'user': 'some&user', 'password': 'my<complex>password'})
-    
+
     Reading and writing files:
 
         >>> transform.json.read('something.json')
         {'a': 'b', 'c': 'd'}
         >>> transform.json.write('something_else.json', [1, 2, 3])
         >>>
-    
+
     Using the CLI:
 
         $ echo -n 'a=1&b=2&c=3' | tf -t qs.parse json.encode

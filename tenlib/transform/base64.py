@@ -1,5 +1,4 @@
-"""Handles base64 encoding/decoding.
-"""
+"""Handles base64 encoding/decoding."""
 
 import base64
 

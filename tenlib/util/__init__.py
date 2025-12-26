@@ -1,2 +1,1 @@
-"""A few utility modules.
-"""
+"""A few utility modules."""

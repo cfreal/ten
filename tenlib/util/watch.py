@@ -23,7 +23,7 @@ instantiations here are equivalent:
     >>> s = stopwatch('%M:%S')
     >>> print(s)
     '00:00'
-    >>> 
+    >>>
 
 Calling `format` on instances of this object allows you to choose the way you
 want them formatted:
@@ -35,6 +35,7 @@ want them formatted:
     '21-01-25 12:56:32'
 
 """
+
 import time
 from abc import ABC, abstractmethod
 from datetime import datetime, timezone

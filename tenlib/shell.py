@@ -1,4 +1,4 @@
-"""This module allows you to run commands. The functions are simple wrappers for 
+"""This module allows you to run commands. The functions are simple wrappers for
 `subprocess.Popen`.
 
 

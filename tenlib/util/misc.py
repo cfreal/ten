@@ -1,5 +1,4 @@
-"""A few utility functions.
-"""
+"""A few utility functions."""
 
 from typing import Iterable, Iterator
 

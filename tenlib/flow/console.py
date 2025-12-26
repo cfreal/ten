@@ -1,5 +1,4 @@
-"""Stores the console object used by ten.
-"""
+"""Stores the console object used by ten."""
 
 from rich.console import Console
 

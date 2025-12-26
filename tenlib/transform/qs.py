@@ -1,5 +1,4 @@
-"""Manipulates the query string.
-"""
+"""Manipulates the query string."""
 
 import itertools
 import urllib.parse
