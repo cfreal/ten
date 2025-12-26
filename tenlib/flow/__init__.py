@@ -623,7 +623,7 @@ def msg_status(
     )
 
 
-def leave(message=None, *args, **kwargs) -> NoReturn:
+def leave(message: str=None, *args, **kwargs) -> NoReturn:
     """Displays a message if given, and exits.
 
     Raises:
