@@ -1,4 +1,5 @@
 ![Version](docs/version.svg)
+![Coverage](docs/coverage.svg)
 
 # ten
 
